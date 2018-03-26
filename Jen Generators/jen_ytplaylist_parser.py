@@ -9,7 +9,7 @@ class Generator:
         # create initial variables needed later
 
         # CHANGEME Set this to the output filename you want/need.
-        self.htmlFilename = 'ytplaylistpage.xml'
+        self.htmlFilename = 'test.txt'
 
         # CHANGEME to match the path needed for your generic fanart to add to each entry. Set to None to not set it.
         # Example: self.fanart = None
