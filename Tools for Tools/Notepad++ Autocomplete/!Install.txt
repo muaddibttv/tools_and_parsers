@@ -1,0 +1,16 @@
+Simple Install Method
+========================================================
+1. Back up the existing python.xml in the location below (just in case, included one in the github)
+2. The "python.xml" file should be placed in "C:\Program Files (x86)\Notepad++\plugins\APIs" or "C:\Program Files\Notepad++\plugins\APIs", overwriting the pre-installed copy.
+
+Advanced Install Method
+========================================================
+1. Back up the existing python.xml in the location below (just in case, included one in the github)
+2. Create a python script containing all public and user-defined modules you usually use, for instance create the following file: my_imports.py and type in:
+        import sys, cgi, os, re, subprocess
+        sys.path.append("/home/python/my_python_modules/")
+        import my_module
+3. Finally, run the python script:
+        python generate_python_autocomplete.py < my_imports.py > python.xml
+4. Save the file under \Notepad++\plugins\APIs\python.xml
+5. Restart Notepad++; you're done!
