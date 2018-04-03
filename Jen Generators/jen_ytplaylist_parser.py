@@ -13,7 +13,7 @@ class Generator:
 
         # CHANGEME to match the path needed for your generic fanart to add to each entry. Set to None to not set it.
         # Example: self.fanart = None
-        self.fanart = 'https://raw.githubusercontent.com/muaddibttv/tantrumxmls/master/jbuddentv/media/fanart.jpg'
+        self.fanart = None
 
         self.tools_path = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
 
@@ -51,7 +51,7 @@ class Generator:
 
                 output_string = output_string + '<plugin>\n'
                 output_string = output_string + '    <title>' + str(title) + '</title>\n'
-                output_string = output_string + '    <link>plugin://plugin.video.youtube/channel/' + str(list) + '/</link>\n'
+                output_string = output_string + '    <link>plugin://plugin.video.youtube/playlist/' + str(list) + '/</link>\n'
                 output_string = output_string + '    <thumbnail>' + str(icon) + '</thumbnail>\n'
                 if not self.fanart == None:
                     output_string = output_string + '    <fanart>' + str(self.fanart) + '</fanart>\n'
