@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 """ Processes HTML of a YT channel's Playlists, to build a template file for all of them. """
 
-import datetime, json, urllib, os, re, sys, traceback
+import datetime, json, urllib2, os, re, sys, traceback
 
 YOUTUBE_API_KEY = "AIzaSyA4ktCh7tLBk467AYgPMykgdtMZ8HL68hE"
 RESULTS_PER_PAGE = '40' # 1-50 as per Google's rules.
@@ -36,7 +36,7 @@ class Generator:
             cycle = 0
             url = first_url + '&channelId='+self.channel+'&part=id,snippet,contentDetails'
 
-            inp = urllib.urlopen(url)
+            inp = urllib2.urlopen(url)
             resp = json.load(inp)
             playlist_count = len(resp["items"])
             playlist_worked = 1;
