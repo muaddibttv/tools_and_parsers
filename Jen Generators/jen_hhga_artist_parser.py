@@ -86,9 +86,9 @@ def parseDOM(html, name='', attrs=None, ret=False):
 def replaceHTMLCodes(txt):
     txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
     try:
-        import HTMLParser as html_parser
-    except:
         import html.parser as html_parser
+    except:
+        import HTMLParser as html_parser
     txt = html_parser.HTMLParser().unescape(txt)
     txt = html_parser.HTMLParser().unescape(txt)
     txt = txt.replace("&quot;", "\"")
@@ -98,9 +98,9 @@ def replaceHTMLCodes(txt):
 
 def replaceEscapeCodes(txt):
     try:
-        import HTMLParser as html_parser
-    except:
         import html.parser as html_parser
+    except:
+        import HTMLParser as html_parser
     txt = html_parser.HTMLParser().unescape(txt)
     return txt
 
