@@ -64,9 +64,9 @@ def __get_dom_elements(item, name, attrs):
         this_list = re.findall(pattern, item, re.M | re.S | re.I)
     else:
         last_list = None
-        for key, value in attrs.iteritems():
+        for key, value in attrs.items():
             value_is_regex = isinstance(value, re_type)
-            value_is_str = isinstance(value, basestring)
+            value_is_str = isinstance(value, str)
             pattern = '''(<{tag}[^>]*\s{key}=(?P<delim>['"])(.*?)(?P=delim)[^>]*>)'''.format(tag=name, key=key)
             re_list = re.findall(pattern, item, re.M | re.S | re.I)
             if value_is_regex:
@@ -109,7 +109,7 @@ def __get_attribs(element):
 def parse_dom(html, name='', attrs=None, req=False, exclude_comments=False):
     if attrs is None: attrs = {}
     name = name.strip()
-    if isinstance(html, unicode) or isinstance(html, DomMatch):
+    if isinstance(html, str) or isinstance(html, DomMatch):
         html = [html]
     elif isinstance(html, str):
         try:

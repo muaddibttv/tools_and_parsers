@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 """ Processes HTML of a YT channel's Playlists, to build a template file for all of them. """
 
-import datetime, json, urllib, os, sys, traceback, unicodedata
+import datetime, json, urllib, os, re, sys, traceback, chardet
 from unidecode import unidecode
 
 YOUTUBE_API_KEY = "AIzaSyA4ktCh7tLBk467AYgPMykgdtMZ8HL68hE"
@@ -23,11 +23,11 @@ class Generator:
         self._generate_yt_templates()
 
         # notify user
-        print "Finished parsing the Youtube Channel. Output saved as playlists.txt"
+        print('Finished parsing the Youtube Channel. Output saved as playlists.txt')
 
     def _generate_yt_templates ( self ):
 
-        print "Contacting Youtube API....."
+        print('Contacting Youtube API.....')
 
         first_url = self.base_search_url+'key={}&order=date&maxResults={}'.format(YOUTUBE_API_KEY, RESULTS_PER_PAGE)
         try:
@@ -70,28 +70,33 @@ class Generator:
                 else:
                     output_string = output_string + 'fanart="http://"\n'
                 output_string = output_string + 'description="' + str(title) + '"\n\n'
-
         except:
             failure = traceback.format_exc()
-            print 'Youtube Playlist Parser - Exception: \n' + str(failure)
+            print('Youtube Playlist Parser - Exception: \n' + str(failure))
 
         # save file
-        with open("playlists.txt","w") as f:
+        with open('playlists.txt','w') as f:
             f.write(output_string)
 
 def replaceHTMLCodes(txt):
-    import re
     txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
-    import HTMLParser
-    txt = HTMLParser.HTMLParser().unescape(txt)
+    try:
+        import HTMLParser as html_parser
+    except:
+        import html.parser as html_parser
+    txt = html_parser.HTMLParser().unescape(txt)
+    txt = html_parser.HTMLParser().unescape(txt)
     txt = txt.replace("&quot;", "\"")
     txt = txt.replace("&amp;", "&")
     txt = txt.strip()
     return txt
 
 def replaceEscapeCodes(txt):
-    import HTMLParser
-    txt = HTMLParser.HTMLParser().unescape(txt)
+    try:
+        import HTMLParser as html_parser
+    except:
+        import html.parser as html_parser
+    txt = html_parser.HTMLParser().unescape(txt)
     return txt
 
 if ( __name__ == "__main__" ):

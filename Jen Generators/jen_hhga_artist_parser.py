@@ -2,7 +2,7 @@
 """ Processes HTML of the Hip Hop Golden Age artist's list page and generate a Jen Template for it. """
 """ *** Requires the requests module to be installed. If you do not have it, run 'pip install requests' from the command prompt """
 
-import os, re, requests, unicodedata
+import os, re, requests, traceback, unicodedata
 import dom_parser
 
 class Generator:
@@ -30,11 +30,11 @@ class Generator:
         self._generate_templates()
 
         # notify user
-        print "Finished parsing the website. Output saved as xml files in the same folder as this tool."
+        print('Finished parsing the website. Output saved as xml files in the same folder as this tool.')
 
     def _generate_templates ( self ):
 
-        print "Processing website....."
+        print('Processing website.....')
 
         try:
             output_string = ''
@@ -65,17 +65,17 @@ class Generator:
                 output_string = output_string + '</dir>\n\n'
                 count += 1
 
-            print 'Completed Track and Album entries for ' + str(count) + ' artists/groups'
-        except Exception, e:
-            # missing or poorly formatted xml
-            print "What the fuck dude? %s" % ( e )
+            print('Completed Track and Album entries for ' + str(count) + ' artists/groups')
+        except:
+            failure = traceback.format_exc()
+            print('HHGA Artist Parser - Exception: \n' + str(failure))
 
         # save file
         with open(self.output,"w") as f:
             f.write(output_string)
 
 def parseDOM(html, name='', attrs=None, ret=False):
-    if attrs: attrs = dict((key, re.compile(value + ('$' if value else ''))) for key, value in attrs.iteritems())
+    if attrs: attrs = dict((key, re.compile(value + ('$' if value else ''))) for key, value in attrs.items())
     results = dom_parser.parse_dom(html, name, attrs, ret)
     if ret:
         results = [result.attrs[ret.lower()] for result in results]
@@ -85,22 +85,29 @@ def parseDOM(html, name='', attrs=None, ret=False):
 
 def replaceHTMLCodes(txt):
     txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
-    import HTMLParser
-    txt = HTMLParser.HTMLParser().unescape(txt)
+    try:
+        import HTMLParser as html_parser
+    except:
+        import html.parser as html_parser
+    txt = html_parser.HTMLParser().unescape(txt)
+    txt = html_parser.HTMLParser().unescape(txt)
     txt = txt.replace("&quot;", "\"")
     txt = txt.replace("&amp;", "&")
     txt = txt.strip()
     return txt
 
 def replaceEscapeCodes(txt):
-    import HTMLParser
-    txt = HTMLParser.HTMLParser().unescape(txt)
+    try:
+        import HTMLParser as html_parser
+    except:
+        import html.parser as html_parser
+    txt = html_parser.HTMLParser().unescape(txt)
     return txt
 
 def randomagent():
     import random
     BR_VERS = [
-        ['%s.0' % i for i in xrange(18, 50)],
+        ['%s.0' % i for i in range(18, 50)],
         ['37.0.2062.103', '37.0.2062.120', '37.0.2062.124', '38.0.2125.101', '38.0.2125.104', '38.0.2125.111', '39.0.2171.71', '39.0.2171.95', '39.0.2171.99',
          '40.0.2214.93', '40.0.2214.111',
          '40.0.2214.115', '42.0.2311.90', '42.0.2311.135', '42.0.2311.152', '43.0.2357.81', '43.0.2357.124', '44.0.2403.155', '44.0.2403.157', '45.0.2454.101',
