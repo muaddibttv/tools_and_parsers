@@ -2,7 +2,7 @@
 """ Processes HTML of the Hip Hop Golden Age artist's list page and generate a Jen Template for it. """
 """ *** Requires the requests module to be installed. If you do not have it, run 'pip install requests' from the command prompt """
 
-import os, re, requests, traceback, unicodedata
+import os, re, requests, traceback
 import dom_parser
 
 class Generator:
@@ -48,6 +48,8 @@ class Generator:
                 artist = re.compile('<p>(.+?)</p>').findall(para)[0]
 
                 artist_alt = artist
+                artist_alt = artist_alt.replace(u'\xa0', u' ').replace(u'\xe4', u'a').replace(u'\xe9', u'e').replace(u'\xeb', u'e').replace(u'\xe6', u'ae').replace(u'\xfa', u'u').replace(u'\xda', u'U').replace(u'\xe7', u'c')
+                artist_alt = artist_alt.replace(u'\xe0', u'a').replace(u'\xc9', u'E').replace(u'\xf3', u'o').replace(u'\xff', u'y').replace(u'\xe1', u'a').replace(u'\xed', u'i').replace(u'\xf1', u'n').replace(u'\xe3', u'a')
                 if self.makelower == True:
                     artist_alt = artist_alt.lower()
                 if self.nospaces == True:
