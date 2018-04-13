@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Jen</title>
+<!-- 2018-02-17 Sat 10:53 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Org-mode">
+
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<style type="text/css">
+/* org mode styles on top of twbs */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-size: 18px;
+    margin-bottom: 105px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 101px;
+    background-color: #f5f5f5;
+}
+
+footer > div {
+    padding: 10px;
+}
+
+footer p {
+    margin: 0 0 5px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#table-of-contents {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+blockquote p {
+    font-size: 18px;
+}
+
+pre {
+    font-size: 16px;
+}
+
+.footpara {
+    display: inline-block;
+}
+
+figcaption {
+  font-size: 16px;
+  color: #666;
+  font-style: italic;
+  padding-bottom: 15px;
+}
+
+/* from twbs docs */
+
+.bs-docs-sidebar.affix {
+    position: static;
+}
+@media (min-width: 768px) {
+    .bs-docs-sidebar {
+        padding-left: 20px;
+    }
+}
+
+/* All levels of nav */
+.bs-docs-sidebar .nav > li > a {
+    display: block;
+    padding: 4px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #999;
+}
+.bs-docs-sidebar .nav > li > a:hover,
+.bs-docs-sidebar .nav > li > a:focus {
+    padding-left: 19px;
+    color: #A1283B;
+    text-decoration: none;
+    background-color: transparent;
+    border-left: 1px solid #A1283B;
+}
+.bs-docs-sidebar .nav > .active > a,
+.bs-docs-sidebar .nav > .active:hover > a,
+.bs-docs-sidebar .nav > .active:focus > a {
+    padding-left: 18px;
+    font-weight: bold;
+    color: #A1283B;
+    background-color: transparent;
+    border-left: 2px solid #A1283B;
+}
+
+/* Nav: second level (shown on .active) */
+.bs-docs-sidebar .nav .nav {
+    display: none; /* Hide by default, but at >768px, show it */
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav > li > a:focus {
+    padding-left: 29px;
+}
+.bs-docs-sidebar .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav > .active:focus > a {
+    padding-left: 28px;
+    font-weight: 500;
+}
+
+/* Nav: third level (shown on .active) */
+.bs-docs-sidebar .nav .nav .nav {
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 40px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav .nav > li > a:focus {
+    padding-left: 39px;
+}
+.bs-docs-sidebar .nav .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav .nav > .active:focus > a {
+    padding-left: 38px;
+    font-weight: 500;
+}
+
+/* Show and affix the side nav when space allows it */
+@media (min-width: 992px) {
+    .bs-docs-sidebar .nav > .active > ul {
+        display: block;
+    }
+    /* Widen the fixed sidebar */
+    .bs-docs-sidebar.affix,
+    .bs-docs-sidebar.affix-bottom {
+        width: 213px;
+    }
+    .bs-docs-sidebar.affix {
+        position: fixed; /* Undo the static from mobile first approach */
+        top: 20px;
+    }
+    .bs-docs-sidebar.affix-bottom {
+        position: absolute; /* Undo the static from mobile first approach */
+    }
+    .bs-docs-sidebar.affix .bs-docs-sidenav,.bs-docs-sidebar.affix-bottom .bs-docs-sidenav {
+        margin-top: 0;
+        margin-bottom: 0
+    }
+}
+@media (min-width: 1200px) {
+    /* Widen the fixed sidebar again */
+    .bs-docs-sidebar.affix-bottom,
+    .bs-docs-sidebar.affix {
+        width: 263px;
+    }
+}
+</style>
+<script type="text/javascript">
+$(function() {
+    'use strict';
+
+    $('.bs-docs-sidebar li').first().addClass('active');
+
+    $(document.body).scrollspy({target: '.bs-docs-sidebar'});
+
+    $('.bs-docs-sidebar').affix();
+});
+</script>
+</head>
+<body>
+<div id="content" class="container">
+<div class="row"><div class="col-md-9"><h1 class="title">Jen</h1>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction to Jen</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> What is Jen?</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Jen is an addon written by a long time Kodi Developer.
+It is free to use and has universalscrapers integrated into it.
+This addon does not host any of the content which is found and has no affiliation with any of the content providers.
+ This addon simply searches websites for content. Use at your own risk!
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> How to Install Jen</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Follow the Instructions to Make a Jen Addon</h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> Add an Icon</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<ul class="org-ul">
+<li>Add an icon to the main jen folder. 
+</li>
+
+<li>It should be 512 x 512 and it must be called icon.png
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> Add Fanart</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<ul class="org-ul">
+<li>Add fanart to the main jen folder
+</li>
+
+<li>It should be 1920 x 1080 and must be called fanart.jpg
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-2-1-3" class="outline-4">
+<h4 id="sec-2-1-3"><span class="section-number-4">2.1.3</span> Changing the addon.xml</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<ul class="org-ul">
+<li>Change the addon id and name and anything else you need to suit your addon.
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-2-1-4" class="outline-4">
+<h4 id="sec-2-1-4"><span class="section-number-4">2.1.4</span> Change the name of the folder</h4>
+<div class="outline-text-4" id="text-2-1-4">
+<ul class="org-ul">
+<li>Change the name of the folder from plugin.video.jen to the addon id in your addon.xml
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-2-1-5" class="outline-4">
+<h4 id="sec-2-1-5"><span class="section-number-4">2.1.5</span> Changing the settings.xml</h4>
+<div class="outline-text-4" id="text-2-1-5">
+<ul class="org-ul">
+<li>Open resources/settings.xml
+</li>
+<li>Change plugin.video.jen to the addon id in your addon.xml
+</li>
+<li>Add your apis to each default=""
+</li>
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-python">&lt;setting label="TVDb api key" type="text" id="tvdb_api_key" option="hidden" default="" visible="eq(-3,true)"/&gt;
+&lt;setting label="TMDb api key" type="text" id="tmdb_api_key" option="hidden" default="" visible="eq(-4,true)"/&gt;
+&lt;setting label="Trakt client id" type="text" id="trakt_api_client_id" option="hidden" default="" visible="eq(-5,true)"/&gt;
+&lt;setting label="Trakt client secret" type="text" id="trakt_api_client_secret" option="hidden" visible="!eq(-1,8b3c509d7ae20fb31efcf95a7f030da562c37a8f0d9cd100db6ac1a41970f8ac) + eq(-6,true)" default=""/&gt;
+&lt;setting label="Last.fm api key" type="text" id="lastfm_api_key" option="hidden" default="" visible="eq(-7,true)"/&gt;
+&lt;setting label="Last.fm secret" type="text" id="lastfm_secret" option="hidden" visible="!eq(-1,3ec34c514a9230ebf006c8e24a8419d6) + eq(-8,true)" default=""/&gt;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-2-1-6" class="outline-4">
+<h4 id="sec-2-1-6"><span class="section-number-4">2.1.6</span> Changing the strings.po</h4>
+<div class="outline-text-4" id="text-2-1-6">
+<ul class="org-ul">
+<li>Open resources/language/English/strings.po
+</li>
+<li>Change the top 3 lines to reflect your addon
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-2-1-7" class="outline-4">
+<h4 id="sec-2-1-7"><span class="section-number-4">2.1.7</span> Fill out the variables in the default.py</h4>
+<div class="outline-text-4" id="text-2-1-7">
+<ul class="org-ul">
+<li>Fill out these lines in the default.py
+</li>
+<li>Url of the root xml file is required and at least a trakt or a tmdb api is required
+</li>
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-python">root_xml_url = "http://"  # url of the root xml file
+__builtin__.tvdb_api_key = ""  # tvdb api key
+__builtin__.tmdb_api_key = ""  # tmdb api key
+__builtin__.trakt_client_id = ""  # trakt client id
+__builtin__.trakt_client_secret = ""  # trakt client secret
+__builtin__.search_db_location = ""  # location of search db
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> How to Get API Keys for Jen</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> TMDB</h3>
+<div class="outline-text-3" id="text-3-1">
+<ul class="org-ul">
+<li>You can get a TMDB Api by going to website.
+</li>
+<li>Use google.com for url
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> TRAKT</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li>You can get a Trakt Api by clicking <a href="https://trakt.tv/oauth/applications/new">here</a>
+</li>
+<li>Use google.com for url
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> TVDB</h3>
+<div class="outline-text-3" id="text-3-3">
+<ul class="org-ul">
+<li>You can get a TVDB Api by clicking <a href="https://www.thetvdb.com/?tab=apiregister">here</a>
+</li>
+<li>May need to be signed in to your account to access this page
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Upgrading Jen</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>Slide over your icon, fanart, strings.po, settings.xml and addon.xml to the new version
+</li>
+<li>Copy over the configuration variables in your default.py
+</li>
+<li>Up your addon.xml version number (if required)
+</li>
+<li>Zip up the new folder and add the correct version number to the end eg. plugin.video.jen-1.1.zip
+</li>
+<li>Push out new version
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Jen Plugins</h2>
+<div class="outline-text-2" id="text-5">
+</div><div id="outline-container-sec-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> How to Add a Plugin</h3>
+<div class="outline-text-3" id="text-5-1">
+<ul class="org-ul">
+<li>Plugins are found in resources/lib/plugins.
+</li>
+<li>The plugin.py can be found in resources/lib/util 
+</li>
+<li>You can see where you can overwrite default behaviour. If there are any other useful ones, open an issue.
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-5-2" class="outline-3">
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> Using Trakt Plugin</h3>
+<div class="outline-text-3" id="text-5-2">
+</div><div id="outline-container-sec-5-2-1" class="outline-4">
+<h4 id="sec-5-2-1"><span class="section-number-4">5.2.1</span> How to Add a Trakt List</h4>
+<div class="outline-text-4" id="text-5-2-1">
+<pre class="example">
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;trakt&gt;&lt;/trakt&gt;
+&lt;/dir&gt;
+</pre>
+<ul class="org-ul">
+<li>See the trakt.py for examples
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-5-2-2" class="outline-4">
+<h4 id="sec-5-2-2"><span class="section-number-4">5.2.2</span> How to Find Lists in Trakt that Belong to Others</h4>
+<div class="outline-text-4" id="text-5-2-2">
+<ol class="org-ol">
+<li>Go to search and type what you're looking for eg. War
+</li>
+<li>Click on Lists on the left
+</li>
+<li>Open a list
+</li>
+<li>Copy the url and add the .api and /items (see "How to Add an Individual Trakt List to your XML above)
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-sec-5-2-3" class="outline-4">
+<h4 id="sec-5-2-3"><span class="section-number-4">5.2.3</span> How to Fix Trakt Lists that Aren't Showing</h4>
+<div class="outline-text-4" id="text-5-2-3">
+<ol class="org-ol">
+<li>Make sure the trakt url is correct.
+</li>
+<li>If your list is private (or account is private), then you need to make both public.
+</li>
+<li>Make sure you have trakt apis in default.py and settings.xml
+</li>
+<li>Make sure the plugins folder has the unidecode folder.
+</li>
+<li>Make sure you have the TMDB Api in default.py as well. If you don't want to get a TMDB Api you will need to go to resources/lib/plugins/trakt.py and change line 113 from 
+</li>
+<li>Make sure you have the trakt/tmdb api key. Sometimes they get cancelled or expired.
+</li>
+</ol>
+<pre class="example">
+SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True 
+**Note this will let you open lists but you will not have artwork**
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-5-3" class="outline-3">
+<h3 id="sec-5-3"><span class="section-number-3">5.3</span> Using TMDB Plugin</h3>
+<div class="outline-text-3" id="text-5-3">
+</div><div id="outline-container-sec-5-3-1" class="outline-4">
+<h4 id="sec-5-3-1"><span class="section-number-4">5.3.1</span> How to Add a TMDB List</h4>
+<div class="outline-text-4" id="text-5-3-1">
+<pre class="example">
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;tmdb&gt;&lt;/tmdb&gt;
+&lt;/dir&gt;
+</pre>
+<ul class="org-ul">
+<li>See the TMDB.py for examples.
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-5-3-2" class="outline-4">
+<h4 id="sec-5-3-2"><span class="section-number-4">5.3.2</span> How to Fix TMDB Lists that Aren't Showing</h4>
+<div class="outline-text-4" id="text-5-3-2">
+<ol class="org-ol">
+<li>Make sure the tmdb url is correct.
+</li>
+<li>Make sure you have tmdb apis in default.py
+</li>
+<li>Make sure the plugins folder has the unidecode folder.
+</li>
+<li>Make sure you have the trakt/tmdb api key. Sometimes they get cancelled or expired.
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5-4" class="outline-3">
+<h3 id="sec-5-4"><span class="section-number-3">5.4</span> Using IMDB Plugin</h3>
+<div class="outline-text-3" id="text-5-4">
+</div><div id="outline-container-sec-5-4-1" class="outline-4">
+<h4 id="sec-5-4-1"><span class="section-number-4">5.4.1</span> How to Add an IMDB List</h4>
+<div class="outline-text-4" id="text-5-4-1">
+<pre class="example">
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;imdburl&gt;&lt;/imdburl&gt;
+&lt;/dir&gt;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5-5" class="outline-3">
+<h3 id="sec-5-5"><span class="section-number-3">5.5</span> Using Last.fm Plugin</h3>
+<div class="outline-text-3" id="text-5-5">
+</div><div id="outline-container-sec-5-5-1" class="outline-4">
+<h4 id="sec-5-5-1"><span class="section-number-4">5.5.1</span> How to Add an Last.fm items</h4>
+<div class="outline-text-4" id="text-5-5-1">
+<pre class="example">
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;lastfm&gt;&lt;/lastfm&gt;
+&lt;/dir&gt;
+</pre>
+<ul class="org-ul">
+<li>See the lastfm.py for examples
+</li>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5-6" class="outline-3">
+<h3 id="sec-5-6"><span class="section-number-3">5.6</span> Using m3u Plugin</h3>
+<div class="outline-text-3" id="text-5-6">
+</div><div id="outline-container-sec-5-6-1" class="outline-4">
+<h4 id="sec-5-6-1"><span class="section-number-4">5.6.1</span> How to Add an m3u file link</h4>
+<div class="outline-text-4" id="text-5-6-1">
+<pre class="example">
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;m3u&gt;&lt;/m3u&gt;
+&lt;/dir&gt;
+</pre>
+<ul class="org-ul">
+<li>See the m3u.py for examples
+</li>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5-7" class="outline-3">
+<h3 id="sec-5-7"><span class="section-number-3">5.7</span> Using Password Plugin</h3>
+<div class="outline-text-3" id="text-5-7">
+</div><div id="outline-container-sec-5-7-1" class="outline-4">
+<h4 id="sec-5-7-1"><span class="section-number-4">5.7.1</span> How to use the Password plugin to protect menu items</h4>
+<div class="outline-text-4" id="text-5-7-1">
+<pre class="example">
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;link&gt;&lt;/link&gt;
+&lt;password&gt;get/BASE64 CODE&lt;/password&gt;
+&lt;/dir&gt;
+</pre>
+<ul class="org-ul">
+<li>Replace the BASE64 CODE in the password tag with the base64 encoded string
+</li>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5-8" class="outline-3">
+<h3 id="sec-5-8"><span class="section-number-3">5.8</span> Using Rainbow Plugin</h3>
+<div class="outline-text-3" id="text-5-8">
+</div><div id="outline-container-sec-5-8-1" class="outline-4">
+<h4 id="sec-5-8-1"><span class="section-number-4">5.8.1</span> Include plugin py to alternate menu text colors</h4>
+</div>
+<ul class="org-ul">
+<li>Remove the rainbow.py to disable the random colorization
+</li>
+</div>
+<div id="outline-container-sec-5-9" class="outline-3">
+<h3 id="sec-5-9"><span class="section-number-3">5.9</span> Using TVMaze Plugin</h3>
+<div class="outline-text-3" id="text-5-9">
+</div><div id="outline-container-sec-5-9-1" class="outline-4">
+<h4 id="sec-5-9-1"><span class="section-number-4">5.9.1</span> How to use the TVMaze plugin to add network channel lists</h4>
+<div class="outline-text-4" id="text-5-9-1">
+<pre class="example">
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;tvmaze&gt;&lt;/tvmaze&gt;
+&lt;/dir&gt;
+</pre>
+<ul class="org-ul">
+<li>See the tvmaze.py for examples
+</li>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Hosting</h2>
+<div class="outline-text-2" id="text-6">
+</div><div id="outline-container-sec-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> Using Github for Hosting</h3>
+<div class="outline-text-3" id="text-6-1">
+</div><div id="outline-container-sec-6-1-1" class="outline-4">
+<h4 id="sec-6-1-1"><span class="section-number-4">6.1.1</span> How to get Raw URL</h4>
+<div class="outline-text-4" id="text-6-1-1">
+<ul class="org-ul">
+<li>Click on the file you want the url for.
+</li>
+<li>Click on the raw icon.
+</li>
+<li>Copy the url in the address bar.
+</li>
+<pre class="example">
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;link&gt;https://raw.githubusercontent.com/username/reponame/master/folderinroot/movies.xml&lt;/link&gt;
+&lt;/dir&gt;
+</pre>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> Using Pastebin for Hosting</h3>
+<div class="outline-text-3" id="text-6-2">
+</div><div id="outline-container-sec-6-2-1" class="outline-4">
+<h4 id="sec-6-2-1"><span class="section-number-4">6.2.1</span> How to get Raw URL</h4>
+<div class="outline-text-4" id="text-6-2-1">
+<ul class="org-ul">
+<li>Click on the file you want the url for.
+</li>
+<li>Click on the raw icon.
+</li>
+<li>Copy the url in the address bar.
+</li>
+<pre class="example">
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;link&gt;https://pastebin.com/raw/aaa2es&lt;/link&gt;
+&lt;/dir&gt;
+</pre>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-6-3" class="outline-3">
+<h3 id="sec-6-3"><span class="section-number-3">6.3</span> Using Local XML Files</h3>
+<div class="outline-text-3" id="text-6-3">
+</div><div id="outline-container-sec-6-3-1" class="outline-4">
+<div class="outline-text-4" id="text-6-3-1">
+<h4 id="sec-6-3-1"><span class="section-number-4">6.3.1</span> How to get get the Path for links</h4>
+<ul class="org-ul">
+<li>All XMLs and structure go under : plugin_root/xml
+</li>
+<li>Set the variable root_xml_url in default.py to point to your local main menu file
+</li>
+<pre class="example">
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;link&gt;file://main.xml&lt;/link&gt;
+&lt;/dir&gt;
+
+&lt;dir&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;link&gt;file://shared lists/main.xml&lt;/link&gt;
+&lt;/dir&gt;
+</pre>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> How to Add Search to Jen</h2>
+<div class="outline-text-2" id="text-7">
+</div><div id="outline-container-sec-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> Trakt</h3>
+<div class="outline-text-3" id="text-7-1">
+<pre class="example">
+&lt;dir&gt;
+  &lt;title&gt;Search Trakt&lt;/title&gt;
+  &lt;trakt&gt;search&lt;/trakt&gt;
+&lt;/dir&gt;
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-7-2" class="outline-3">
+<h3 id="sec-7-2"><span class="section-number-3">7.2</span> TMDB</h3>
+<div class="outline-text-3" id="text-7-2">
+<pre class="example">
+&lt;dir&gt;
+  &lt;title&gt;Search TMDB&lt;/title&gt;
+  &lt;tmdb&gt;search&lt;/tmdb&gt;
+&lt;/dir&gt;
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-7-3" class="outline-3">
+<h3 id="sec-7-3"><span class="section-number-3">7.3</span> IMDB</h3>
+<div class="outline-text-3" id="text-7-3">
+<pre class="example">
+&lt;dir&gt;
+  &lt;title&gt;Search IMDB&lt;/title&gt;
+  &lt;imdburl&gt;search&lt;/imdburl&gt;
+&lt;/dir&gt;
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-7-4" class="outline-3">
+<h3 id="sec-7-4"><span class="section-number-3">7.4</span> Last.fm</h3>
+<div class="outline-text-3" id="text-7-4">
+<pre class="example">
+&lt;dir&gt;
+  &lt;title&gt;Search Last.fm for Artist&lt;/title&gt;
+  &lt;lastfm&gt;search/artist&lt;/lastfm&gt;
+&lt;/dir&gt;
+
+&lt;dir&gt;
+  &lt;title&gt;Search Last.fm for Album&lt;/title&gt;
+  &lt;lastfm&gt;search/album&lt;/lastfm&gt;
+&lt;/dir&gt;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> XML Formats for Jen</h2>
+<div class="outline-text-2" id="text-8">
+<ul class="org-ul">
+<li>You can find all formats in xml/other/jenformats.xml
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Deeper Customization</h2>
+<div class="outline-text-2" id="text-9">
+<ul class="org-ul">
+<li>Add items like these to your XMLs to customize the menus a bit more
+</li>
+<li>Just change plugin.video.jen to your addon id or the addon id the link is for
+</li>
+</ul>
+</div>
+<div id="outline-container-sec-9-1" class="outline-3">
+<h3 id="sec-9-1"><span class="section-number-3">9.1</span> Settings</h3>
+<div class="outline-text-3" id="text-9-1">
+<pre class="example">
+&lt;plugin&gt;
+&lt;name&gt;30701&lt;/name&gt;
+&lt;link&gt;plugin://plugin.video.jen/?mode=openSettings&lt;/link&gt;
+&lt;thumbnail&gt;&lt;/thumbnail&gt;
+&lt;/plugin&gt;
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-9-2" class="outline-3">
+<h3 id="sec-9-2"><span class="section-number-3">9.2</span> Direct Settings</h3>
+<div class="outline-text-3" id="text-9-2">
+<h4 id="sec-9-2-1"><span class="section-number-4">9.2.1</span> Linking to specific pages in the Settings window</h4>
+<ul class="org-ul">
+<li>query format is 0.0 (page.section) and is 0 index based
+</li>
+<pre class="example">
+&lt;plugin&gt;
+&lt;name&gt;Customization Settings&lt;/name&gt;
+&lt;link&gt;plugin://plugin.video.jen/?mode=openSettings&query=0.0&lt;/link&gt;
+&lt;thumbnail&gt;&lt;/thumbnail&gt;
+&lt;/plugin&gt;
+
+&lt;plugin&gt;
+&lt;name&gt;General Settings&lt;/name&gt;
+&lt;link&gt;plugin://plugin.video.jen/?mode=openSettings&query=1.0&lt;/link&gt;
+&lt;thumbnail&gt;&lt;/thumbnail&gt;
+&lt;/plugin&gt;
+</pre>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-9-3" class="outline-3">
+<h3 id="sec-9-3"><span class="section-number-3">9.3</span> Search</h3>
+<div class="outline-text-3" id="text-9-3">
+<pre class="example">
+&lt;plugin&gt;
+&lt;name&gt;30702&lt;/name&gt;
+&lt;link&gt;plugin://plugin.video.jen/?mode=search&lt;/link&gt;
+&lt;thumbnail&gt;&lt;/thumbnail&gt;
+&lt;/plugin&gt;
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-9-4" class="outline-3">
+<h3 id="sec-9-4"><span class="section-number-3">9.4</span> Tools</h3>
+<div class="outline-text-3" id="text-9-4">
+<pre class="example">
+&lt;plugin&gt;
+&lt;name&gt;Clear Cache&lt;/name&gt;
+&lt;link&gt;plugin://plugin.video.jen/?mode=clearCache&lt;/link&gt;
+&lt;thumbnail&gt;&lt;/thumbnail&gt;
+&lt;/plugin&gt;
+
+&lt;plugin&gt;
+&lt;name&gt;Re-Authorize Real Debrid (Resolve URL)&lt;/name&gt;
+&lt;link&gt;plugin://script.module.resolveurl/?mode=auth_rd&lt;/link&gt;
+&lt;thumbnail&gt;&lt;/thumbnail&gt;
+&lt;/plugin&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> Changing List Colours</h2>
+<div class="outline-text-2" id="text-10">
+<ul class="org-ul">
+<li>You can change a list colour for trakt and tmdb lists by opening the py files and changing the &lt;title&gt; colour.  
+</li>
+<li>Only the title above the meta tag needs changing.  See below.  Change blue to whatever colour you want.
+</li>
+</ul>
+<pre class="example">
+Movies
+
+    xml = "&lt;item&gt;" \
+          "&lt;title&gt;[COLOR blue]%s[/COLOR]&lt;/title&gt;" \
+          "&lt;meta&gt;" \
+          "&lt;content&gt;movie&lt;/content&gt;" \
+          "&lt;imdb&gt;%s&lt;/imdb&gt;" \
+          "&lt;title&gt;%s&lt;/title&gt;" \
+          "&lt;year&gt;%s&lt;/year&gt;" \
+          "&lt;/meta&gt;" \
+          "&lt;link&gt;" \
+          "&lt;sublink&gt;search&lt;/sublink&gt;" \
+          "&lt;sublink&gt;searchsd&lt;/sublink&gt;" \
+          "&lt;/link&gt;" \
+          "&lt;thumbnail&gt;%s&lt;/thumbnail&gt;" \
+          "&lt;fanart&gt;%s&lt;/fanart&gt;" \
+          "&lt;/item&gt;" % (title, imdb, title, year, thumbnail, fanart)
+    return xml
+
+TV Show
+
+    xml = "&lt;dir&gt;"\
+          "&lt;title&gt;[COLOR blue]%s[/COLOR]&lt;/title&gt;"\
+          "&lt;meta&gt;"\
+          "&lt;content&gt;tvshow&lt;/content&gt;"\
+          "&lt;imdb&gt;%s&lt;/imdb&gt;"\
+          "&lt;tvshowtitle&gt;%s&lt;/tvshowtitle&gt;"\
+          "&lt;year&gt;%s&lt;/year&gt;"\
+          "&lt;/meta&gt;"\
+          "&lt;link&gt;trakt_tv_show(%s, %s, %s, %s, %s)&lt;/link&gt;"\
+          "&lt;thumbnail&gt;%s&lt;/thumbnail&gt;" \
+          "&lt;fanart&gt;%s&lt;/fanart&gt;" \
+          "&lt;/dir&gt;" % (title, imdb, title, year, trakt_id, year, title, tmdb,
+                      imdb, thumbnail, fanart)
+    return xml
+
+TV Seasons
+
+    xml = "&lt;dir&gt;"\
+          "&lt;title&gt;[COLOR blue]Season %s[/COLOR]&lt;/title&gt;"\
+          "&lt;meta&gt;"\
+          "&lt;imdb&gt;%s&lt;/imdb&gt;"\
+          "&lt;content&gt;season&lt;/content&gt;"\
+          "&lt;season&gt;%s&lt;/season&gt;"\
+          "&lt;/meta&gt;"\
+          "&lt;link&gt;trakt_season(%s,%s, %s, %s, %s, %s)&lt;/link&gt;"\
+          "&lt;thumbnail&gt;%s&lt;/thumbnail&gt;" \
+          "&lt;fanart&gt;%s&lt;/fanart&gt;" \
+          "&lt;/dir&gt;" % (season, imdb, season, trakt_id, season, year,
+                      tvtitle, tmdb,
+                      imdb, thumbnail, fanart)
+    return xml
+
+TV Episodes
+
+    xml = "&lt;item&gt;"\
+          "&lt;title&gt;[COLOR blue]%s[/COLOR]&lt;/title&gt;"\
+          "&lt;meta&gt;"\
+          "&lt;content&gt;episode&lt;/content&gt;"\
+          "&lt;imdb&gt;%s&lt;/imdb&gt;"\
+          "&lt;tvshowtitle&gt;%s&lt;/tvshowtitle&gt;"\
+          "&lt;year&gt;%s&lt;/year&gt;"\
+          "&lt;title&gt;%s&lt;/title&gt;"\
+          "&lt;premiered&gt;%s&lt;/premiered&gt;"\
+          "&lt;season&gt;%s&lt;/season&gt;"\
+          "&lt;episode&gt;%s&lt;/episode&gt;"\
+          "&lt;/meta&gt;"\
+          "&lt;link&gt;"\
+          "&lt;sublink&gt;search&lt;/sublink&gt;"\
+          "&lt;sublink&gt;searchsd&lt;/sublink&gt;"\
+          "&lt;/link&gt;"\
+          "&lt;thumbnail&gt;%s&lt;/thumbnail&gt;" \
+          "&lt;fanart&gt;%s&lt;/fanart&gt;" % (
+              title, imdb, tvtitle, year, title,
+              premiered, season, episode,
+              thumbnail, fanart)
+    xml += "&lt;/item&gt;"
+    return xml
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> News and Updates Window</h2>
+<div class="outline-text-2" id="text-11">
+<ul class="org-ul">
+<li>Enable the News Dialog via the resources/settings.xml
+</li>
+<li>Configure the location of your text file (remote or local) via the resources/lib/news_window.py
+</li>
+</ul>
+</div>
+</div>
+
+</div><div class="col-md-3"><nav id="table-of-contents">
+<div id="text-table-of-contents" class="bs-docs-sidebar">
+<ul class="nav">
+<li><a href="#sec-1">1. Introduction to Jen</a>
+<ul class="nav">
+<li><a href="#sec-1-1">1.1. What is Jen?</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. How to Install Jen</a>
+<ul class="nav">
+<li><a href="#sec-2-1">2.1. Follow the Instructions to Make a Jen Addon</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3. How to Get API Keys for Jen</a>
+<ul class="nav">
+<li><a href="#sec-3-1">3.1. TMDB</a></li>
+<li><a href="#sec-3-2">3.2. TRAKT</a></li>
+<li><a href="#sec-3-3">3.3. TVDB</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4. Upgrading Jen</a></li>
+<li><a href="#sec-5">5. Jen Plugins</a>
+<ul class="nav">
+<li><a href="#sec-5-1">5.1. How to Add a Plugin</a></li>
+<li><a href="#sec-5-2">5.2. Using Trakt Plugin</a></li>
+<li><a href="#sec-5-3">5.3. Using TMDB Plugin</a></li>
+<li><a href="#sec-5-4">5.4. Using IMDB Plugin</a></li>
+<li><a href="#sec-5-5">5.5. Using Last.fm Plugin</a></li>
+<li><a href="#sec-5-6">5.6. Using m3u Plugin</a></li>
+<li><a href="#sec-5-7">5.7. Using Password Plugin</a></li>
+<li><a href="#sec-5-8">5.8. Using Rainbow Plugin</a></li>
+<li><a href="#sec-5-9">5.9. Using TVMaze Plugin</a></li>
+</ul>
+</li>
+<li><a href="#sec-6">6. Hosting</a>
+<ul class="nav">
+<li><a href="#sec-6-1">6.1. Using Github for Hosting</a></li>
+<li><a href="#sec-6-2">6.2. Using Pastebin for Hosting</a></li>
+<li><a href="#sec-6-3">6.3. Using Local XML Files</a></li>
+</ul>
+</li>
+<li><a href="#sec-7">7. How to Add Search to Jen</a>
+<ul class="nav">
+<li><a href="#sec-7-1">7.1. Trakt</a></li>
+<li><a href="#sec-7-2">7.2. TMDB</a></li>
+<li><a href="#sec-7-3">7.3. IMDB</a></li>
+<li><a href="#sec-7-4">7.4. Last.fm</a></li>
+</ul>
+</li>
+<li><a href="#sec-8">8. XML Formats for Jen</a></li>
+<li><a href="#sec-9">9. Deeper Customization</a>
+<ul class="nav">
+<li><a href="#sec-9-1">9.1. Settings</a></li>
+<li><a href="#sec-9-2">9.2. Direct Settings</a></li>
+<li><a href="#sec-9-2">9.3. Search</a></li>
+<li><a href="#sec-9-2">9.4. Tools</a></li>
+</ul>
+</li>
+<li><a href="#sec-10">10. Changing List Colours</a></li>
+<li><a href="#sec-11">11. Util Libraries</a></li>
+</ul>
+</div>
+</nav>
+</div></div></div>
+<footer id="postamble" class="">
+<div><p class="date">Created: 2018-04-12 Thur 02:52</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.3.1 (<a href="http://orgmode.org">Org-mode</a> 8.2.10)</p>
+</div>
+</footer>
+</body>
+</html>

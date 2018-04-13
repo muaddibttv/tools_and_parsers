@@ -1,0 +1,18 @@
+v1.4
+    - Updated news message script to allow local or online versions of News and Updates file
+    - Updated function name of news message window
+    - Added msettings.xml under XML folder - Default settings menu xml
+    - Added default.py::open_settings() for handling custom OpenSettings queries
+
+v1.1
+    - based on bob 1.0.12
+
+    - Added "plugin" system, see plugin.py
+    - Added most strings to strings.po
+    - Added hebrew translation (thanks Eng2Heb)
+    - Added Search and Search db generation script
+    - Loads of bugfixes
+
+Release 1.0.0 initial release
+
+    - based on bob 1.0.1

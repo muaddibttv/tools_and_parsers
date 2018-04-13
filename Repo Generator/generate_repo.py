@@ -1,18 +1,26 @@
 """ repository files and addons.xml generator """
 
-""" Modified by Rodrigo@XMBCHUB to zip plugins/repositories to a "zip" folder """
-""" Modified by BartOtten: create a repository addon, skip folders without addon.xml, user config file """
-""" Modified by MuadDib: Include copying of addon.xml, icon.png, and fanart.jpg when present in addon folders """
-""" Modified by MuadDib: Ignores PSD files, so you can keep them with the addons where needed and not zip them up in releases """
+""" If it errors out saying any import below is missing, be sure to add it via the pip install command in a console window """
+
+""" Unknown Dates - Work of previous developers """
+"""     Modified by Rodrigo@XMBCHUB to zip plugins/repositories to a "zip" folder """
+"""     Modified by BartOtten: create a repository addon, skip folders without addon.xml, user config file """
+""" 11/12/2017 """
+"""     Modified by MuadDib: Include copying of addon.xml, icon.png, and fanart.jpg when present in addon folders """
+""" 04/12/2018 """
+"""     Modified by MuadDib: Fixed md5 hashing issue for addons.xml file """
+"""     Modified by MuadDib: Added excludes line to config.ini. This is a comma separated value of file extensions to not add to zip file in releases """
+
 """ This file is "as is", without any warranty whatsoever. Use as own risk """
 
 import os
-import md5
+import hashlib
 import zipfile
 import shutil
 from xml.dom import minidom
 import glob
 import datetime
+import traceback
 from ConfigParser import SafeConfigParser
 
 class Generator:
@@ -34,6 +42,8 @@ class Generator:
         self.tools_path=os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
         self.output_path="_" + self.config.get('locations', 'output_path')
         
+        self.excludes=self.config.get('addon', 'excludes').split(',')
+
         # travel path one up
         os.chdir(os.path.abspath(os.path.join(self.tools_path, os.pardir)))
         
@@ -45,8 +55,8 @@ class Generator:
         self._generate_zip_files()
 
         # notify user
-        print "Finished updating addons xml, md5 files and zipping addons"
-        print "Do not trust MD5 Hash - Recommend using a site such as http://onlinemd5.com/ to generate your hash."
+        print( "Finished updating addons xml, md5 files and zipping addons" )
+        print( "Always double check your MD5 Hash using a site like http://onlinemd5.com/ if the repo is not showing files or downloading properly." )
         
     def _pre_run ( self ):
 
@@ -66,7 +76,7 @@ class Generator:
 
         if os.path.isfile(addonid + os.path.sep + "addon.xml"):return
         
-        print "Create repository addon"
+        print( "Create repository addon" )
         
         with open (self.tools_path + os.path.sep + "template.xml", "r") as template:
             template_xml=template.read()
@@ -107,19 +117,21 @@ class Generator:
                     version = parent.getAttribute("version")
                     addonid = parent.getAttribute("id")
                 self._generate_zip_file(addon, version, addonid)
-            except Exception, e:
-                print '**** '+ e
+            except:
+                failure = traceback.format_exc()
+                print('Kodi Repo Generator Exception: \n' + str(failure))
 
     def _generate_zip_file ( self, path, version, addonid):
-        print "Generate zip file for " + addonid + " " + version
+        print( "Generate zip file for " + addonid + " " + version )
         filename = path + "-" + version + ".zip"
         try:
             zip = zipfile.ZipFile(filename, 'w')
             for root, dirs, files in os.walk(path + os.path.sep):
                 for file in files:
-                    if '.psd' not in file:
+                    ext = os.path.splitext(file)[-1].lower()
+                    if not ext in self.excludes:
                         zip.write(os.path.join(root, file))
-                    
+
             zip.close()
          
             if not os.path.exists(self.output_path + addonid):
@@ -132,14 +144,15 @@ class Generator:
             try:
                 shutil.copy(addonid + '/icon.png', self.output_path + addonid + os.path.sep + 'icon.png')
             except:
-                print '**** Icon file missing for ' + addonid
+                print( '**** Icon file missing for ' + addonid )
             try:
                 shutil.copy(addonid + '/fanart.jpg', self.output_path + addonid + os.path.sep + 'fanart.jpg')
             except:
-                print '**** Fanart file missing for ' + addonid
+                print( '**** Fanart file missing for ' + addonid )
 
-        except Exception, e:
-            print '**** ' + e
+        except:
+            failure = traceback.format_exc()
+            print('Kodi Repo Generator Exception: \n' + str(failure))
 
     def _generate_addons_file( self ):
         # addon list
@@ -167,7 +180,7 @@ class Generator:
                 addons_xml += addon_xml.rstrip() + "\n\n"
             except Exception, e:
                 # missing or poorly formatted addon.xml
-                print "Excluding %s for %s" % ( _path, e, )
+                print( "Excluding %s for %s" % ( _path, e, ) )
         # clean and add closing tag
         addons_xml = addons_xml.strip() + u"\n</addons>\n"
         # save file
@@ -175,21 +188,28 @@ class Generator:
 
     def _generate_md5_file( self ):
         try:
-            # create a new md5 hash
-            m = md5.new( open(self.output_path +  "addons.xml" ).read() ).hexdigest()
+            # create a new md5 hash by reading the file in binary
+            hash_object = hashlib.md5()
+            with open( (self.output_path +  'addons.xml'), 'rb' ) as addons_file:
+                hash_buf = addons_file.read()
+                hash_object.update(hash_buf)
+
+            result = hash_object.hexdigest()
             # save file
-            self._save_file( m, file=self.output_path + "addons.xml.md5" )
-        except Exception, e:
-            # oops
-            print "**** An error occurred creating addons.xml.md5 file!\n%s" % ( e, )
+            self._save_file( result, file=self.output_path + "addons.xml.md5" )
+        except:
+            failure = traceback.format_exc()
+            print( "**** An error occurred creating addons.xml.md5 file!\n%s" % ( e, ) )
+            print('Kodi Repo Generator Exception: \n' + str(failure))
 
     def _save_file( self, data, file ):
         try:
             # write data to the file
             open( file, "w" ).write( data )
-        except Exception, e:
-            # oops
-            print "**** An error occurred saving %s file!\n%s" % ( file, e, )
+        except:
+            failure = traceback.format_exc()
+            print( "**** An error occurred saving %s file!\n%s" % ( file, e, ) )
+            print('Kodi Repo Generator Exception: \n' + str(failure))
 
 if ( __name__ == "__main__" ):
     # start
