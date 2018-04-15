@@ -1,1 +1,0 @@
-D:\SVN\Software\Dev\Visual Studio 2015\Kodi Favorite Parser\Kodi Favorite Parser\bin\Debug\Kodi Favorite Parser.exe.config
