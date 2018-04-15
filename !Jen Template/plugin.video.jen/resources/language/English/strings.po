@@ -790,3 +790,43 @@ msgstr ""
 msgctxt "#30059"
 msgid "All Episodes"
 msgstr ""
+
+msgctxt "#30060"
+msgid "Configuration"
+msgstr ""
+
+msgctxt "#30061"
+msgid "Root XML Location"
+msgstr ""
+
+msgctxt "#30062"
+msgid "TVDb API Key"
+msgstr ""
+
+msgctxt "#30063"
+msgid "TMDb API Key"
+msgstr ""
+
+msgctxt "#30064"
+msgid "Trakt Client ID"
+msgstr ""
+
+msgctxt "#30065"
+msgid "Trakt Client Secret"
+msgstr ""
+
+msgctxt "#30066"
+msgid "Search DB Location"
+msgstr ""
+
+msgctxt "#30068"
+msgid "Accounts"
+msgstr ""
+
+msgctxt "#30069"
+msgid "Last.fm API Key"
+msgstr ""
+
+msgctxt "#30070"
+msgid "Last.fm Secret"
+msgstr ""

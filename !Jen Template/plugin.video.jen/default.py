@@ -17,16 +17,19 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import __builtin__
+import xbmcaddon
 
 # CONFIGURATION VARIABLES
 # -----------------------
-# change these to suit your addons
-root_xml_url = "file://main.xml"  # url of the root xml file
-__builtin__.tvdb_api_key = ""  # tvdb api key
-__builtin__.tmdb_api_key = ""  # tmdb api key
-__builtin__.trakt_client_id = ""  # trakt client id
-__builtin__.trakt_client_secret = ""  # trakt client secret
-__builtin__.search_db_location = ""  # location of search db
+ownAddon = xbmcaddon.Addon(id=addon_id)
+enable_installa = ownAddon.getSetting('dlimage')
+enable_newswin = ownAddon.getSetting('news_win')
+root_xml_url = ownAddon.getSetting('root_xml')
+__builtin__.tvdb_api_key = ownAddon.getSetting('tvdb_api_key')
+__builtin__.tmdb_api_key = ownAddon.getSetting('tmdb_api_key')
+__builtin__.trakt_client_id = ownAddon.getSetting('trakt_api_client_id')
+__builtin__.trakt_client_secret = ownAddon.getSetting('trakt_api_client_secret')
+__builtin__.search_db_location = ownAddon.getSetting('search_db_location')
 
 import os
 import sys
@@ -40,7 +43,6 @@ import resources.lib.sources
 import resources.lib.testings
 import resources.lib.util.info
 import xbmc
-import xbmcaddon
 import xbmcplugin
 from koding import route
 from resources.lib.util.xml import JenList, display_list
@@ -56,9 +58,6 @@ home_folder = xbmc.translatePath('special://home/')
 addon_folder = os.path.join(home_folder, 'addons')
 art_path = os.path.join(addon_folder, addon_id)
 content_type = "files"
-ownAddon = xbmcaddon.Addon(id=addon_id)
-enable_installa = ownAddon.getSetting('dlimage')
-enable_newswin = ownAddon.getSetting('news_win')
 
 @route("main")
 def root():
@@ -223,6 +222,11 @@ def get_addon_url(mode, url=""):
     if url:
         result += "&url=%s" % urllib.quote_plus(url)
     return result
+
+
+@route(mode="section_item")
+def section_item():
+    quit()
 
 
 def first_run_wizard():

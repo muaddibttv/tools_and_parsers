@@ -1,3 +1,17 @@
+v1.5
+    - Updated Readme HTML Page
+    - Added mode section_item. Makes items "unclickable"
+    - Moved the following from .py files to settings.xml:
+            lastfm_api_key
+            lastfm_secret
+            message_xml_url
+            root_xml
+            search_db_location
+            tmdb_api_key
+            trakt_api_client_id
+            trakt_api_client_secret
+            tvdb_api_key
+
 v1.4
     - Updated news message script to allow local or online versions of News and Updates file
     - Updated function name of news message window
