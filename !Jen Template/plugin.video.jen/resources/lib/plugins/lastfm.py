@@ -58,6 +58,7 @@ from unidecode import unidecode
 
 
 CACHE_TIME = 3600  # change to wanted cache time in seconds
+addon_id = xbmcaddon.Addon().getAddonInfo('id')
 ownAddon = xbmcaddon.Addon(id=addon_id)
 LASTFM_API_KEY = ownAddon.getSetting('lastfm_api_key')
 LASTFM_SECRET = ownAddon.getSetting('lastfm_secret')

@@ -19,6 +19,8 @@ import koding
 from koding import Download 
 from koding import route, Run 
 
+
+addon_id = xbmcaddon.Addon().getAddonInfo('id')
 ownAddon = xbmcaddon.Addon(id=addon_id)
 message_xml_url = ownAddon.getSetting('message_xml_url')
 

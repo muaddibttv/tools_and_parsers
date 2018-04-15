@@ -21,6 +21,7 @@ import xbmcaddon
 
 # CONFIGURATION VARIABLES
 # -----------------------
+addon_id = xbmcaddon.Addon().getAddonInfo('id')
 ownAddon = xbmcaddon.Addon(id=addon_id)
 enable_installa = ownAddon.getSetting('dlimage')
 enable_newswin = ownAddon.getSetting('news_win')
@@ -52,7 +53,6 @@ from language import get_string as _
 from resources.lib.plugin import run_hook
 
 
-addon_id = xbmcaddon.Addon().getAddonInfo('id')
 addon_name = xbmcaddon.Addon().getAddonInfo('name')
 home_folder = xbmc.translatePath('special://home/')
 addon_folder = os.path.join(home_folder, 'addons')
