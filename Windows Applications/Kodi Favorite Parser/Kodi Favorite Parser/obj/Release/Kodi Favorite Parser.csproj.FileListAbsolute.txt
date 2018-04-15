@@ -1,0 +1,9 @@
+D:\SVN\Software\Dev\Visual Studio 2015\Kodi Favorite Parser\Kodi Favorite Parser\bin\Release\Kodi Favorites Parser.exe.config
+D:\SVN\Software\Dev\Visual Studio 2015\Kodi Favorite Parser\Kodi Favorite Parser\bin\Release\Kodi Favorites Parser.exe
+D:\SVN\Software\Dev\Visual Studio 2015\Kodi Favorite Parser\Kodi Favorite Parser\bin\Release\Kodi Favorites Parser.pdb
+D:\SVN\Software\Dev\Visual Studio 2015\Kodi Favorite Parser\Kodi Favorite Parser\obj\Release\Kodi_Favorites_Parser.Properties.Resources.resources
+D:\SVN\Software\Dev\Visual Studio 2015\Kodi Favorite Parser\Kodi Favorite Parser\obj\Release\Kodi Favorite Parser.csproj.GenerateResource.Cache
+D:\SVN\Software\Dev\Visual Studio 2015\Kodi Favorite Parser\Kodi Favorite Parser\obj\Release\Kodi Favorites Parser.exe
+D:\SVN\Software\Dev\Visual Studio 2015\Kodi Favorite Parser\Kodi Favorite Parser\obj\Release\Kodi Favorites Parser.pdb
+D:\SVN\Software\Dev\Visual Studio 2015\Kodi Favorite Parser\Kodi Favorite Parser\obj\Release\Kodi_Favorites_Parser.MainForm.resources
+D:\SVN\Software\Dev\Visual Studio 2015\Kodi Favorite Parser\Kodi Favorite Parser\obj\Release\Kodi Favorite Parser.csprojResolveAssemblyReference.cache
