@@ -1,3 +1,6 @@
+v1.5.3
+    - Updated custom settings dialog code
+
 v1.5.2
     - Added dom_parser to utils
 

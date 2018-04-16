@@ -150,15 +150,15 @@ def all_episodes(url):
     display_list(result_items, "episodes")
 
 
-@route(mode="openSettings")
-def open_settings(args=["query"]):
+@route(mode="openSettings", args=["url"])
+def open_settings(query):
     try:
-        idle()
-        xbmcaddon.Addon().openSettings()
-        if query == None: raise Exception()
+        xbmc.executebuiltin('Dialog.Close(busydialog)')
+        xbmc.executebuiltin('Addon.OpenSettings(%s)' % addon_id)
+        query = query.split('=')[1]
         c, f = query.split('.')
-        execute('SetFocus(%i)' % (int(c) + 100))
-        execute('SetFocus(%i)' % (int(f) + 200))
+        xbmc.executebuiltin('SetFocus(%i)' % (int(c) + 100))
+        xbmc.executebuiltin('SetFocus(%i)' % (int(f) + 200))
     except:
         return
 

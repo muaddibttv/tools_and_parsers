@@ -1,7 +1,7 @@
 <xml>
     <plugin>
         <name>JEN: Customization</name>
-        <link>plugin://plugin.video.jen/?mode=openSettings&query=0.0</link>
+        <link>plugin://plugin.video.jen/?mode=openSettings&url=query=0.0</link>
         <thumbnail>special://home/addons/plugin.video.jen/resources/media/tools.png</thumbnail>
         <fanart>special://home/addons/plugin.video.jen/resources/media/settings.jpg</fanart>
         <info>Open the Settings for the addon on the Customization tab</info>
@@ -9,7 +9,7 @@
 
     <plugin>
         <name>JEN: General</name>
-        <link>plugin://plugin.video.jen/?mode=openSettings&query=1.0</link>
+        <link>plugin://plugin.video.jen/?mode=openSettings&url=query=1.0</link>
         <thumbnail>special://home/addons/plugin.video.jen/resources/media/tools.png</thumbnail>
         <fanart>special://home/addons/plugin.video.jen/resources/media/settings.jpg</fanart>
         <info>Open the Settings for the addon on the General tab</info>
