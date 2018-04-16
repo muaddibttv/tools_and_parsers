@@ -1,3 +1,6 @@
+v1.5.2
+    - Added dom_parser to utils
+
 v1.5.1
     - Added sports_stream plugin
 
