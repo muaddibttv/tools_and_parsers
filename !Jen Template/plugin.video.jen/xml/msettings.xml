@@ -38,12 +38,4 @@
         <fanart>special://home/addons/plugin.video.jen/resources/media/settings.jpg</fanart>
         <info>Clear all the Cache for the addon</info>
     </plugin>
-
-    <plugin>
-        <name>Real Debrid Re-Authorize (Resolve URL)</name>
-        <link>plugin://script.module.resolveurl/?mode=auth_rd</link>
-        <thumbnail>special://home/addons/plugin.video.jen/resources/media/resolveurl.png</thumbnail>
-        <fanart>special://home/addons/plugin.video.jen/resources/media/settings.jpg</fanart>
-        <info>(Re)Authorize Real-Debrid in the Resolve URL Addon</info>
-    </plugin>
 </xml>

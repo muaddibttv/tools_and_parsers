@@ -1,6 +1,6 @@
 """
 
-    Copyright (C) 2018
+    Copyright (C) 2018, MuadDib
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 import requests,re,json,os,urlparse
 import koding
 import __builtin__
-import xbmc,xbmcaddon
+import xbmc,xbmcaddon,xbmcgui
 from koding import route
 from resources.lib.plugin import Plugin
 from resources.lib.util import dom_parser
@@ -52,7 +52,24 @@ class COBP(Plugin):
     def process_item(self, item_xml):
         if "<cobp>" in item_xml:
             item = JenItem(item_xml)
-            if "category" in item.get("cobp", ""):
+            if "http" in item.get("cobp", ""):
+                result_item = {
+                    'label': item["title"],
+                    'icon': item.get("thumbnail", addon_icon),
+                    'fanart': item.get("fanart", addon_fanart),
+                    'mode': "PlayVideo",
+                    'url': item.get("cobp", ""),
+                    'folder': False,
+                    'imdb': "0",
+                    'content': "files",
+                    'season': "0",
+                    'episode': "0",
+                    'info': {},
+                    'year': "0",
+                    'context': get_context_items(item),
+                    "summary": item.get("summary", None)
+                }
+            elif "category" in item.get("cobp", ""):
                 result_item = {
                     'label': item["title"],
                     'icon': item.get("thumbnail", addon_icon),
@@ -69,11 +86,11 @@ class COBP(Plugin):
                     'context': get_context_items(item),
                     "summary": item.get("summary", None)
                 }
-                result_item["properties"] = {
-                    'fanart_image': result_item["fanart"]
-                }
-                result_item['fanart_small'] = result_item["fanart"]
-                return result_item
+            result_item["properties"] = {
+                'fanart_image': result_item["fanart"]
+            }
+            result_item['fanart_small'] = result_item["fanart"]
+            return result_item
 
 
 @route(mode='COBP', args=["url"])
@@ -92,24 +109,18 @@ def get_stream(url):
 
             title_div = dom_parser.parseDOM(vid_section, 'div', attrs={'class':'title'})[0]
             title = remove_non_ascii(re.compile('title="(.+?)"',re.DOTALL).findall(str(title_div))[0])
-
-            vid_html = requests.get(vid_page_url,headers=headers).content
-            sources = dom_parser.parseDOM(vid_html, 'source', ret='src')
-            vid_url = sources[len(sources)-1]
-            dis_list = dom_parser.parseDOM(vid_html, 'div', attrs={'class':'description'})[0]
-            desc = dom_parser.parseDOM(dis_list, 'li')[1]
             count += 1
+
             xml += "<item>"\
                    "    <title>%s</title>"\
                    "    <thumbnail>%s</thumbnail>"\
-                   "    <link>%s</link>"\
+                   "    <cobp>%s</cobp>"\
                    "    <summary>%s</summary>"\
-                   "</item>" % (title,thumbnail,vid_url, desc)
+                   "</item>" % (title,thumbnail,vid_page_url, title)
 
             if count == 24:
                 pagination = dom_parser.parseDOM(html, 'li', attrs={'class':'next'})[0]
                 next_page = dom_parser.parseDOM(pagination, 'a', ret='href')[0]
-                #print 'PORN next_page: ' + str(next_page)
                 xml += "<dir>"\
                        "    <title>Next Page</title>"\
                        "    <thumbnail>%s</thumbnail>"\
@@ -120,6 +131,19 @@ def get_stream(url):
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
 
+
+@route(mode='PlayVideo', args=["url"])
+def play_source(url):
+    try:
+        headers = {'User_Agent':User_Agent}
+        vid_html = requests.get(url,headers=headers).content
+
+        sources = dom_parser.parseDOM(vid_html, 'source', ret='src')
+        vid_url = sources[len(sources)-1]
+
+        xbmc.executebuiltin("PlayMedia(%s)" % vid_url)
+    except:
+        return
 
 def remove_non_ascii(text):
     return unidecode(text)

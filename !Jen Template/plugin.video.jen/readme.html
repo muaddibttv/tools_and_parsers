@@ -267,8 +267,6 @@ This addon does not host any of the content which is found and has no affiliatio
 </li>
 <li>Add your apis to each default=""
 </li>
-</ul>
-<div class="org-src-container">
 <pre class="src src-python">
 &lt;setting label="30062" type="text" id="tvdb_api_key" option="hidden" default="" visible="true"/&gt;
 &lt;setting label="30063" type="text" id="tmdb_api_key" option="hidden" default="" visible="true"/&gt;
@@ -277,7 +275,7 @@ This addon does not host any of the content which is found and has no affiliatio
 &lt;setting label="30069" type="text" id="lastfm_api_key" option="hidden" default="3ec34c514a9230ebf006c8e24a8419d6" visible="true"/&gt;
 &lt;setting label="30070" type="text" id="lastfm_secret" option="hidden" default="41314c7fc8a8d391d28fa9721e08fdf2" visible="true"/&gt;
 </pre>
-</div>
+</ul>
 <ul class="org-ul">
 <li>Add location of your main menu file (http or local file) to the default=""
 </li>
@@ -285,14 +283,12 @@ This addon does not host any of the content which is found and has no affiliatio
 </li>
 <li>If News Dialog enabled, location of the news text file (http or local file) to the default=""
 </li>
-</ul>
-<div class="org-src-container">
 <pre class="src src-python">
 &lt;setting label="30061" type="text" id="root_xml" option="hidden" default="file://main.xml" visible="false"/&gt;
 &lt;setting id="news_win" type="bool" label="Enable News Dialog" default="false" visible="true"/&gt;
 &lt;setting label="30067" type="text" id="message_xml_url" option="hidden" default="http://YOUR_URL.co.uk/message.txt" visible="false"/&gt;
 </pre>
-</div>
+</ul>
 </div>
 </div>
 <div id="outline-container-sec-2-1-6" class="outline-4">
@@ -387,13 +383,13 @@ This addon does not host any of the content which is found and has no affiliatio
 </div><div id="outline-container-sec-5-2-1" class="outline-4">
 <h4 id="sec-5-2-1"><span class="section-number-4">5.2.1</span> How to Add a Trakt List</h4>
 <div class="outline-text-4" id="text-5-2-1">
+<ul class="org-ul">
 <pre class="example">
 &lt;dir&gt;
 &lt;title&gt;&lt;/title&gt;
 &lt;trakt&gt;&lt;/trakt&gt;
 &lt;/dir&gt;
 </pre>
-<ul class="org-ul">
 <li>See the trakt.py for examples
 </li>
 </ul>
@@ -430,11 +426,11 @@ This addon does not host any of the content which is found and has no affiliatio
 </li>
 <li>Make sure you have the trakt/tmdb api key. Sometimes they get cancelled or expired.
 </li>
-</ol>
 <pre class="example">
 SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True 
 **Note this will let you open lists but you will not have artwork**
 </pre>
+</ol>
 </div>
 </div>
 </div>
@@ -445,13 +441,13 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
 </div><div id="outline-container-sec-5-3-1" class="outline-4">
 <h4 id="sec-5-3-1"><span class="section-number-4">5.3.1</span> How to Add a TMDB List</h4>
 <div class="outline-text-4" id="text-5-3-1">
+<ul class="org-ul">
 <pre class="example">
 &lt;dir&gt;
 &lt;title&gt;&lt;/title&gt;
 &lt;tmdb&gt;&lt;/tmdb&gt;
 &lt;/dir&gt;
 </pre>
-<ul class="org-ul">
 <li>See the TMDB.py for examples.
 </li>
 </ul>
@@ -479,12 +475,14 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
 </div><div id="outline-container-sec-5-4-1" class="outline-4">
 <h4 id="sec-5-4-1"><span class="section-number-4">5.4.1</span> How to Add an IMDB List</h4>
 <div class="outline-text-4" id="text-5-4-1">
+<ul>
 <pre class="example">
 &lt;dir&gt;
 &lt;title&gt;&lt;/title&gt;
 &lt;imdburl&gt;&lt;/imdburl&gt;
 &lt;/dir&gt;
 </pre>
+</ul>
 </div>
 </div>
 </div>
@@ -494,13 +492,13 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
 </div><div id="outline-container-sec-5-5-1" class="outline-4">
 <h4 id="sec-5-5-1"><span class="section-number-4">5.5.1</span> How to Add an Last.fm items</h4>
 <div class="outline-text-4" id="text-5-5-1">
+<ul class="org-ul">
 <pre class="example">
 &lt;dir&gt;
 &lt;title&gt;&lt;/title&gt;
 &lt;lastfm&gt;&lt;/lastfm&gt;
 &lt;/dir&gt;
 </pre>
-<ul class="org-ul">
 <li>See the lastfm.py for examples
 </li>
 </div>
@@ -512,13 +510,13 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
 </div><div id="outline-container-sec-5-6-1" class="outline-4">
 <h4 id="sec-5-6-1"><span class="section-number-4">5.6.1</span> How to Add an m3u file link</h4>
 <div class="outline-text-4" id="text-5-6-1">
+<ul class="org-ul">
 <pre class="example">
 &lt;dir&gt;
 &lt;title&gt;&lt;/title&gt;
 &lt;m3u&gt;&lt;/m3u&gt;
 &lt;/dir&gt;
 </pre>
-<ul class="org-ul">
 <li>See the m3u.py for examples
 </li>
 </div>
@@ -530,6 +528,7 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
 </div><div id="outline-container-sec-5-7-1" class="outline-4">
 <h4 id="sec-5-7-1"><span class="section-number-4">5.7.1</span> How to use the Password plugin to protect menu items</h4>
 <div class="outline-text-4" id="text-5-7-1">
+<ul class="org-ul">
 <pre class="example">
 &lt;dir&gt;
 &lt;title&gt;&lt;/title&gt;
@@ -537,7 +536,6 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
 &lt;password&gt;get/BASE64 CODE&lt;/password&gt;
 &lt;/dir&gt;
 </pre>
-<ul class="org-ul">
 <li>Replace the BASE64 CODE in the password tag with the base64 encoded string
 </li>
 </div>
@@ -559,13 +557,13 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
 </div><div id="outline-container-sec-5-9-1" class="outline-4">
 <h4 id="sec-5-9-1"><span class="section-number-4">5.9.1</span> How to use the TVMaze plugin to add network channel lists</h4>
 <div class="outline-text-4" id="text-5-9-1">
+<ul class="org-ul">
 <pre class="example">
 &lt;dir&gt;
 &lt;title&gt;&lt;/title&gt;
 &lt;tvmaze&gt;&lt;/tvmaze&gt;
 &lt;/dir&gt;
 </pre>
-<ul class="org-ul">
 <li>See the tvmaze.py for examples
 </li>
 </div>
@@ -577,13 +575,13 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
 </div><div id="outline-container-sec-5-10-1" class="outline-4">
 <h4 id="sec-5-10-1"><span class="section-number-4">5.10.1</span> How to use the Sports Stream plugin to pull games from sports-stream.net</h4>
 <div class="outline-text-4" id="text-5-9-1">
+<ul class="org-ul">
 <pre class="example">
 &lt;dir&gt;
 &lt;title&gt;&lt;/title&gt;
 &lt;sport_stream&gt;games&lt;/sport_stream&gt;
 &lt;/dir&gt;
 </pre>
-<ul class="org-ul">
 <li>See the sports_stream.py for examples
 </li>
 </div>
@@ -669,42 +667,43 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
 <div id="outline-container-sec-7" class="outline-2">
 <h2 id="sec-7"><span class="section-number-2">7</span> How to Add Search to Jen</h2>
 <div class="outline-text-2" id="text-7">
-</div><div id="outline-container-sec-7-1" class="outline-3">
+</div>
+<div id="outline-container-sec-7-1" class="outline-3">
 <h3 id="sec-7-1"><span class="section-number-3">7.1</span> Trakt</h3>
-<div class="outline-text-3" id="text-7-1">
+<ul>
 <pre class="example">
 &lt;dir&gt;
   &lt;title&gt;Search Trakt&lt;/title&gt;
   &lt;trakt&gt;search&lt;/trakt&gt;
 &lt;/dir&gt;
 </pre>
-</div>
+</ul>
 </div>
 <div id="outline-container-sec-7-2" class="outline-3">
 <h3 id="sec-7-2"><span class="section-number-3">7.2</span> TMDB</h3>
-<div class="outline-text-3" id="text-7-2">
+<ul>
 <pre class="example">
 &lt;dir&gt;
   &lt;title&gt;Search TMDB&lt;/title&gt;
   &lt;tmdb&gt;search&lt;/tmdb&gt;
 &lt;/dir&gt;
 </pre>
-</div>
+</ul>
 </div>
 <div id="outline-container-sec-7-3" class="outline-3">
 <h3 id="sec-7-3"><span class="section-number-3">7.3</span> IMDB</h3>
-<div class="outline-text-3" id="text-7-3">
+<ul>
 <pre class="example">
 &lt;dir&gt;
   &lt;title&gt;Search IMDB&lt;/title&gt;
   &lt;imdburl&gt;search&lt;/imdburl&gt;
 &lt;/dir&gt;
 </pre>
-</div>
+</ul>
 </div>
 <div id="outline-container-sec-7-4" class="outline-3">
 <h3 id="sec-7-4"><span class="section-number-3">7.4</span> Last.fm</h3>
-<div class="outline-text-3" id="text-7-4">
+<ul>
 <pre class="example">
 &lt;dir&gt;
   &lt;title&gt;Search Last.fm for Artist&lt;/title&gt;
@@ -716,7 +715,7 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
   &lt;lastfm&gt;search/album&lt;/lastfm&gt;
 &lt;/dir&gt;
 </pre>
-</div>
+</ul>
 </div>
 </div>
 <div id="outline-container-sec-8" class="outline-2">
@@ -834,7 +833,6 @@ SKIP_TMDB_INFO = False to SKIP_TMDB_INFO = True
 </li>
 <li>Only the title above the meta tag needs changing.  See below.  Change blue to whatever colour you want.
 </li>
-</ul>
 <pre class="example">
 Movies
 
@@ -915,6 +913,7 @@ TV Episodes
     xml += "&lt;/item&gt;"
     return xml
 </pre>
+</ul>
 </div>
 </div>
 
@@ -929,6 +928,66 @@ TV Episodes
 </ul>
 </div>
 </div>
+
+<div id="outline-container-sec-12" class="outline-2">
+<h2 id="sec-12"><span class="section-number-2">12</span> Using Testings in Jen - <a href="https://www.youtube.com/watch?v=Lm5QZ4iU4XU">Video</a></h2>
+<div class="outline-text-2" id="text-12">
+<ul class="org-ul">
+<li>On your main.xml add the following
+</li>
+<pre class="example">
+&lt;plugin&gt;
+&lt;name&gt;Testings&lt;/name&gt;
+&lt;link&gt;plugin://plugin.video.**youraddonname**/?action=developer&lt;/link&gt;
+&lt;thumbnail&gt;&lt;/thumbnail&gt;
+&lt;/plugin&gt;
+</pre>
+</ul>
+<ul class="org-ul">
+<li>Go to xml/other and copy the testings.xml This is just a sample you can add whatever you want
+</li>
+<li>Paste it in 
+</li>
+<pre class="example">
+kodi/userdata/addon_data/plugin.video.**youraddonname**
+</pre>
+</ul>
+<ul class="org-ul">
+<li>Then in kodi open your addon and you will see a new icon called Testings
+</li>
+<li>Click it and whatever you have in the testings.xml will show
+</li>
+<li>To test something new, just change the testings.xml and save
+</li>
+<li>Then go back one screen in kodi and back in and you will see the changes
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-13" class="outline-2">
+<h2 id="sec-13"><span class="section-number-2">13</span> Make a Player for Metalliq - <a href="https://www.youtube.com/watch?v=Hyy4WxvFlNY&amp;feature=youtu.be">Help Video</a></h2>
+<div class="outline-text-2" id="text-13">
+<ul class="org-ul">
+<li>Go to xml/other and grab the direct.addonname.dab.metalliq.json file
+</li>
+<li>Use this link to watch the full video on how to make.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-14" class="outline-2">
+<h2 id="sec-14"><span class="section-number-2">14</span> Turn off the Rainbow Colored Text</h2>
+<div class="outline-text-2" id="text-14">
+<ul class="org-ul">
+<li>go to resources/lib/plugins and delete rainbow.py
+</li>
+</ul>
+</div>
+</div>
+
+
 
 </div><div class="col-md-3"><nav id="table-of-contents">
 <div id="text-table-of-contents" class="bs-docs-sidebar">
@@ -992,6 +1051,9 @@ TV Episodes
 </li>
 <li><a href="#sec-10">10. Changing List Colours</a></li>
 <li><a href="#sec-11">11. Util Libraries</a></li>
+<li><a href="#sec-12">12. Using Testings in Jen</a></li>
+<li><a href="#sec-13">13. Make a Player for Metalliq/Chappa'ai</a></li>
+<li><a href="#sec-14">14. Turn off the Rainbow Colored Text</a></li>
 </ul>
 </div>
 </nav>
