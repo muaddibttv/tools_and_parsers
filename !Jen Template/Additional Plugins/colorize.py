@@ -15,6 +15,11 @@
         Drop this PY in the plugins folder, and set up the colors below.
         Default colors for each selection is the first in the list, so this means they all are the same.
 
+    Version:
+        2018.5.1
+            - Updated xml processing so can both colorize and process color selection on same item
+            - Added force container refresh after color selection
+
     XML Explanations:
         Tags: 
             <colorselect></colorselect> - Use this tag to select the color for specific types.
@@ -244,6 +249,22 @@ class JenColorize(Plugin):
     priority = 200
 
     def process_item(self, item_xml):
+        if "<colorize>" not in item_xml:
+            item = JenItem(item_xml)
+            colorit = item.get("colorit", "")
+            the_setting = xbmcaddon.Addon().getSetting('%s' % (colorit))
+            if the_setting == None or the_setting == '':
+                the_setting = 'white'
+                xbmcaddon.Addon().setSetting('%s' % (colorit), str(the_setting))
+            color = COLOR_CHART[the_setting]
+            if "<name>" in item_xml:
+                item_xml = item_xml.replace("<name>", "<name>[COLOR FFff%s]" % color, 1)
+                item_xml = item_xml.replace("</name>", "[/COLOR]</name>", 1)
+            else:
+                item_xml = item_xml.replace("<title>", "<title>[COLOR FFff%s]" % color, 1)
+                item_xml = item_xml.replace("</title>", "[/COLOR]</title>", 1)
+            item_xml += "<colorize></colorize>"
+            return JenList(item_xml).process_item(item_xml)
         if "<colorselect>" in item_xml:
             item = JenItem(item_xml)
             result_item = {
@@ -263,22 +284,7 @@ class JenColorize(Plugin):
                 "summary": item.get("summary", None)
             }
             return result_item
-        elif "<colorize>" not in item_xml:
-            item = JenItem(item_xml)
-            colorit = item.get("colorit", "")
-            the_setting = xbmcaddon.Addon().getSetting('%s' % (colorit))
-            if the_setting == None or the_setting == '':
-                the_setting = 'white'
-                xbmcaddon.Addon().setSetting('%s' % (colorit), str(the_setting))
-            color = COLOR_CHART[the_setting]
-            if "<name>" in item_xml:
-                item_xml = item_xml.replace("<name>", "<name>[COLOR FFff%s]" % color, 1)
-                item_xml = item_xml.replace("</name>", "[/COLOR]</name>", 1)
-            else:
-                item_xml = item_xml.replace("<title>", "<title>[COLOR FFff%s]" % color, 1)
-                item_xml = item_xml.replace("</title>", "[/COLOR]</title>", 1)
-            item_xml += "<colorize></colorize>"
-            return JenList(item_xml).process_item(item_xml)
+
 
 @route(mode='COLORSELECT', args=["url"])
 def selectmy_color(url):
