@@ -15,7 +15,11 @@
         Drop this PY in the plugins folder, and use whatever tools below you want.
 
     Version:
+        2018.5.1a
+            - Added <mode> and <modeurl> tags (used together in same item)
+
         2018.5.1
+            - Initial Release
 
     XML Explanations:
         Tags: 
@@ -39,6 +43,13 @@
             <title>JEN: General</title>
             <mysettings>1/0</mysettings>
             <info>Open the Settings for the addon on the General tab</info>
+        </item>
+
+        <item>
+            <title>Custom Mode</title>
+            <mode>Whatever</mode>
+            <modeurl>query=Iwant</modeurl>
+            <info>Sets a specific Mode for the menu item, to utilize Jen modes not normally accessible. Setting modeurl passes a custom built url= variable to go with it</info>
         </item>
 
 
@@ -101,7 +112,25 @@ class JenTools(Plugin):
                 "summary": item.get("summary", None)
             }
             return result_item
-
+        elif "<mode>" in item_xml:
+            item = JenItem(item_xml)
+            result_item = {
+                'label': item["title"],
+                'icon': item.get("thumbnail", addon_icon),
+                'fanart': item.get("fanart", addon_fanart),
+                'mode': item.get("mode", ""),
+                'url': item.get("modeurl", ""),
+                'folder': True,
+                'imdb': "0",
+                'content': "files",
+                'season': "0",
+                'episode': "0",
+                'info': {},
+                'year': "0",
+                'context': get_context_items(item),
+                "summary": item.get("summary", None)
+            }
+            return result_item
 
 @route(mode='HEADING')
 def heading_handler():
