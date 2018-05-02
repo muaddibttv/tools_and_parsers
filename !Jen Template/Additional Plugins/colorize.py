@@ -16,6 +16,9 @@
         Default colors for each selection is the first in the list, so this means they all are the same.
 
     Version:
+        2018.5.2
+            - Updated color chart.
+
         2018.5.1
             - Updated xml processing so can both colorize and process color selection on same item
             - Added force container refresh after color selection
@@ -93,8 +96,7 @@ from resources.lib.util.context import get_context_items
 from resources.lib.util.xml import JenItem, JenList, display_list
 from unidecode import unidecode
 
-COLOR_CHART = [ ("aliceblue", "F0F8FF"),
-        ("antiquewhite", "faebd7"),
+COLOR_CHART = [ ("antiquewhite", "faebd7"),
         ("aqua", "00ffff"),
         ("aquamarine", "7fffd4"),
         ("azure", "f0ffff"),
@@ -141,7 +143,6 @@ COLOR_CHART = [ ("aliceblue", "F0F8FF"),
         ("floralwhite", "fffaf0"),
         ("forestgreen", "228b22"),
         ("fuchsia", "ff00ff"),
-        ("gainsboro", "dcdcdc"),
         ("ghostwhite", "f8f8ff"),
         ("gold", "ffd700"),
         ("goldenrod", "daa520"),
@@ -155,8 +156,6 @@ COLOR_CHART = [ ("aliceblue", "F0F8FF"),
         ("indigo", "4b0082"),
         ("ivory", "fffff0"),
         ("khaki", "f0e68c"),
-        ("lavender", "e6e6fa"),
-        ("lavenderblush", "fff0f5"),
         ("lawngreen", "7cfc00"),
         ("lemonchiffon", "fffacd"),
         ("lightblue", "add8e6"),
@@ -176,7 +175,6 @@ COLOR_CHART = [ ("aliceblue", "F0F8FF"),
         ("lightyellow", "ffffe0"),
         ("lime", "00ff00"),
         ("limegreen", "32cd32"),
-        ("linen", "faf0e6"),
         ("magenta", "ff00ff"),
         ("maroon", "800000"),
         ("mediumaquamarine", "66cdaa"),
@@ -189,12 +187,10 @@ COLOR_CHART = [ ("aliceblue", "F0F8FF"),
         ("mediumturquoise", "48d1cc"),
         ("mediumvioletred", "c71585"),
         ("midnightblue", "191970"),
-        ("mintcream", "f5fffa"),
         ("mistyrose", "ffe4e1"),
         ("moccasin", "ffe4b5"),
         ("navajowhite", "ffdead"),
         ("navy", "000080"),
-        ("oldlace", "fdf5e6"),
         ("olive", "808000"),
         ("olivedrab", "6b8e23"),
         ("orange", "ffa500"),
@@ -236,7 +232,6 @@ COLOR_CHART = [ ("aliceblue", "F0F8FF"),
         ("violet", "ee82ee"),
         ("wheat", "f5deb3"),
         ("white", "ffffff"),
-        ("whitesmoke", "f5f5f5"),
         ("yellow", "ffff00"),
         ("yellowgreen", "9acd32") ]
 COLOR_CHART = collections.OrderedDict(COLOR_CHART)

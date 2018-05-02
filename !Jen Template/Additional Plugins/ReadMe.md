@@ -9,6 +9,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Used to pull categories, vides, etc. from the collectionofbestporn.com website
 - colorize
     - Plugin for letting users select from a list of colors. Can be used to colorize menu titles the way you want
+- hesgoal
+    - Returns Sports Games from hesgoal
 - lastfm
     - Pulls data from the LastFM website (Requires API keys in Jen configuration)
 - m3u
@@ -17,6 +19,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Allows you to password protect menu items in your Jen (base64 encoded password in xml entries)
 - rainbow
     - Colorizes your menu items automatically when generating views
+- releases
+    - Returns New Movie Releases from airtable
 - sports_streams
     - Used to pull game streams from sports-stream.net
 - tools
