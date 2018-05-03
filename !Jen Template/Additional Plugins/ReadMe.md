@@ -3,6 +3,8 @@
 These are plugins not bundled with Jen Template from various sources.
 
 - air_table
+- animetoon
+    - Pulls from another anime site with some sections having pagination, but not many. Genre not supported but has 3-4 sources per video.
 - arconaitv
     - Used to pull streams from the arconai tv website
 - cobp
@@ -25,10 +27,14 @@ These are plugins not bundled with Jen Template from various sources.
     - Used to pull game streams from sports-stream.net
 - tools
     - Useful tools for menu items, such as to mark an item non-clickable or open settings to a specific tab and section
+- toonova
+    - Pulls cartoons and movies from a specific site, with 3-4 sources per (No subbed/dubbed)
 - tvmaze
     - Pulls network and show information from the tvmaze website
 - watchcartoon
     - Pulls movie, cartoon, anime, and video info from WatchCartoonOnline.io website
+- wctooncom
+    - Pulls movie, cartoon, anime, and video info from WatchCartoonOnline.com website (clone site of watchcartoononline.io, but different html formatting)
 - yt_api
     - Allows you to create menu items to apply Youtube API key information to the Youtube Plugin in Kodi
 
