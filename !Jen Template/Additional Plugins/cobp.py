@@ -20,8 +20,8 @@
     Usage Examples:
 
 <dir>
-<title>Collection of Best Porn - Display Category content</title>
-<cobp>category/squirting</sport_stream>
+    <title>Collection of Best Porn - Display Category content</title>
+    <cobp>category/squirting</sport_stream>
 </dir>
 
 

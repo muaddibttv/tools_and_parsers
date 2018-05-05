@@ -24,7 +24,7 @@
     XML Explanations:
         Tags: 
             <heading></heading> - Displays the entry as normal, but performs no action (not a directory or "item")
-            <mysettings>0.0</mysettings> - Opens settings dialog to the specified Tab and section (0 indexed)
+            <mysettings>0/0</mysettings> - Opens settings dialog to the specified Tab and section (0 indexed)
 
     Usage Examples:
 

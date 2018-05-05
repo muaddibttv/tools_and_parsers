@@ -22,58 +22,58 @@
     Usage Examples:
 
 <dir>
-<title>50 Latest Releases</title>
-<wctoon>topfifty/last-50-recent-release</wctoon>
+    <title>50 Latest Releases</title>
+    <wctoon>topfifty/last-50-recent-release</wctoon>
 </dir>
 
 <dir>
-<title>Today's Picks</title>
-<wctoon>main/today</wctoon>
+    <title>Today's Picks</title>
+    <wctoon>main/today</wctoon>
 </dir>
 
 <dir>
-<title>Most Popular</title>
-<wctoon>main/popular</wctoon>
+    <title>Most Popular</title>
+    <wctoon>main/popular</wctoon>
 </dir>
 
 <dir>
-<title>Dubbed Anime</title>
-<wctoon>category/dubbed-anime-list</wctoon>
+    <title>Dubbed Anime</title>
+    <wctoon>category/dubbed-anime-list</wctoon>
 </dir>
 
 <dir>
-<title>Subbed Anime</title>
-<wctoon>category/subbed-anime-list</wctoon>
+    <title>Subbed Anime</title>
+    <wctoon>category/subbed-anime-list</wctoon>
 </dir>
 
 <dir>
-<title>Cartoons</title>
-<wctoon>category/cartoon-list</wctoon>
+    <title>Cartoons</title>
+    <wctoon>category/cartoon-list</wctoon>
 </dir>
 
 <dir>
-<title>Movies</title>
-<wctoon>category/movie-list</wctoon>
+    <title>Movies</title>
+    <wctoon>category/movie-list</wctoon>
 </dir>
 
 <dir>
-<title>Ova Series</title>
-<wctoon>category/ova-list</wctoon>
+    <title>Ova Series</title>
+    <wctoon>category/ova-list</wctoon>
 </dir>
 
 <dir>
-<title>Search Site</title>
-<wctoon>wcsearch</wctoon>
+    <title>Search Site</title>
+    <wctoon>wcsearch</wctoon>
 </dir>
 
 <dir>
-<title>Everything 101 Dalmatians</title>
-<wctoon>wcsearch/101 dalmatians</wctoon>
+    <title>Everything 101 Dalmatians</title>
+    <wctoon>wcsearch/101 dalmatians</wctoon>
 </dir>
 
 <dir>
-<title>Action Genre</title>
-<wctoon>wcgenre/14</wctoon>
+    <title>Action Genre</title>
+    <wctoon>wcgenre/14</wctoon>
 </dir>
 
 
