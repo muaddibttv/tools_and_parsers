@@ -23,6 +23,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Allows you to password protect menu items in your Jen (base64 encoded password in xml entries)
 - podbay
     - Podbay scraper for Jen, allowing menu items for Categories or specific shows
+- podcastone
+    - PodcastOne scraper for Jen, allowing menu items for Categories or specific shows
 - rainbow
     - Colorizes your menu items automatically when generating views
 - releases

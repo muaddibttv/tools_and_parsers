@@ -15,93 +15,98 @@
     Usage Examples:
 
     <dir>
-        <title>Top Podcasts</title>
-        <podbay>pbcategory/top</podbay>
+        <title>Featured Podcasts</title>
+        <podcastone>pcocategory/featured-podcasts</podcastone>
+    </dir>
+
+    <dir>
+        <title>New Podcasts</title>
+        <podcastone>pcocategory/new-podcasts</podcastone>
+    </dir>
+
+    <dir>
+        <title>All Podcasts</title>
+        <podcastone>pcocategory/podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Arts</title>
-        <podbay>pbcategory/arts</podbay>
-    </dir>
-
-    <dir>
-        <title>Business</title>
-        <podbay>pbcategory/business</podbay>
+        <podcastone>pcocategory/arts-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Comedy</title>
-        <podbay>pbcategory/comedy</podbay>
+        <podcastone>pcocategory/comedy-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Education</title>
-        <podbay>pbcategory/education</podbay>
+        <podcastone>pcocategory/education-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Games and Hobbies</title>
-        <podbay>pbcategory/games-and-hobbies</podbay>
+        <podcastone>pcocategory/games-and-hobbies-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Government and Organizations</title>
-        <podbay>pbcategory/government-and-organizations</podbay>
+        <podcastone>pcocategory/government-and-organizations-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Health</title>
-        <podbay>pbcategory/health</podbay>
+        <podcastone>pcocategory/health-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Kids and Family</title>
-        <podbay>pbcategory/kids-and-family</podbay>
+        <podcastone>pcocategory/kids-and-family-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Music</title>
-        <podbay>pbcategory/music</podbay>
+        <podcastone>pcocategory/music-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>News and Politics</title>
-        <podbay>pbcategory/news-and-politics</podbay>
+        <podcastone>pcocategory/news-and-politics-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Religion and Spirituality</title>
-        <podbay>pbcategory/religion-and-spirituality</podbay>
+        <podcastone>pcocategory/religion-and-spirituality-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Science and Medicine</title>
-        <podbay>pbcategory/science-and-medicine</podbay>
+        <podcastone>pcocategory/science-and-medicine-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Society and Culture</title>
-        <podbay>pbcategory/society-and-culture</podbay>
+        <podcastone>pcocategory/society-and-culture-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>Sports and Recreation</title>
-        <podbay>pbcategory/sports-and-recreation</podbay>
+        <podcastone>pcocategory/sports-and-recreation-podcasts</podcastone>
     </dir>
 
     <dir>
-        <title>Technology</title>
-        <podbay>pbcategory/technology</podbay>
+        <title>Technology and Business</title>
+        <podcastone>pcocategory/technology-and-business-podcasts</podcastone>
     </dir>
 
     <dir>
         <title>TV and Film</title>
-        <podbay>pbcategory/tv-and-film</podbay>
+        <podcastone>pcocategory/tv-and-film-podcasts</podcastone>
     </dir>
 
     <dir>
-        <title>The Joe Rogan Experience</title>
-        <podbay>pbshow/360084272</podbay>
+        <title>Heather Dubrows World</title>
+        <podcastone>pcoshow/heather-dubrows-world</podcastone>
     </dir>
 
 
@@ -126,22 +131,22 @@ addon_fanart = xbmcaddon.Addon().getAddonInfo('fanart')
 addon_icon   = xbmcaddon.Addon().getAddonInfo('icon')
 User_Agent   = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
 
-pbshow_link = 'http://podbay.fm/show/'
-pbcats_link = 'http://podbay.fm/browse/'
+pcobase_link = 'https://www.podcastone.com/'
+pcoplay_link = 'https://www.podcastone.com/downloadsecurity?url=%s'
 
 class WatchCartoon(Plugin):
-    name = "podbay"
+    name = "podcastone"
 
     def process_item(self, item_xml):
-        if "<podbay>" in item_xml:
+        if "<podcastone>" in item_xml:
             item = JenItem(item_xml)
-            if "pbcategory/" in item.get("podbay", ""):
+            if "pcocategory/" in item.get("podcastone", ""):
                 result_item = {
                     'label': item["title"],
                     'icon': item.get("thumbnail", addon_icon),
                     'fanart': item.get("fanart", addon_fanart),
-                    'mode': "PBCats",
-                    'url': item.get("podbay", ""),
+                    'mode': "PCOCats",
+                    'url': item.get("podcastone", ""),
                     'folder': True,
                     'imdb': "0",
                     'content': "files",
@@ -152,13 +157,13 @@ class WatchCartoon(Plugin):
                     'context': get_context_items(item),
                     "summary": item.get("summary", None)
                 }
-            elif "pbshow/" in item.get("podbay", ""):
+            elif "pcoshow/" in item.get("podcastone", ""):
                 result_item = {
                     'label': item["title"],
                     'icon': item.get("thumbnail", addon_icon),
                     'fanart': item.get("fanart", addon_fanart),
-                    'mode': "PBShow",
-                    'url': item.get("podbay", ""),
+                    'mode': "PCOShow",
+                    'url': item.get("podcastone", ""),
                     'folder': True,
                     'imdb': "0",
                     'content': "files",
@@ -169,13 +174,13 @@ class WatchCartoon(Plugin):
                     'context': get_context_items(item),
                     "summary": item.get("summary", None)
                 }
-            elif "pbepisode/" in item.get("podbay", ""):
+            elif "pcoepisode/" in item.get("podcastone", ""):
                 result_item = {
                     'label': item["title"],
                     'icon': item.get("thumbnail", addon_icon),
                     'fanart': item.get("fanart", addon_fanart),
-                    'mode': "PBEpisode",
-                    'url': item.get("podbay", ""),
+                    'mode': "PCOEpisode",
+                    'url': item.get("podcastone", ""),
                     'folder': False,
                     'imdb': "0",
                     'content': "files",
@@ -193,28 +198,28 @@ class WatchCartoon(Plugin):
             return result_item
 
 
-@route(mode='PBCats', args=["url"])
-def get_pbcats(url):
+@route(mode='PCOCats', args=["url"])
+def get_pcocats(url):
     xml = ""
-    url = url.replace('pbcategory/', '') # Strip our category tag off.
+    url = url.replace('pcocategory/', '') # Strip our category tag off.
     try:
-        url = urlparse.urljoin(pbcats_link, url)
+        url = urlparse.urljoin(pcobase_link, url)
         html = requests.get(url).content
 
-        page_list = dom_parser.parseDOM(html, 'ul', attrs={'class': 'thumbnails'})[0]
-        show_list = dom_parser.parseDOM(page_list, 'li', attrs={'class': 'span3'})
-        for entry in show_list:
+        div_list = re.compile('<div class="podcast-container flex no-wrap" data-program-name="(.+?)">(.+?)</a></div>',re.DOTALL).findall(html)
+        for show_title, content in div_list:
             try:
-                show_url = dom_parser.parseDOM(entry, 'a', ret='href')[0]
-                show_icon = dom_parser.parseDOM(entry, 'img', ret='src')[0]
-
-                show_title = dom_parser.parseDOM(entry, 'h4')[0]
-                show_title = refreshtitle(show_title)
-                show_title = remove_non_ascii(show_title)
-
+                show_url = re.compile('href="(.+?)"',re.DOTALL).findall(content)[0]
+                show_url = show_url.replace('/','')
+                if 'viewProgram' in show_url:
+                    url = urlparse.urljoin(pcobase_link, show_url)
+                    html = requests.get(url).content
+                    more_ep_block = re.compile('<div class="col-xs-12">(.+?)</div>',re.DOTALL).findall(html)[0]
+                    show_url = re.compile('href="(.+?)"',re.DOTALL).findall(more_ep_block)[0].replace('/','').replace('?showAllEpisodes=true','')
+                show_icon = urlparse.urljoin(pcobase_link, re.compile('<img src="(.+?)"',re.DOTALL).findall(content)[0])
                 xml += "<dir>"\
                        "    <title>%s</title>"\
-                       "    <podbay>pbshow/%s</podbay>"\
+                       "    <podcastone>pcoshow/%s</podcastone>"\
                        "    <thumbnail>%s</thumbnail>"\
                        "    <summary>%s</summary>"\
                        "</dir>" % (show_title,show_url,show_icon,show_title)
@@ -227,29 +232,50 @@ def get_pbcats(url):
     display_list(jenlist.get_list(), jenlist.get_content_type())
 
 
-@route(mode='PBShow', args=["url"])
-def get_pbshow(url):
+@route(mode='PCOShow', args=["url"])
+def get_pcoshow(url):
     xml = ""
-    url = url.replace('pbshow/', '') # Strip our show tag off.
+    url = url.replace('pcoshow/', '') # Strip our show tag off.
 
     try:
-        url = urlparse.urljoin(pbshow_link, url)
+        url = urlparse.urljoin(pcobase_link, url)
+        url = url + '?showAllEpisodes=true'
         html = requests.get(url).content
 
-        show_icon = re.compile('<meta property="og:image" content="(.+?)"').findall(html)[0]
-        table_content = dom_parser.parseDOM(html, 'div', attrs={'class': 'span8 well'})[0]
-        table_rows = dom_parser.parseDOM(table_content, 'tr')
-        for row in table_rows:
-            if 'href' in row:
-                ep_page, ep_summary, ep_title = re.compile('<a href="(.+?)".+?title="(.*?)">(.+?)</a>',re.DOTALL).findall(row)[0]
-            else:
-                continue
+        icon_item = dom_parser.parseDOM(html, 'div', attrs={'class': 'col-sm-3 col-xs-12 current-episode-img'})[0]
+        show_icon = dom_parser.parseDOM(icon_item, 'img', ret='src')[0]
+
+        try:
+            # pulls latest/new at the top
+            latest_content = re.compile('<div class="letestEpiDes">(.+?)</div>',re.DOTALL).findall(html)[0]
+            episode_item = dom_parser.parseDOM(latest_content, 'h3', attrs={'class': 'dateTime'})[0]
+            ep_title = re.compile('href=".+?" style="color:inherit;">(.+?)</a>',re.DOTALL).findall(latest_content)[0]
+            ep_page =  urlparse.urljoin(pcobase_link, re.compile('href="(.+?)"',re.DOTALL).findall(latest_content)[0])
+
             xml += "<item>"\
                    "    <title>%s</title>"\
-                   "    <podbay>pbepisode/%s</podbay>"\
+                   "    <podcastone>pcoepisode/%s</podcastone>"\
                    "    <thumbnail>%s</thumbnail>"\
                    "    <summary>%s</summary>"\
-                   "</item>" % (ep_title,ep_page,show_icon,ep_summary)
+                   "</item>" % (ep_title,ep_page,show_icon,ep_title)
+        except:
+            pass
+
+        # handles pulling the rest of the shows available for free
+        past_episodes = dom_parser.parseDOM(html, 'div', attrs={'class': 'col-xs-12 col-sm-12 col-md-12 col-lg-12'})[0]
+        episode_list = dom_parser.parseDOM(past_episodes, 'h3', attrs={'class': 'dateTime'})
+        for content in episode_list:
+            try:
+                ep_title = re.compile('href=".+?" style="color:inherit;">(.+?)</a>',re.DOTALL).findall(content)[0]
+                ep_page =  urlparse.urljoin(pcobase_link, re.compile('href="(.+?)"',re.DOTALL).findall(content)[0])
+                xml += "<item>"\
+                       "    <title>%s</title>"\
+                       "    <podcastone>pcoepisode/%s</podcastone>"\
+                       "    <thumbnail>%s</thumbnail>"\
+                       "    <summary>%s</summary>"\
+                       "</item>" % (ep_title,ep_page,show_icon,ep_title)
+            except:
+                continue
     except:
         #failure = traceback.format_exc()
         #xbmcgui.Dialog().textviewer('Total Failure', str(failure))
@@ -259,16 +285,19 @@ def get_pbshow(url):
     display_list(jenlist.get_list(), jenlist.get_content_type())
 
 
-@route(mode='PBEpisode', args=["url"])
-def get_pbepisode(url):
+@route(mode='PCOEpisode', args=["url"])
+def get_pcoepisode(url):
     xml = ""
-    url = url.replace('pbepisode/', '') # Strip our episode tag off.
+    url = url.replace('pcoepisode/', '') # Strip our episode tag off.
 
     try:
         html = requests.get(url).content
-        ep_icon = dom_parser.parseDOM(html, 'meta', attrs={'property': 'og:image'}, ret='content')[0]
-        ep_title = dom_parser.parseDOM(html, 'meta', attrs={'property': 'og:title'}, ret='content')[0].encode('utf-8', 'ignore').decode('utf-8')
-        url = dom_parser.parseDOM(html, 'a', attrs={'class': 'btn btn-mini btn-primary'}, ret='href')[0]
+        episode_item = dom_parser.parseDOM(html, 'div', attrs={'class': 'media-player'})[0]
+        episode_item2 = dom_parser.parseDOM(html, 'div', attrs={'class': 'letestepi'})[0]
+        ep_icon = dom_parser.parseDOM(episode_item2, 'img', attrs={'class': 'img-responsive'}, ret='src')[0]
+        ep_title = dom_parser.parseDOM(html, 'title')[0].replace('PodcastOne: ','')
+        play_url = re.compile('href="(.+?)"',re.DOTALL).findall(episode_item)[0].replace("\n","").replace('/downloadsecurity?url=', '')
+        url = pcoplay_link % play_url
         item = xbmcgui.ListItem(label=ep_title, path=url, iconImage=ep_icon, thumbnailImage=ep_icon)
         item.setInfo( type="Video", infoLabels={ "Title": ep_title } )
         import resolveurl
