@@ -8,9 +8,4 @@
     <title>Shared Lists</title>
     <link>file://shared lists/main.xml</link>
   </dir>
-
-  <dir>
-    <title>Settings</title>
-    <link>file://msettings.xml</link>
-  </dir>
 </xml>

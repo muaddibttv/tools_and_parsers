@@ -38,7 +38,7 @@ import sys
 import koding
 import koding.router as router
 from resources.lib.installa import Dialog_specific
-from resources.lib.news_window import Dialog_News
+from resources.lib.news_window import Dialog_Example
 import resources.lib.search
 import resources.lib.sources
 import resources.lib.testings
@@ -63,7 +63,7 @@ content_type = "files"
 def root():
     """root menu of the addon"""
     if enable_newswin == 'true':
-        koding.Add_Dir(name='Latest News And Updates', url='{"my_text":"Latest News[CR]!!!","my_desc":""}', mode='dialog_news', folder=False, icon=os.path.join(art_path,'icon.png'), fanart=os.path.join(art_path,'fanart.jpg'))
+        koding.Add_Dir(name='Latest News And Updates', url='{"my_text":"Latest News[CR]!!!","my_desc":""}', mode='dialog_example', folder=False, icon=os.path.join(art_path,'icon.png'), fanart=os.path.join(art_path,'fanart.jpg'))
     if not get_list(root_xml_url):
         koding.Add_Dir(
             name=_("Message"),
@@ -150,19 +150,6 @@ def all_episodes(url):
     display_list(result_items, "episodes")
 
 
-@route(mode="openSettings", args=["url"])
-def open_settings(query):
-    try:
-        xbmc.executebuiltin('Dialog.Close(busydialog)')
-        xbmc.executebuiltin('Addon.OpenSettings(%s)' % addon_id)
-        query = query.split('=')[1]
-        c, f = query.split('.')
-        xbmc.executebuiltin('SetFocus(%i)' % (int(c) + 100))
-        xbmc.executebuiltin('SetFocus(%i)' % (int(f) + 200))
-    except:
-        return
-
-
 @route(mode="Settings")
 def settings():
     xbmcaddon.Addon().openSettings()
@@ -222,11 +209,6 @@ def get_addon_url(mode, url=""):
     if url:
         result += "&url=%s" % urllib.quote_plus(url)
     return result
-
-
-@route(mode="section_item")
-def section_item():
-    quit()
 
 
 def first_run_wizard():

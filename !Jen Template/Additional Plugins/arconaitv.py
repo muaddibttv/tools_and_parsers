@@ -78,42 +78,188 @@ class ARCONAITV(Plugin):
 @route(mode='get_shows', args=["url"])
 def get_shows(url):
     xml = ""
-    try:    
+    try:  
         url = "https://www.arconaitv.us/"
         headers = {'User_Agent':User_Agent}
         html = requests.get(url,headers=headers).content
-        block2 = re.compile('<div class="content">(.+?)<div class="stream-nav shows" id="shows">',re.DOTALL).findall(html)
-        match2 = re.compile('href=(.+?) title=(.+?)<img src=(.+?) alt=(.+?) />',re.DOTALL).findall(str(block2))
-        for link2,title2,image2,name2 in match2:
-            name2 = name2.replace("\\'", "")
-            link2 = link2.replace("\\'", "")
-            image2 = image2.replace("\\'", "")
-            title2 = title2.replace("\\'", "")
-            title2 = title2.replace(" class=poster-link>","")
-            image2 = "https://www.arconaitv.us"+image2
-            link2 = "plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=https://www.arconaitv.us/"+link2                
-            if not name2:            
+        block = re.compile('<div class="stream-nav shows" id="shows">(.+?)<div class="acontainer">',re.DOTALL).findall(html)
+        match = re.compile('href=(.+?) title=(.+?)>',re.DOTALL).findall(str(block))
+        xml += "<item>"\
+               "<title>[COLOR blue][B]----TV SHOWS----[/B][/COLOR]</title>"\
+               "<thumbnail>http://iconbug.com/data/2b/256/c6cbe045e598958b1efacc78b4127205.png</thumbnail>"\
+               "<fanart>https://lerablog.org/wp-content/uploads/2014/05/tv-series.jpg</fanart>"\
+               "<link></link>"\
+               "</item>"        
+        for link,name in match:
+            name = name.replace("\\'","")
+            name = remove_non_ascii(name)
+            link = link.replace("\\'","")
+            link = "plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=https://www.arconaitv.us/"+link
+            image2 = get_thumb(name,html)            
+            if image2:
                 xml += "<plugin>"\
                        "<title>%s</title>"\
                        "<link>"\
                        "<sublink>%s</sublink>"\
                        "</link>"\
                        "<thumbnail>%s</thumbnail>"\
-                       "</plugin>" % (title2,link2,image2)
-            else:
+                       "<fanart>https://lerablog.org/wp-content/uploads/2014/05/tv-series.jpg</fanart>"\
+                       "<summary>Random Episodes</summary>"\
+                       "</plugin>" % (name,link,image2)                       
+            elif not image2:
+                image3 = get_other(name,html)
                 xml += "<plugin>"\
                        "<title>%s</title>"\
                        "<link>"\
                        "<sublink>%s</sublink>"\
                        "</link>"\
                        "<thumbnail>%s</thumbnail>"\
-                       "</plugin>" % (name2,link2,image2)                       
+                       "<fanart>https://lerablog.org/wp-content/uploads/2014/05/tv-series.jpg</fanart>"\
+                       "<summary>Random Episodes</summary>"\
+                       "</plugin>" % (name,link,image3)
+
+        block4 = re.compile('<div class="stream-nav cable" id="cable">(.+?)<div class="acontainer">',re.DOTALL).findall(html)
+        match4 = re.compile('href=(.+?) title=(.+?)>',re.DOTALL).findall(str(block4))
+        xml += "<item>"\
+               "<title>[COLOR blue][B]----NETWORKS----[/B][/COLOR]</title>"\
+               "<thumbnail>https://pmcdeadline2.files.wordpress.com/2010/09/networks.jpg</thumbnail>"\
+               "<fanart>http://static.wixstatic.com/media/7217cd_6b6840f1821147ffa0380918a2110cdd.jpg</fanart>"\
+               "<link></link>"\
+               "</item>"
+        for link,name in match4:
+            name = name.replace("\\'","")
+            name = remove_non_ascii(name)
+            link = link.replace("\\'","")
+            link = "plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=https://www.arconaitv.us/"+link
+            image2 = get_thumb(name,html)            
+            if image2:
+                xml += "<plugin>"\
+                       "<title>%s</title>"\
+                       "<link>"\
+                       "<sublink>%s</sublink>"\
+                       "</link>"\
+                       "<thumbnail>%s</thumbnail>"\
+                       "<fanart>http://static.wixstatic.com/media/7217cd_6b6840f1821147ffa0380918a2110cdd.jpg</fanart>"\
+                       "<summary>Random TV Shows</summary>"\
+                       "</plugin>" % (name,link,image2)                       
+            elif not image2:
+                image3 = get_other(name,html)
+            	if name == "ABC":
+            		image3 = "https://vignette.wikia.nocookie.net/superfriends/images/f/f2/Abc-logo.jpg/revision/latest?cb=20090329152831"
+            	elif name == "Animal Planet":
+            	    image3 = "https://seeklogo.com/images/D/discovery-animal-planet-logo-036312EA16-seeklogo.com.png"
+            	elif name == "Bravo Tv":
+            	    image3 = "https://kodi.tv/sites/default/files/styles/medium_crop/public/addon_assets/plugin.video.bravo/icon/icon.png?itok=VXH52Iyf"
+            	elif name == "CNBC":
+            	    image3 = "https://i2.wp.com/republicreport.wpengine.com/wp-content/uploads/2014/06/cnbc1.png?resize=256%2C256"
+            	elif name == "NBC":
+            	    image3 = "https://designobserver.com/media/images/mondrian/39684-NBC_logo_m.jpg"
+            	elif name == "SYFY":
+            	    image3 = "https://kodi.tv/sites/default/files/styles/medium_crop/public/addon_assets/plugin.video.syfy/icon/icon.png?itok=ZLTAqywa"
+            	elif name == "USA Network ":
+            	    image3 = "https://crunchbase-production-res.cloudinary.com/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/v1442500192/vzcordlt6w0xsnhcsloa.png"
+            	elif name == "WWOR-TV":
+            	    image3 = "https://i.ytimg.com/vi/TlhcM0jciZo/hqdefault.jpg"
+            	                	                	                	                	                	                	    	                
+                xml += "<plugin>"\
+                       "<title>%s</title>"\
+                       "<link>"\
+                       "<sublink>%s</sublink>"\
+                       "</link>"\
+                       "<thumbnail>%s</thumbnail>"\
+                       "<fanart>http://static.wixstatic.com/media/7217cd_6b6840f1821147ffa0380918a2110cdd.jpg</fanart>"\
+                       "<summary>Random TV Shows</summary>"\
+                       "</plugin>" % (name,link,image3)
+        block5 = re.compile('<div class="stream-nav movies" id="movies">(.+?)<div class="acontainer">',re.DOTALL).findall(html)
+        match5 = re.compile('href=(.+?) title=(.+?)>',re.DOTALL).findall(str(block5))                       
+        xml += "<item>"\
+               "<title>[COLOR blue][B]----MOVIES----[/B][/COLOR]</title>"\
+               "<thumbnail>https://archive.org/services/img/movies-icon_201707</thumbnail>"\
+               "<fanart>http://listtoday.org/wallpaper/2015/12/movies-in-theaters-1-desktop-background.jpg</fanart>"\
+               "<link></link>"\
+               "</item>"
+        for link,name in match5:
+            name = name.replace("\\'","")
+            name = remove_non_ascii(name)
+            link = link.replace("\\'","")
+            link = "plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=https://www.arconaitv.us/"+link
+            image3 = get_other(name,html)                                                                                      
+            if image3:
+                xml += "<plugin>"\
+                       "<title>%s</title>"\
+                       "<link>"\
+                       "<sublink>%s</sublink>"\
+                       "</link>"\
+                       "<thumbnail>%s</thumbnail>"\
+                       "<fanart>http://listtoday.org/wallpaper/2015/12/movies-in-theaters-1-desktop-background.jpg</fanart>"\
+                       "<summary>Random Movies</summary>"\
+                       "</plugin>" % (name,link,image3)
+            elif not image3:
+            	image3 = "http://www.userlogos.org/files/logos/nickbyalongshot/film.png"
+            	if name == "Action":
+            		image3 = "http://icons.iconarchive.com/icons/sirubico/movie-genre/256/Action-3-icon.png"
+            	if name == "Animation Movies":
+            		image3 = "http://www.filmsite.org/images/animated-genre.jpg"
+            	if name == "Christmas Movies":
+            		image3 = "http://img.sj33.cn/uploads/allimg/201009/20100926224051989.png"
+            	if name == "Comedy Movies":
+            		image3 = "https://thumb9.shutterstock.com/display_pic_with_logo/882263/116548462/stock-photo-clap-film-of-cinema-comedy-genre-clapperboard-text-illustration-116548462.jpg"
+            	if name == "Documentaries ":
+            		image3 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc8s5haFPMPgDNmfetzNm06V3BB918tV8TG5JiJe7FaEqn-Cgx"
+            	if name == "Harry Potter and Lord of the Rings":
+            		image3 = "https://pre00.deviantart.net/b9cd/th/pre/f/2012/043/0/4/the_lord_of_the_rings_golden_movie_logo_by_freeco-d4phvpy.jpg"
+            	if name == "Horror Movies":
+            		image3 = "http://www.filmsite.org/images/horror-genre.jpg"
+            	if name == "Mafia Movies":
+            		image3 = "https://cdn.pastemagazine.com/www/blogs/lists/2012/04/05/godfather-lead.jpg"
+            	if name == "Movie Night":
+            		image3 = "http://jesseturri.com/wp-content/uploads/2013/03/Movie-Night-Logo.jpg"
+            	if name == "Musical Movies":
+            		image3 = "http://ww1.prweb.com/prfiles/2016/03/18/13294162/Broadway_Movie_Musical_Logo.jpg"
+            	if name == "Mystery Movies":
+            		image3 = "http://icons.iconarchive.com/icons/limav/movie-genres-folder/256/Mystery-icon.png"
+            	if name == "Random Movies":
+            		image3 = "https://is1-ssl.mzstatic.com/image/thumb/Purple118/v4/a2/93/b8/a293b81e-9781-5129-32e9-38fb63ff52f8/source/256x256bb.jpg"
+            	if name == "Romance Movies":
+            		image3 = "http://icons.iconarchive.com/icons/limav/movie-genres-folder/256/Romance-icon.png"
+            	if name == "Star Wars and Star Trek":
+            		image3 = "http://icons.iconarchive.com/icons/aaron-sinuhe/tv-movie-folder/256/Star-Wars-2-icon.png"
+            	if name == "Studio Ghibli":
+            		image3 = "https://orig00.deviantart.net/ec8a/f/2017/206/5/a/studio_ghibli_collection_folder_icon_by_dahlia069-dbho9mx.png"            		            		
+            		            		            		            		            		            		            		            		            		            		            		            		                
+                xml += "<plugin>"\
+                       "<title>%s</title>"\
+                       "<link>"\
+                       "<sublink>%s</sublink>"\
+                       "</link>"\
+                       "<thumbnail>%s</thumbnail>"\
+                       "<fanart>http://listtoday.org/wallpaper/2015/12/movies-in-theaters-1-desktop-background.jpg</fanart>"\
+                       "<summary>Random Movies</summary>"\
+                       "</plugin>" % (name,link,image3)                                                                                    
     except:
         pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type()) 
-              
+            
+def get_thumb(name,html):
+    block2 = re.compile('<div class="content">(.+?)<div class="stream-nav shows" id="shows">',re.DOTALL).findall(html)
+    match2 = re.compile('<img src=(.+?) alt=(.+?) />',re.DOTALL).findall(str(block2))
+    for image,name2 in match2:
+        if name in name2:
+            image = image.replace("\\'", "")
+            image = "https://www.arconaitv.us"+image
+            return image
+
+def get_other(name,html):
+    block3 = re.compile("<div class='row stream-list-featured'>(.+?)<div class='row stream-list'>",re.DOTALL).findall(html)
+    match3 = re.compile('title=(.+?) class.+?<img src=(.+?) alt',re.DOTALL).findall(str(block3))
+    for name3,image3 in match3:
+        if name in name3:
+            image3 = image3.replace("\\'", "")
+            image3 = "https://www.arconaitv.us"+image3
+            return image3            
+
 
 def remove_non_ascii(text):
     return unidecode(text)

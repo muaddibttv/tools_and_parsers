@@ -6,7 +6,9 @@ These are plugins not bundled with Jen Template from various sources.
 - animetoon
     - Pulls from another anime site with some sections having pagination, but not many. Genre not supported but has 3-4 sources per video.
 - arconaitv
-    - Used to pull streams from the arconai tv website
+    - Used to pull streams from the arconai tv website.
+- arconaitv2
+    - Fork of arconaitv plugin, with more options for your xmls. XML Tags are different in this one as well
 - cobp
     - Used to pull categories, vides, etc. from the collectionofbestporn.com website
 - colorize
@@ -19,6 +21,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Pulls information an streams from m3u links
 - password
     - Allows you to password protect menu items in your Jen (base64 encoded password in xml entries)
+- podbay
+    - Podbay scraper for Jen, allowing menu items for Categories or specific shows
 - rainbow
     - Colorizes your menu items automatically when generating views
 - releases
@@ -31,6 +35,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Pulls cartoons and movies from a specific site, with 3-4 sources per (No subbed/dubbed)
 - tvmaze
     - Pulls network and show information from the tvmaze website
+- views
+    - Functions to set persistent content/container views to the database (Set default views)
 - watchcartoon
     - Pulls movie, cartoon, anime, and video info from WatchCartoonOnline.io website
 - wctooncom
