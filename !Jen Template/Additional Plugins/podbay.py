@@ -11,6 +11,9 @@
     this stuff is worth it, you can buy him a beer in return. - Muad'Dib
     ----------------------------------------------------------------------------
 
+    Changelog:
+        2018-05-13:
+            Updated for when pages have malformed download links.
 
     Usage Examples:
 
@@ -266,9 +269,12 @@ def get_pbepisode(url):
 
     try:
         html = requests.get(url).content
-        ep_icon = dom_parser.parseDOM(html, 'meta', attrs={'property': 'og:image'}, ret='content')[0]
-        ep_title = dom_parser.parseDOM(html, 'meta', attrs={'property': 'og:title'}, ret='content')[0].encode('utf-8', 'ignore').decode('utf-8')
+        ep_icon = re.compile('property="og:image" content="(.*?)"',re.DOTALL).findall(html)[0]
+        ep_title = re.compile('property="og:title" content="(.*?)"',re.DOTALL).findall(html)[0]
+        ep_title = refreshtitle(ep_title)
         url = dom_parser.parseDOM(html, 'a', attrs={'class': 'btn btn-mini btn-primary'}, ret='href')[0]
+        if not 'mp3' in url:
+            url = re.compile('file: "(.*?)"',re.DOTALL).findall(html)[0]
         item = xbmcgui.ListItem(label=ep_title, path=url, iconImage=ep_icon, thumbnailImage=ep_icon)
         item.setInfo( type="Video", infoLabels={ "Title": ep_title } )
         import resolveurl

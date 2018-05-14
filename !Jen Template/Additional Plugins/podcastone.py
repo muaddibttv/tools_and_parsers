@@ -11,6 +11,9 @@
     this stuff is worth it, you can buy him a beer in return. - Muad'Dib
     ----------------------------------------------------------------------------
 
+    Changelog:
+        2018-05-13:
+            Updated for handling JS "Load More" changes.
 
     Usage Examples:
 
@@ -133,6 +136,7 @@ User_Agent   = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KH
 
 pcobase_link = 'https://www.podcastone.com/'
 pcoplay_link = 'https://www.podcastone.com/downloadsecurity?url=%s'
+pcoepisodes_link = 'https://www.podcastone.com/pg/jsp/program/pasteps_cms.jsp?size=1000&amountToDisplay=1000&page=1&infiniteScroll=true&progID=%s&showTwitter=false&pmProtect=false&displayPremiumEpisodes=false&startAt=0'
 
 class WatchCartoon(Plugin):
     name = "podcastone"
@@ -241,39 +245,23 @@ def get_pcoshow(url):
         url = urlparse.urljoin(pcobase_link, url)
         url = url + '?showAllEpisodes=true'
         html = requests.get(url).content
+        prog_id = re.compile('progID: (.+?),',re.DOTALL).findall(html)[0]
+        url = pcoepisodes_link % (prog_id)
+        html = requests.get(url).content
 
-        icon_item = dom_parser.parseDOM(html, 'div', attrs={'class': 'col-sm-3 col-xs-12 current-episode-img'})[0]
-        show_icon = dom_parser.parseDOM(icon_item, 'img', ret='src')[0]
-
-        try:
-            # pulls latest/new at the top
-            latest_content = re.compile('<div class="letestEpiDes">(.+?)</div>',re.DOTALL).findall(html)[0]
-            episode_item = dom_parser.parseDOM(latest_content, 'h3', attrs={'class': 'dateTime'})[0]
-            ep_title = re.compile('href=".+?" style="color:inherit;">(.+?)</a>',re.DOTALL).findall(latest_content)[0]
-            ep_page =  urlparse.urljoin(pcobase_link, re.compile('href="(.+?)"',re.DOTALL).findall(latest_content)[0])
-
-            xml += "<item>"\
-                   "    <title>%s</title>"\
-                   "    <podcastone>pcoepisode/%s</podcastone>"\
-                   "    <thumbnail>%s</thumbnail>"\
-                   "    <summary>%s</summary>"\
-                   "</item>" % (ep_title,ep_page,show_icon,ep_title)
-        except:
-            pass
-
-        # handles pulling the rest of the shows available for free
-        past_episodes = dom_parser.parseDOM(html, 'div', attrs={'class': 'col-xs-12 col-sm-12 col-md-12 col-lg-12'})[0]
-        episode_list = dom_parser.parseDOM(past_episodes, 'h3', attrs={'class': 'dateTime'})
-        for content in episode_list:
+        # https://www.podcastone.com/pg/jsp/program/pasteps_cms.jsp?size=1000&amountToDisplay=1000&page=1&infiniteScroll=true&progID=1181&showTwitter=false&pmProtect=false&displayPremiumEpisodes=false&startAt=0
+        past_episodes = dom_parser.parseDOM(html, 'div', attrs={'class':'flex no-wrap align-center'})
+        for episode in past_episodes:
             try:
-                ep_title = re.compile('href=".+?" style="color:inherit;">(.+?)</a>',re.DOTALL).findall(content)[0]
-                ep_page =  urlparse.urljoin(pcobase_link, re.compile('href="(.+?)"',re.DOTALL).findall(content)[0])
+                ep_link, ep_title = re.compile('<h3 class="dateTime"><a href="(.+?)" style="color:inherit;">(.+?)</a>',re.DOTALL).findall(episode)[0]
+                ep_page  = urlparse.urljoin(pcobase_link, ep_link)
+                ep_icon  = re.compile('img src="(.+?)"',re.DOTALL).findall(episode)[0]
                 xml += "<item>"\
                        "    <title>%s</title>"\
                        "    <podcastone>pcoepisode/%s</podcastone>"\
                        "    <thumbnail>%s</thumbnail>"\
                        "    <summary>%s</summary>"\
-                       "</item>" % (ep_title,ep_page,show_icon,ep_title)
+                       "</item>" % (ep_title,ep_page,ep_icon,ep_title)
             except:
                 continue
     except:
