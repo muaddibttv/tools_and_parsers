@@ -28,11 +28,6 @@
     </dir>
 
     <dir>
-        <title>All Podcasts</title>
-        <podcastone>pcocategory/podcasts</podcastone>
-    </dir>
-
-    <dir>
         <title>Arts</title>
         <podcastone>pcocategory/arts-podcasts</podcastone>
     </dir>
