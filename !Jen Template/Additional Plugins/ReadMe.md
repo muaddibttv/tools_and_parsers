@@ -35,6 +35,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Useful tools for menu items, such as to mark an item non-clickable or open settings to a specific tab and section
 - toonova
     - Pulls cartoons and movies from a specific site, with 3-4 sources per (No subbed/dubbed)
+- topdocs
+    - Pulls free documentaries from a specific site by category
 - tvmaze
     - Pulls network and show information from the tvmaze website
 - views
