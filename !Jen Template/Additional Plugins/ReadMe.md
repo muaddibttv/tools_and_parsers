@@ -13,6 +13,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Used to pull categories, vides, etc. from the collectionofbestporn.com website
 - colorize
     - Plugin for letting users select from a list of colors. Can be used to colorize menu titles the way you want
+- docheaven
+    - Pulls free documentaries from a specific site by category
 - hesgoal
     - Returns Sports Games from hesgoal
 - lastfm
