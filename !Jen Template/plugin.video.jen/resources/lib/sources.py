@@ -452,13 +452,19 @@ class Sources(object):
             playable url
         """
         try:
-            youtube_id = url.split('?v=')[-1].split('/')[-1].split('?')[
-                0].split('&')[0]
+            if '?v=' in url:
+                youtube_id = url.split('?v=')[-1].split('/')[-1].split('?')[0].split('&')[0]
+            elif '/embed/' in url:
+                if 'videoseries' in url: # FIXME: cannot be played via this method (playlist) directly.
+                    return
+                else:
+                    youtube_id = url.split('/')[-1]
+            elif '/youtu.be/' in url:
+                youtube_id = url.split('/')[-1].split('?')[0]
             result = requests.head(
                 'http://www.youtube.com/watch?v=%s' % youtube_id)
             if result:
-                return 'plugin://plugin.video.youtube/play/?video_id=%s' % (
-                    youtube_id)
+                return 'plugin://plugin.video.youtube/play/?video_id=%s' % (youtube_id)
         except:
             return
 
