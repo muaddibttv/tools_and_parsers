@@ -42,7 +42,7 @@ ownAddon   = xbmcaddon.Addon(id=addon_id)
 
 #######################################################################
 # My New Settings
-current_version             = '1' # increase this when you want the service to update the below settings
+current_version             = '0' # increase this when you want the service to update the below settings
 enable_notification         = True
 updated_root_xml            = 'file://main.xml'
 updated_tvdb_api_key        = ''
