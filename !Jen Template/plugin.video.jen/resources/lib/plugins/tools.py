@@ -11,10 +11,14 @@
 
 
     Overview:
-
         Drop this PY in the plugins folder, and use whatever tools below you want.
 
     Version:
+        2018.5.25
+            - Added <pairwith> tags
+                - Can use pairlist to show all sites, or specific entry from PAIR_LIST to load that site from menu
+            - Added <trailer> tag support to load your custom YT trailer (via plugin url) for non-imdb items
+
         2018.5.1a
             - Added <mode> and <modeurl> tags (used together in same item)
 
@@ -25,6 +29,8 @@
         Tags: 
             <heading></heading> - Displays the entry as normal, but performs no action (not a directory or "item")
             <mysettings>0/0</mysettings> - Opens settings dialog to the specified Tab and section (0 indexed)
+            <pairwith></pairwith> - Used for pairing with sites. See list below of supported sites with this plugin
+            <trailer>plugin://plugin.video.youtube/play/?video_id=ChA0qNHV1D4</trailer>
 
     Usage Examples:
 
@@ -37,6 +43,22 @@
             <title>JEN: Customization</title>
             <mysettings>0/0</mysettings>
             <info>Open the Settings for the addon on the Customization tab</info>
+        </item>
+
+        <item>
+            <title>Pair With Sites</title>
+            <pairwith>pairlist</pairwith>
+        </item>
+
+        <item>
+            <title>Pair Openload</title>
+            <pairwith>openload</pairwith>
+        </item>
+
+        <item>
+            <title>Dune (1984)</title>
+            <trailer>plugin://plugin.video.youtube/play/?video_id=ChA0qNHV1D4</trailer>
+            <info>Provides the Trailer context link for this movie when Metadata is DISABLED in your addon.</info>
         </item>
 
         <item>
@@ -55,7 +77,7 @@
 
 """
 
-import collections,requests,re,os,traceback
+import collections,requests,re,os,traceback,webbrowser
 import koding
 import __builtin__
 import xbmc,xbmcaddon,xbmcgui
@@ -69,11 +91,18 @@ addon_id = xbmcaddon.Addon().getAddonInfo('id')
 addon_fanart = xbmcaddon.Addon().getAddonInfo('fanart')
 addon_icon   = xbmcaddon.Addon().getAddonInfo('icon')
 
+PAIR_LIST = [ ("openload", "https://olpair.com/pair"),
+        ("the_video_me", "https://thevideo.us/pair"),
+        ("vid_up_me", "https://vidup.me/pair"),
+        ("vshare", "http://vshare.eu/pair"),
+        ("flashx", "https://www.flashx.tv/?op=login&redirect=https://www.flashx.tv/pairing.php") ]
+
 class JenTools(Plugin):
     name = "jentools"
     priority = 200
 
     def process_item(self, item_xml):
+        result_item = None
         if "<heading>" in item_xml:
             item = JenItem(item_xml)
             result_item = {
@@ -130,7 +159,46 @@ class JenTools(Plugin):
                 'context': get_context_items(item),
                 "summary": item.get("summary", None)
             }
+        elif "<pairwith>" in item_xml:
+            item = JenItem(item_xml)
+            result_item = {
+                'label': item["title"],
+                'icon': item.get("thumbnail", addon_icon),
+                'fanart': item.get("fanart", addon_fanart),
+                'mode': "PAIRWITH",
+                'url': item.get("pairwith", ""),
+                'folder': False,
+                'imdb': "0",
+                'content': "files",
+                'season': "0",
+                'episode': "0",
+                'info': {},
+                'year': "0",
+                'context': get_context_items(item),
+                "summary": item.get("summary", None)
+            }
             return result_item
+        elif "<trailer>" in item_xml:
+            item = JenItem(item_xml)
+            result_item = {
+                'label': item["title"],
+                'icon': item.get("thumbnail", addon_icon),
+                'fanart': item.get("fanart", addon_fanart),
+                'mode': "PAIRWITH",
+                'url': item.get("pairwith", ""),
+                'folder': False,
+                'imdb': "0",
+                'content': "files",
+                'season': "0",
+                'episode': "0",
+                'info': {},
+                'year': "0",
+                'context': get_context_items(item),
+                "summary": item.get("summary", None)
+            }
+            result_item["info"]["trailer"] = item.get("trailer", None)
+            return result_item
+
 
 @route(mode='HEADING')
 def heading_handler():
@@ -150,3 +218,50 @@ def mysettings_handler(query):
         xbmc.executebuiltin('SetFocus(%i)' % (int(f) + 200))
     except:
         return
+
+@route(mode="PAIRWITH", args=["url"])
+def pairing_handler(url):
+    try:
+        site = ''
+        if 'pairlist' in url:
+            names = []
+            for item in PAIR_LIST:
+                the_title = 'Pair for %s' % (item[0].replace('_', ' ').capitalize())
+                names.append(the_title)
+            selected = xbmcgui.Dialog().select('Select Site',names)
+
+            if selected ==  -1:
+                return
+
+            # If you add [COLOR] etc to the title stuff in names loop above, this will strip all of that out and make it usable here
+            pair_item = re.sub('\[.*?]','',names[selected]).replace('Pair for ', '').replace(' ', '_').lower()
+            for item in PAIR_LIST:
+                if str(item[0]) == pair_item:
+                    site = item[1]
+                    break
+        else:
+            for item in PAIR_LIST:
+                if str(item[0]) == url:
+                    site = item[1]
+                    break
+
+        check_os = platform()
+        if check_os == 'android': 
+            spam_time = xbmc.executebuiltin('StartAndroidActivity(,android.intent.action.VIEW,,%s)' % (site))
+        elif check_os == 'osx':
+           os.system("open -a /Applications/Safari.app %s") % (site)
+        else:
+            spam_time = webbrowser.open(site)
+    except:
+        failure = traceback.format_exc()
+        xbmcgui.Dialog().textviewer('Exception',str(failure))
+        pass
+
+
+def platform():
+    if xbmc.getCondVisibility('system.platform.android'):   return 'android'
+    elif xbmc.getCondVisibility('system.platform.linux'):   return 'linux'
+    elif xbmc.getCondVisibility('system.platform.windows'): return 'windows'
+    elif xbmc.getCondVisibility('system.platform.osx'):     return 'osx'
+    elif xbmc.getCondVisibility('system.platform.atv2'):    return 'atv2'
+    elif xbmc.getCondVisibility('system.platform.ios'):     return 'ios'

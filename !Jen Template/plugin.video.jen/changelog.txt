@@ -1,3 +1,10 @@
+v1.6
+    - Settings.xml updated for service settings
+    - New service.py - be sure to read the header
+    - Updated Readme.html
+    - Updated version of Tools plugin
+    - Added YT API Plugin
+
 v1.5
     - Updates to addon.xml
         - Description updated
