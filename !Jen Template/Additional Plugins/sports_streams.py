@@ -1,6 +1,7 @@
 """
 
     Copyright (C) 2018
+    Version 2.0.0
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -54,7 +55,7 @@ class Sports_streams(Plugin):
             if "games" in item.get("sport_stream", ""):
                 result_item = {
                     'label': item["title"],
-                    'icon': item.get("thumbnail", addon_icon),
+                    'icon': "https://i.pinimg.com/736x/a2/b9/7c/a2b97c577ff82928cc53591c33ba8f75--stream-online-daytona--live.jpg",
                     'fanart': item.get("fanart", addon_fanart),
                     'mode': "Sport_Stream",
                     'url': item.get("sport_stream", ""),
@@ -88,7 +89,8 @@ def get_stream(url):
             head1 = head1.replace("&nbsp;", "")
             xml += "<item>"\
                    "<title>[COLOR blue]%s[/COLOR]</title>"\
-                   "<thumbnail></thumbnail>"\
+                   "<thumbnail>http://www.logotypes101.com/logos/997/AD71A2CC84DD8DDE7932F9BC585926E1/Sports.png</thumbnail>"\
+                   "<fanart>http://sportz4you.com/blog/wp-content/uploads/2016/01/0b46b20.jpg</fanart>"\
                    "<link></link>"\
                    "</item>" % (head1)
         match1 = re.compile('<span style="color:#FF0000;">(.+?)</span> (.+?)<a.+?href="(.+?)"',re.DOTALL).findall(str(block1))
@@ -96,7 +98,8 @@ def get_stream(url):
             link = "plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url="+link
             xml += "<plugin>"\
                    "<title>%s - %s</title>"\
-                   "<thumbnail></thumbnail>"\
+                   "<thumbnail>http://www.logotypes101.com/logos/997/AD71A2CC84DD8DDE7932F9BC585926E1/Sports.png</thumbnail>"\
+                   "<fanart>http://sportz4you.com/blog/wp-content/uploads/2016/01/0b46b20.jpg</fanart>"\
                    "<link>%s</link>"\
                    "</plugin>" % (time,name,link)
         match3 = re.compile('<br><font color="red"><h3>.+?<br><font color="red"><h3>(.+?)<input onclick=',re.DOTALL).findall(html)
@@ -104,7 +107,8 @@ def get_stream(url):
             head2 = head2.replace("&nbsp;", "")
             xml += "<item>"\
                    "<title>[COLOR blue]%s[/COLOR]</title>"\
-                   "<thumbnail></thumbnail>"\
+                   "<thumbnail>http://www.logotypes101.com/logos/997/AD71A2CC84DD8DDE7932F9BC585926E1/Sports.png</thumbnail>"\
+                   "<fanart>http://sportz4you.com/blog/wp-content/uploads/2016/01/0b46b20.jpg</fanart>"\
                    "<link></link>"\
                    "</item>" % (head2)
         block2 = re.compile('<br><font color="red"><h3>.+?<br><font color="red"><h3>(.+?)<script data-cfasync',re.DOTALL).findall(html)
@@ -113,7 +117,8 @@ def get_stream(url):
             link = "plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url="+link 
             xml += "<plugin>"\
                    "<title>%s - %s</title>"\
-                   "<thumbnail></thumbnail>"\
+                   "<thumbnail>http://www.logotypes101.com/logos/997/AD71A2CC84DD8DDE7932F9BC585926E1/Sports.png</thumbnail>"\
+                   "<fanart>http://sportz4you.com/blog/wp-content/uploads/2016/01/0b46b20.jpg</fanart>"\
                    "<link>%s</link>"\
                    "</plugin>" % (time,name,link)                                                                
     except:

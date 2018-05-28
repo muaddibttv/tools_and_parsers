@@ -1,6 +1,7 @@
 """
 
     Copyright (C) 2018, TonyH
+    Version 2.0.0
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,16 +18,12 @@
 
     -------------------------------------------------------------
 
-    <<< Usage Examples >>>
+    Usage Examples:
 
-	
-	### Sports Games ###
-	
-	** Returns Sports Games from the http://www.hesgoal.com website
-    <dir>
-      <title>HesGoal Games</title>
-      <hesgoal>games</hesgoal>
-    </dir>
+<dir>
+<title>HesGoal Games</title>
+<hesgoal>games</hesgoal>
+</dir>
 
 """    
 
@@ -57,7 +54,7 @@ class HesGoal(Plugin):
                     'label': item["title"],
                     'icon': item.get("thumbnail", addon_icon),
                     'fanart': item.get("fanart", addon_fanart),
-                    'mode': "get_games",
+                    'mode': "get_hesgoal_games",
                     'url': item.get("hesgoal", ""),
                     'folder': True,
                     'imdb': "0",
@@ -76,7 +73,7 @@ class HesGoal(Plugin):
                 return result_item
 
 
-@route(mode='get_games', args=["url"])
+@route(mode='get_hesgoal_games', args=["url"])
 def get_game(url):
     xml = ""
     try:    
@@ -86,19 +83,26 @@ def get_game(url):
         block = re.compile('<div id="main_contents">(.+?)<div id="footer">',re.DOTALL).findall(html)
         match = re.compile('<a href="(.+?)".+?src="(.+?)".+?alt="(.+?)".+?href=.+?<p>(.+?)</p>',re.DOTALL).findall(str(block))
         for link, image, name,time in match:
+            if "Djorkaeff" in name:
+                break
             html2=requests.get(link,headers=headers).content
             match2 = re.compile('<center><iframe.+?src="(.+?)"',re.DOTALL).findall(html2)
             for url2 in match2:
                 url2 = "http:"+url2
-                html3 = requests.get(url2,headers=headers).content
-                match3 = re.compile('source:(.+?),',re.DOTALL).findall(html3)
-                for url3 in match3:
-                    url3 = url3.replace("'http","http").replace(".m3u8'",".m3u8").replace(".m3u'",".m3u").replace(".ts'",".ts").lstrip().strip()
-                    xml += "<item>"\
-                           "<title>%s : %s</title>"\
-                           "<thumbnail>%s</thumbnail>"\
-                           "<link>%s</link>"\
-                           "</item>" % (name,time,image,url3)
+                url3 = "plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url="+url2+"|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"
+                xml += "<plugin>"\
+                       "<title>%s : %s</title>"\
+                       "<thumbnail>%s</thumbnail>"\
+                       "<fanart>http://sportz4you.com/blog/wp-content/uploads/2016/01/0b46b20.jpg</fanart>"\
+                       "<link>%s</link>"\
+                       "</plugin>" % (name,time,image,url3)
+        if not xml:
+            xml += "<item>"\
+                   "<title>[B]----No Games at this time----[/B]</title>"\
+                   "<thumbnail></thumbnail>"\
+                   "<fanart>http://sportz4you.com/blog/wp-content/uploads/2016/01/0b46b20.jpg</fanart>"\
+                   "<link></link>"\
+                   "</item>"                                
     except:
         pass
     jenlist = JenList(xml)

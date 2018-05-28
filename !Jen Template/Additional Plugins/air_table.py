@@ -1,6 +1,7 @@
 """
     air_table.py
     Copyright (C) 2018,
+    Version 2.0.0
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +28,10 @@
     <Airtable>tv_channels</Airtable>
     </dir>
 
-
+    <dir>
+    <title>[COLOR=orange]Tv Channels2[/COLOR]</title>
+    <Airtable>channels2</Airtable>
+    </dir>
 
     Returns the Sports Channels-
 
@@ -43,6 +47,11 @@
     <Airtable>m3u_lists</Airtable>
     </dir>
 
+    Returns the 24-7 Channels
+    <dir>
+    <title>24-7 Channels</title>
+    <Airtable>247</Airtable>
+    </dir>
 
     --------------------------------------------------------------
 
@@ -145,7 +154,95 @@ class AIRTABLE(Plugin):
                     'fanart_image': result_item["fanart"]
                 }
                 result_item['fanart_small'] = result_item["fanart"]
-                return result_item     
+                return result_item
+
+            elif "247" in item.get("Airtable", ""):
+                result_item = {
+                    'label': item["title"],
+                    'icon': item.get("thumbnail", addon_icon),
+                    'fanart': item.get("fanart", addon_fanart),
+                    'mode': "247",
+                    'url': "",
+                    'folder': True,
+                    'imdb': "0",
+                    'season': "0",
+                    'episode': "0",
+                    'info': {},
+                    'year': "0",
+                    'context': get_context_items(item),
+                    "summary": item.get("summary", None)
+                }
+                result_item["properties"] = {
+                    'fanart_image': result_item["fanart"]
+                }
+                result_item['fanart_small'] = result_item["fanart"]
+                return result_item
+
+            elif "channels2" in item.get("Airtable", ""):
+                result_item = {
+                    'label': item["title"],
+                    'icon': item.get("thumbnail", addon_icon),
+                    'fanart': item.get("fanart", addon_fanart),
+                    'mode': "channels2",
+                    'url': "",
+                    'folder': True,
+                    'imdb': "0",
+                    'season': "0",
+                    'episode': "0",
+                    'info': {},
+                    'year': "0",
+                    'context': get_context_items(item),
+                    "summary": item.get("summary", None)
+                }
+                result_item["properties"] = {
+                    'fanart_image': result_item["fanart"]
+                }
+                result_item['fanart_small'] = result_item["fanart"]
+                return result_item                 
+
+@route(mode='channels2')
+def get_channels2():
+    xml = ""
+    at = Airtable('appycq5PhSS0tygok', 'TV_channels2', api_key='keyikW1exArRfNAWj')
+    match = at.get_all(maxRecords=700, sort=['channel'])
+    results = re.compile("fanart': u'(.+?)'.+?link': u'(.+?)'.+?thumbnail': u'(.+?)'.+?channel': u'(.+?)'.+?summary': u'(.+?)'",re.DOTALL).findall(str(match))
+    for fanart,link,thumbnail,channel,summary in results:
+        if "plugin" in link:
+
+            xml += "<plugin>"\
+                   "<title>%s</title>"\
+                   "<meta>"\
+                   "<content>movie</content>"\
+                   "<imdb></imdb>"\
+                   "<title>%s</title>"\
+                   "<year></year>"\
+                   "<thumbnail>%s</thumbnail>"\
+                   "<fanart>%s</fanart>"\
+                   "<summary>%s</summary>"\
+                   "</meta>"\
+                   "<link>"\
+                   "<sublink>%s</sublink>"\
+                   "</link>"\
+                   "</plugin>" % (channel,channel,thumbnail,fanart,summary,link)
+                
+        else:
+            xml +=  "<item>"\
+                    "<title>%s</title>"\
+                    "<meta>"\
+                    "<content>movie</content>"\
+                    "<imdb></imdb>"\
+                    "<title>%s</title>"\
+                    "<year></year>"\
+                    "<thumbnail>%s</thumbnail>"\
+                    "<fanart>%s</fanart>"\
+                    "<summary>%s</summary>"\
+                    "</meta>"\
+                    "<link>"\
+                    "<sublink>%s</sublink>"\
+                    "</link>"\
+                    "</item>" % (channel,channel,thumbnail,fanart,summary,link)
+    jenlist = JenList(xml)
+    display_list(jenlist.get_list(), jenlist.get_content_type())
 
 
 @route(mode='Tv_channels')
@@ -245,7 +342,6 @@ def M3u_Lists():
     match = at.get_all(maxRecords=700, sort=['name'])
     results = re.compile("fanart': u'(.+?)'.+?link': u'(.+?)'.+?name': u'(.+?)'.+?thumbnail': u'(.+?)'",re.DOTALL).findall(str(match))
     for fanart,link,name,thumbnail in results:
-        print "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"+link
         xml += "<plugin>"\
                "<title>%s</title>"\
                "<meta>"\
@@ -261,7 +357,51 @@ def M3u_Lists():
                "</plugin>" % (name,name,thumbnail,fanart,link)
                 
     jenlist = JenList(xml)
-    display_list(jenlist.get_list(), jenlist.get_content_type())    
+    display_list(jenlist.get_list(), jenlist.get_content_type())
+
+@route(mode='247')
+def twenty_four_seven():
+    xml = ""
+    at = Airtable('appK3PHvFCUPbtx6G', 'twenty_four_seven', api_key='keyOHaxsTGzHU9EEh')
+    match = at.get_all(maxRecords=700, view='Grid view')
+    results = re.compile("fanart': u'(.+?)'.+?link': u'(.+?)'.+?thumbnail': u'(.+?)'.+?channel': u'(.+?)'.+?summary': u'(.+?)'",re.DOTALL).findall(str(match))
+    for fanart,link,thumbnail,channel,summary in results:
+        if "plugin" in link:
+
+            xml += "<plugin>"\
+                   "<title>%s</title>"\
+                   "<meta>"\
+                   "<content>movie</content>"\
+                   "<imdb></imdb>"\
+                   "<title>%s</title>"\
+                   "<year></year>"\
+                   "<thumbnail>%s</thumbnail>"\
+                   "<fanart>%s</fanart>"\
+                   "<summary>%s</summary>"\
+                   "</meta>"\
+                   "<link>"\
+                   "<sublink>%s</sublink>"\
+                   "</link>"\
+                   "</plugin>" % (channel,channel,thumbnail,fanart,summary,link)
+                
+        else:
+            xml +=  "<item>"\
+                    "<title>%s</title>"\
+                    "<meta>"\
+                    "<content>movie</content>"\
+                    "<imdb></imdb>"\
+                    "<title>%s</title>"\
+                    "<year></year>"\
+                    "<thumbnail>%s</thumbnail>"\
+                    "<fanart>%s</fanart>"\
+                    "<summary>%s</summary>"\
+                    "</meta>"\
+                    "<link>"\
+                    "<sublink>%s</sublink>"\
+                    "</link>"\
+                    "</item>" % (channel,channel,thumbnail,fanart,summary,link)
+    jenlist = JenList(xml)
+    display_list(jenlist.get_list(), jenlist.get_content_type())        
 
 "-----------------------------------------------------------------"
 
