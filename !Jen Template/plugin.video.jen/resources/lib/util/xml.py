@@ -360,7 +360,7 @@ wrapper class for jen list functions
             'info': {},
             'year': year,
             'context': context,
-            'plot': item.get("summary", None)
+            'plot': item.get("summary", None),
             "summary": item.get("summary", None)
         }
         if fanart:
@@ -465,7 +465,7 @@ def display_list(items, content_type):
             info_labels=item["info"],
             set_property=item.get("properties", {}),
             set_art={"poster": item["icon"]})
-        xbmcgui.Dialog().textviewer('info',str(item["info"]))
+        # xbmcgui.Dialog().textviewer('info',str(item["info"]))
     xbmcplugin.setContent(int(sys.argv[1]), content_type)
 
 
