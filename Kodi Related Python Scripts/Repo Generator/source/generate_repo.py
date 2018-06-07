@@ -178,9 +178,13 @@ class Generator:
                     addon_xml += unicode( line.rstrip() + "\n", "utf-8" )
                 # we succeeded so add to our final addons.xml text
                 addons_xml += addon_xml.rstrip() + "\n\n"
-            except Exception, e:
+            except:
                 # missing or poorly formatted addon.xml
-                print( "Excluding %s for %s" % ( _path, e, ) )
+                failure = traceback.format_exc()
+                print( "Excluding %s for %s" % ( str(_path), str(addon) ) )
+                print( "Exception Details:" )
+                print( str(failure) )
+
         # clean and add closing tag
         addons_xml = addons_xml.strip() + u"\n</addons>\n"
         # save file
@@ -199,8 +203,8 @@ class Generator:
             self._save_file( result, file=self.output_path + "addons.xml.md5" )
         except:
             failure = traceback.format_exc()
-            print( "**** An error occurred creating addons.xml.md5 file!\n%s" % ( e, ) )
-            print('Kodi Repo Generator Exception: \n' + str(failure))
+            print( "**** An error occurred creating addons.xml.md5 file!\n" )
+            print( 'Kodi Repo Generator Exception: \n' + str(failure) )
 
     def _save_file( self, data, file ):
         try:
@@ -208,8 +212,8 @@ class Generator:
             open( file, "w" ).write( data )
         except:
             failure = traceback.format_exc()
-            print( "**** An error occurred saving %s file!\n%s" % ( file, e, ) )
-            print('Kodi Repo Generator Exception: \n' + str(failure))
+            print( "**** An error occurred saving %s file!\n" )
+            print( 'Kodi Repo Generator Exception: \n' + str(failure) )
 
 if ( __name__ == "__main__" ):
     # start
