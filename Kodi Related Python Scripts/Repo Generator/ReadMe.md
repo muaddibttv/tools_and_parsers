@@ -1,6 +1,6 @@
 # Repo Generator Project
 
-> All original work and credit goes out to the developers of the original Generator this is based on.
+> All original work and credit goes out to the developers of the original Generator this is based on. I do not have their handles, so using this as the credit for their inspiration on this fork
 
 ## Files in this Git Project
 
@@ -21,7 +21,7 @@
 
 ## Author
 
-**Muad'Dib/Tantrum)**
+**Muad'Dib/Tantrum**
 
 * Rodrigo (modifications prior to this fork)
 * BartOtten (modifications prior to this fork)
