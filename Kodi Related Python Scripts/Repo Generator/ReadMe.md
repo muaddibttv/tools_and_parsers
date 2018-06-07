@@ -5,9 +5,9 @@
 ## Files in this Git Project
 
 - Download File
-    - repo_generator_download.zip
+    - [repo_generator_download.zip](https://github.com/muaddibttv/tools_and_parsers/raw/master/Kodi%20Related%20Python%20Scripts/Repo%20Generator/repo_generator_download.zip)
 - Source Files (folder)
-    - /source
+    - [/source](https://github.com/muaddibttv/tools_and_parsers/tree/master/Kodi%20Related%20Python%20Scripts/Repo%20Generator/source)
 
 ## Install
 
