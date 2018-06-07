@@ -21,12 +21,12 @@
 
 ## Author
 
-**Scott Royalty (aka Muad'Dib/Tantrum)**
+**Muad'Dib/Tantrum)**
 
 * Rodrigo (modifications prior to this fork)
 * BartOtten (modifications prior to this fork)
 
 ## License
 
-Copyright © 2018 [Scott Royalty](https://github.com/muaddibttv)
+Copyright © 2018 [MuadDib](https://github.com/muaddibttv)
 Licensed under the Beerware license.
