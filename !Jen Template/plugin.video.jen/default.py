@@ -26,6 +26,8 @@ ownAddon = xbmcaddon.Addon(id=addon_id)
 enable_installa = ownAddon.getSetting('dlimage')
 enable_newswin = ownAddon.getSetting('news_win')
 root_xml_url = ownAddon.getSetting('root_xml')
+if not 'file:' in root_xml_url and not 'http' in root_xml_url:
+    root_xml_url = root_xml_url.decode('base64')
 __builtin__.tvdb_api_key = ownAddon.getSetting('tvdb_api_key')
 __builtin__.tmdb_api_key = ownAddon.getSetting('tmdb_api_key')
 __builtin__.trakt_client_id = ownAddon.getSetting('trakt_api_client_id')

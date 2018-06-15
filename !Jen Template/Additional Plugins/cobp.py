@@ -21,7 +21,7 @@
 
 <dir>
     <title>Collection of Best Porn - Display Category content</title>
-    <cobp>category/squirting</sport_stream>
+    <cobp>category/squirting</cobp>
 </dir>
 
 
