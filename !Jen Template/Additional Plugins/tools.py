@@ -14,6 +14,13 @@
         Drop this PY in the plugins folder, and use whatever tools below you want.
 
     Version:
+        2018.6.14
+            - Fix for pairing on Mac OSX
+
+        2018.6.8
+            - Added Streamango and Streamcherry pairing sites
+            - Added <passreq> tag to password protect submenus
+
         2018.5.25
             - Added <pairwith> tags
                 - Can use pairlist to show all sites, or specific entry from PAIR_LIST to load that site from menu
@@ -30,6 +37,8 @@
             <heading></heading> - Displays the entry as normal, but performs no action (not a directory or "item")
             <mysettings>0/0</mysettings> - Opens settings dialog to the specified Tab and section (0 indexed)
             <pairwith></pairwith> - Used for pairing with sites. See list below of supported sites with this plugin
+            <passreq></passreq> - Used to password protect submenus. Format is base64 encoded string formatted like this:
+                Password|link_to_xml
             <trailer>plugin://plugin.video.youtube/play/?video_id=ChA0qNHV1D4</trailer>
 
     Usage Examples:
@@ -53,6 +62,16 @@
         <item>
             <title>Pair Openload</title>
             <pairwith>openload</pairwith>
+        </item>
+
+        <item>
+            <title>Password Protected Local File</title>
+            <passreq>VGhpc0lzVGhlUGFzc3dvcmR8ZmlsZTovL3N1Ym1lbnUueG1s</passreq>
+        </item>
+
+        <item>
+            <title>Password Protected Remote File</title>
+            <passreq>VGhpc0lzVGhlUGFzc3dvcmR8aHR0cDovL3d3dy5leGFtcGxlLmNvbS9zdWJtZW51LnhtbA==</passreq>
         </item>
 
         <item>
@@ -88,14 +107,19 @@ from resources.lib.util.xml import JenItem, JenList, display_list
 from unidecode import unidecode
 
 addon_id = xbmcaddon.Addon().getAddonInfo('id')
+this_addon   = xbmcaddon.Addon(id=addon_id)
 addon_fanart = xbmcaddon.Addon().getAddonInfo('fanart')
 addon_icon   = xbmcaddon.Addon().getAddonInfo('icon')
+addon_path   = xbmcaddon.Addon().getAddonInfo('path')
 
-PAIR_LIST = [ ("openload", "https://olpair.com/pair"),
+PAIR_LIST = [ ("flashx", "https://www.flashx.tv/?op=login&redirect=https://www.flashx.tv/pairing.php"),
+        ("openload", "https://olpair.com/pair"),
+        ("streamango", "https://streamango.com/pair"),
+        ("streamcherry", "https://streamcherry.com/pair"),
         ("the_video_me", "https://thevideo.us/pair"),
         ("vid_up_me", "https://vidup.me/pair"),
-        ("vshare", "http://vshare.eu/pair"),
-        ("flashx", "https://www.flashx.tv/?op=login&redirect=https://www.flashx.tv/pairing.php") ]
+        ("vshare", "http://vshare.eu/pair") ]
+
 
 class JenTools(Plugin):
     name = "jentools"
@@ -141,6 +165,25 @@ class JenTools(Plugin):
                 "summary": item.get("summary", None)
             }
             return result_item
+        elif "<passreq>" in item_xml:
+            item = JenItem(item_xml)
+            result_item = {
+                'label': item["title"],
+                'icon': item.get("thumbnail", addon_icon),
+                'fanart': item.get("fanart", addon_fanart),
+                'mode': "PASSREQ",
+                'url': item.get("passreq", ""),
+                'folder': True,
+                'imdb': "0",
+                'content': "files",
+                'season': "0",
+                'episode': "0",
+                'info': {},
+                'year': "0",
+                'context': get_context_items(item),
+                "summary": item.get("summary", None)
+            }
+            return result_item
         elif "<mode>" in item_xml:
             item = JenItem(item_xml)
             result_item = {
@@ -159,6 +202,7 @@ class JenTools(Plugin):
                 'context': get_context_items(item),
                 "summary": item.get("summary", None)
             }
+            return result_item
         elif "<pairwith>" in item_xml:
             item = JenItem(item_xml)
             result_item = {
@@ -219,6 +263,36 @@ def mysettings_handler(query):
     except:
         return
 
+
+@route(mode="PASSREQ", args=["url"])
+def password_handler(url):
+    prot_xml = ''
+    sep_list = url.decode('base64').split('|')
+    dec_pass = sep_list[0]
+    xml_loc = sep_list[1]
+    input = ''
+    keyboard = xbmc.Keyboard(input, '[COLOR red]Are you worthy?[/COLOR]')
+    keyboard.doModal()
+    if keyboard.isConfirmed():
+        input = keyboard.getText()
+    if input == dec_pass:
+        if 'http' in xml_loc:
+            prot_xml = requests.get(xml_loc).content
+        else:
+            import xbmcvfs
+            xml_loc = xml_loc.replace('file://', '')
+            xml_file = xbmcvfs.File(os.path.join(addon_path, "xml", xml_loc))
+            prot_xml = xml_file.read()
+            xml_file.close()
+    else:
+        prot_xml += "<dir>"\
+                "    <title>[COLOR yellow]Wrong Answer! You are not worthy[/COLOR]</title>"\
+                "    <thumbnail>https://nsx.np.dl.playstation.net/nsx/material/c/ce432e00ce97a461b9a8c01ce78538f4fa6610fe-1107562.png</thumbnail>"\
+                "</dir>"
+    jenlist = JenList(prot_xml)
+    display_list(jenlist.get_list(), jenlist.get_content_type())
+
+
 @route(mode="PAIRWITH", args=["url"])
 def pairing_handler(url):
     try:
@@ -249,7 +323,7 @@ def pairing_handler(url):
         if check_os == 'android': 
             spam_time = xbmc.executebuiltin('StartAndroidActivity(,android.intent.action.VIEW,,%s)' % (site))
         elif check_os == 'osx':
-           os.system("open -a /Applications/Safari.app %s") % (site)
+           os.system("open " + site)
         else:
             spam_time = webbrowser.open(site)
     except:
