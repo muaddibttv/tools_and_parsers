@@ -1,89 +1,90 @@
 # -*- coding: UTF-8 -*-
-""" Processes YT channels to build a template file listing links to all the channels, using their own icons. """
+""" Processes HTML of a YT channel's videos, to build a template file for all of them. """
 
 import datetime, json, os, re, requests, sys, traceback
 
-# CHANGEME - Get your own API key please :)
 YOUTUBE_API_KEY = "AIzaSyA4ktCh7tLBk467AYgPMykgdtMZ8HL68hE"
-RESULTS_PER_PAGE = '50' # 1-50 as per Google's rules. Left in on this script for completeness
+RESULTS_PER_PAGE = '40' # 1-50 as per Google's rules.
 
 class Generator:
     def __init__( self ):
         # create initial variables needed later
-        self.base_search_url = 'https://www.googleapis.com/youtube/v3/channels?'
+        self.base_search_url = 'https://www.googleapis.com/youtube/v3/playlistItems?'
         self.tools_path = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
 
         # CHANGEME to match the path needed for your generic fanart to add to each entry. Set to None to not set it.
         # Example: self.fanart = None
         self.fanart = None
 
-        # CHANGEME to match the list of channels you want to pull and make the xml for. Name in first section of each doesn't matter. That is just for Print statements to screen
-        # Please note, python 2.7 does not natively preserve the ordering of dictionaries. Python 3.6+ does however, so you will find these will process "out of order" on older python
-        self.channel_list = { 'Spaghetti Western TV':'UCty9vU1tHhH32ruhWbIpFwA',
-            'Western TV Series':'UCI3jCHxTrdgLs2BNIfSlfSQ',
-            'Western Mania':'UCPUU5swJo5XLqvn77s6FB8g',
-            'Westerns on the Web':'UCUlKudY9luAjzmzszG_sduw',
-            'Wild West Toys':'UC9DohyHhE0rhKUWAS2xCBDQ',
-            'Western Movies and Films':'UCXyYbZ77cwxZfvVYYz5Xy0A',
-            'Western Library':'UC7DPnF9VLnyQDiSUrOGWcsw',
-            'The Western Club':'UCF20DheCsen-iOMtHN1XMcw',
-            'Western Mania HD':'UCLEkm0_3IUzDtPypdhIYMjw'
-            }
-
+        # CHANGEME to match the playlist ID you want to pull
+        self.playlist = 'PLPhvFhjZ6BrvNlxCpuUyqaW8rZkleUyMS'
         # generate files
         self._generate_yt_templates()
 
         # notify user
-        print('Finished parsing the Youtube Channel List. Output saved as channels.xml')
-
+        print('Finished parsing the YouTube Channel. Output saved as channel_videos.xml')
 
     def _generate_yt_templates ( self ):
 
-        print('Contacting Youtube API.....\n\n')
+        print('Contacting YouTube API.....')
 
-        first_url = self.base_search_url+'key={}&order=date&maxResults={}'.format(YOUTUBE_API_KEY, RESULTS_PER_PAGE)
         try:
-            output_string = ''
+            output_string = self.get_all_video_in_channel()
+        except:
+            failure = traceback.format_exc()
+            print('Youtube Playlist Parser - Exception: \n' + str(failure))
 
-            for channel_id in self.channel_list:
-                print('Processing channel for ' + str(channel_id))
-                url = first_url + '&id='+self.channel_list[channel_id]+'&part=id,snippet,contentDetails'
+        # save file
+        with open('channel_videos.xml','w') as f:
+            f.write(output_string)
 
-                inp = requests.get(url, headers={'User-Agent':randomagent()})
-                resp = inp.json()
- 
-                title_temp = resp["items"][0]['snippet']["localized"]["title"]
-                desc = str(resp["items"][0]['snippet']["localized"]["description"])
+
+    def get_all_video_in_channel(self):
+        first_url = self.base_search_url+'key={}&playlistId={}&part=snippet,id&order=date&maxResults={}'.format(YOUTUBE_API_KEY, self.playlist, RESULTS_PER_PAGE)
+
+        output_string = ''
+
+        total_results = 0
+        cycle = 0
+        url = first_url
+
+        while True:
+            inp = requests.get(url, headers={'User-Agent':randomagent()})
+            resp = inp.json()
+
+            for video_item in resp['items']:
+                title_temp = video_item["snippet"]["title"]
                 title = title_temp
+                desc = video_item["snippet"]["description"].encode('ascii',errors='ignore')
                 title_temp = replaceHTMLCodes(title_temp)
                 title_temp = replaceEscapeCodes(title_temp)
-                title_temp = title_temp.replace(u'\u2122', 'N').replace(u'\xa0', u' ').replace(u'\xe4', u'a').replace(u'\xe9', u'e').replace(u'\xeb', u'e').replace(u'\xe6', u'ae').replace(u'\xfa', u'u').replace(u'\xda', u'U').replace(u'\xe7', u'c')
+                title_temp = title_temp.replace(u'\xa0', u' ').replace(u'\xa9', u'').replace(u'\xe4', u'a').replace(u'\xe9', u'e').replace(u'\xeb', u'e').replace(u'\xe6', u'ae').replace(u'\xfa', u'u').replace(u'\xda', u'U').replace(u'\xe7', u'c')
                 title_temp = title_temp.replace(u'\xe0', u'a').replace(u'\xc9', u'E').replace(u'\xf3', u'o').replace(u'\xff', u'y').replace(u'\xe1', u'a').replace(u'\xed', u'i').replace(u'\xf1', u'n').replace(u'\xe3', u'a')
-                title = title.encode('ascii',errors='ignore')
                 title_temp = title_temp.lower()
 
+                video_id = video_item['snippet']['resourceId']['videoId']
                 try:
-                    thumbnail = resp['items'][0]['snippet']["thumbnails"]["high"]["url"]
+                    thumbnail = video_item["snippet"]["thumbnails"]["standard"]["url"]
                 except:
-                    thumbnail = resp['items'][0]['snippet']["thumbnails"]["default"]["url"]
+                    thumbnail = video_item["snippet"]["thumbnails"]["default"]["url"]
 
-                output_string = output_string + '<plugin>\n'
+                output_string = output_string + '<item>\n'
                 output_string = output_string + '    <title>' + str(title) + '</title>\n'
                 output_string = output_string + '    <meta>\n'
-                output_string = output_string + '       <summary>' + str(desc) + '</summary>\n'
+                output_string = output_string + '        <summary>' + str(desc) + ' </summary>\n'
                 output_string = output_string + '    </meta>\n'
-                output_string = output_string + '    <link>plugin://plugin.video.youtube/channel/' + str(self.channel_list[channel_id]) + '/</link>\n'
+                output_string = output_string + '    <link>https://www.youtube.com/watch?v=' + str(video_id) + '/</link>\n'
                 output_string = output_string + '    <thumbnail>' + str(thumbnail) + '</thumbnail>\n'
                 if not self.fanart == None:
                     output_string = output_string + '    <fanart>' + str(self.fanart) + '</fanart>\n'
-                output_string = output_string + '</plugin>\n\n'               
-        except:
-            failure = traceback.format_exc()
-            print('Youtube Channel Lister - Exception: \n' + str(failure))
+                output_string = output_string + '</item>\n\n'
 
-        # save file
-        with open('channels.xml','w') as f:
-            f.write(output_string)
+            try:
+                next_page_token = resp['nextPageToken']
+                url = first_url + '&pageToken={}'.format(next_page_token)
+            except:
+                break
+        return output_string
 
 def replaceHTMLCodes(txt):
     txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
@@ -105,7 +106,6 @@ def replaceEscapeCodes(txt):
         import HTMLParser as html_parser
     txt = html_parser.HTMLParser().unescape(txt)
     return txt
-
 
 def randomagent():
     import random

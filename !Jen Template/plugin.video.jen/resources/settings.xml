@@ -77,6 +77,7 @@
     <category label="30770">
         <setting id="debug" type="bool" label="30758" default="false" visible="true"/>
         <setting id="root_xml" type="text" label="30060" option="hidden" default="file://main.xml" visible="false"/>
+        <setting id="message_xml_url" type="text" label="News File Location" option="hidden" default="file://news.xml" visible="false"/>
         <setting label="Current API Set Version" id="current_version" type="text" option="hidden" default="0" visible="false"/>
         <setting label="Enable Service Notification" id="enable_notification" type="bool" option="hidden" default="true" visible="false"/>
         <setting label="Disable Service after First Run" id="disable_service" type="bool" option="hidden" default="true" visible="false"/>

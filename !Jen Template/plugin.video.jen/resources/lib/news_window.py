@@ -20,7 +20,10 @@ from koding import Download
 from koding import route, Run 
 
 
-message_xml_url = "http://YOUR_URL.co.uk/message.xml"
+addon_id = xbmcaddon.Addon().getAddonInfo('id')
+ownAddon = xbmcaddon.Addon(id=addon_id)
+message_xml_url = ownAddon.getSetting('message_xml_url')
+
 
 @route(mode="dialog_example")
 def Dialog_Example():

@@ -234,6 +234,10 @@ wrapper class for jen list functions
             title = item["title"]
             if title == "":
                 title = item["name"]
+                koding.dolog("depricated: <name>")
+                koding.dolog("name: " + repr(title))
+                koding.dolog("Use <title> instead of <name> in your xml")
+                koding.dolog("#####################")
             try:
                 title = xbmcaddon.Addon().getLocalizedString(int(title))
             except ValueError:

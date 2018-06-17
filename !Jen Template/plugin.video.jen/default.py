@@ -164,8 +164,12 @@ def scraper_settings():
 
 @route(mode="ResolverSettings")
 def resolver_settings():
-    xbmcaddon.Addon('script.module.resolveurl').openSettings()
-
+    try:
+        import resolveurl
+        xbmcaddon.Addon('script.module.resolveurl').openSettings()
+    except:
+        import urlresolver
+        xbmcaddon.Addon('script.module.urlresolver').openSettings()
 
 @route(mode="ClearTraktAccount")
 def clear_trakt_account():

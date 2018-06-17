@@ -2,6 +2,9 @@
     imdb.py --- Jen Plugin for accessing iMDB data
     Copyright (C) 2018, Mister-X
 
+    --June 16, 2018 Added try and except to next page code to fix results not being displayed
+    if there was only one page--
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -15,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    Version:
-        2018-05-14
-            Latest version to include with a Jen Release
 
     Usage Examples:
 	<dir>
@@ -513,7 +513,7 @@ def imdbmovies(url):
 	for thumbnail, imdb, title, year in match:
 		name = title + " " + year
 		year = year.replace("(","").replace(")","")
-		thumbnail = thumbnail.replace("@._V1_UX67_CR0,0,67,98_AL_.jpg","@._V1_UX520_CR0,0,520,700_AL_.jpg")
+		thumbnail = thumbnail.replace("@._V1_UX67_CR0,0,67,98_AL_.jpg","@._V1_UX520_CR0,0,520,700_AL_.jpg")       
 		xml += "<item>"\
 				"<title>%s</title>"\
 				"<meta>"\
@@ -529,14 +529,17 @@ def imdbmovies(url):
 				"<thumbnail>%s</thumbnail>"\
 				"<fanart></fanart>"\
 				"</item>" % (name, imdb, title, year, thumbnail)
-	next_page = re.compile(
-				'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
-				re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
-	xml += "<dir>"\
-		   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
-		   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
-		   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
-		   "</dir>" % (next_page)
+	try:			
+		next_page = re.compile(
+					'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
+					re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
+		xml += "<dir>"\
+			   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
+			   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
+			   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
+			   "</dir>" % (next_page)
+	except:
+	    pass		   
 	jenlist = JenList(xml)
 	display_list(jenlist.get_list(), jenlist.get_content_type())
 
@@ -790,14 +793,17 @@ def imdbyears(url):
 				"<thumbnail>%s</thumbnail>"\
 				"<fanart></fanart>"\
 				"</item>" % (name, imdb, title, year, thumbnail)
-	next_page = re.compile(
-				'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
-				re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
-	xml += "<dir>"\
-		   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
-		   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
-		   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
-		   "</dir>" % (next_page)
+	try:				
+		next_page = re.compile(
+					'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
+					re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
+		xml += "<dir>"\
+			   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
+			   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
+			   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
+			   "</dir>" % (next_page)
+	except:
+	    pass		   
 	jenlist = JenList(xml)
 	display_list(jenlist.get_list(), jenlist.get_content_type())
 
@@ -828,14 +834,17 @@ def imdbyearstv(url):
 			   "<thumbnail>%s</thumbnail>"\
 			   "<fanart></fanart>"\
 			   "</dir>" % (name, imdb, imdb, title, year, thumbnail)
-	next_page = re.compile(
-				'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
-				re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
-	xml += "<dir>"\
-		   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
-		   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
-		   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
-		   "</dir>" % (next_page)
+	try:		   
+		next_page = re.compile(
+					'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
+					re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
+		xml += "<dir>"\
+			   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
+			   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
+			   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
+			   "</dir>" % (next_page)
+	except:
+	    pass		   
 	jenlist = JenList(xml)
 	display_list(jenlist.get_list(), jenlist.get_content_type())
 	
@@ -868,14 +877,17 @@ def imdbgenres(url):
 				"<thumbnail>%s</thumbnail>"\
 				"<fanart></fanart>"\
 				"</item>" % (name, imdb, title, year, thumbnail)
-	next_page = re.compile(
-				'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
-				re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
-	xml += "<dir>"\
-		   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
-		   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
-		   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
-		   "</dir>" % (next_page)
+	try:			
+		next_page = re.compile(
+					'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
+					re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
+		xml += "<dir>"\
+			   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
+			   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
+			   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
+			   "</dir>" % (next_page)
+	except:
+	    pass		   
 	jenlist = JenList(xml)
 	display_list(jenlist.get_list(), jenlist.get_content_type())
 
@@ -907,14 +919,17 @@ def imdbgenrestv(url):
 			   "<thumbnail>%s</thumbnail>"\
 			   "<fanart></fanart>"\
 			   "</dir>" % (name, imdb, imdb, title, year, thumbnail)
-	next_page = re.compile(
-				'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
-				re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
-	xml += "<dir>"\
-		   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
-		   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
-		   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
-		   "</dir>" % (next_page)
+	try:		   
+		next_page = re.compile(
+					'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
+					re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
+		xml += "<dir>"\
+			   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
+			   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
+			   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
+			   "</dir>" % (next_page)
+	except:
+	    pass		   
 	jenlist = JenList(xml)
 	display_list(jenlist.get_list(), jenlist.get_content_type())
 	
@@ -937,18 +952,21 @@ def imdbactors(url):
 			   "<imdburl>name/%s</imdburl>"\
 			   "<thumbnail>%s</thumbnail>"\
 			   "</dir>" % (name, imdb ,thumbnail)
-	next_page = re.compile(
-				'<a class="flat-button lister-page-next next-page" href="(.+?)">\n.+?Next\n.+?</a>', 
-				re.IGNORECASE | re.DOTALL).findall(listhtml)
-	for url in next_page:
-		try:
-			xml += "<dir>"\
-				   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
-				   "<imdburl>actor%s</imdburl>"\
-				   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
-				   "</dir>" % (url)
-		except:
-			pass
+	try:		   
+		next_page = re.compile(
+					'<a class="flat-button lister-page-next next-page" href="(.+?)">\n.+?Next\n.+?</a>', 
+					re.IGNORECASE | re.DOTALL).findall(listhtml)
+		for url in next_page:
+			try:
+				xml += "<dir>"\
+					   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
+					   "<imdburl>actor%s</imdburl>"\
+					   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
+					   "</dir>" % (url)
+			except:
+				pass
+	except:
+	    pass			
 	jenlist = JenList(xml)
 	display_list(jenlist.get_list(), jenlist.get_content_type())
 
@@ -1070,14 +1088,17 @@ def imdbNextPage(url):
 				"<thumbnail>%s</thumbnail>"\
 				"<fanart></fanart>"\
 				"</item>" % (name, imdb, title, year, thumbnail)
-	next_page = re.compile(
-				'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
-				re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
-	xml += "<dir>"\
-		   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
-		   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
-		   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
-		   "</dir>" % (next_page)
+	try:			
+		next_page = re.compile(
+					'<a href="([^"]+)"\nclass="lister-page-next next-page" ref-marker=adv_nxt>Next &#187;</a>\n.+?</div>\n.+?<br class="clear" />', 
+					re.DOTALL | re.IGNORECASE).findall(listhtml)[0]
+		xml += "<dir>"\
+			   "<title>[COLOR dodgerblue]Next Page >>[/COLOR]</title>"\
+			   "<imdburl>http://www.imdb.com/search/title%s</imdburl>"\
+			   "<thumbnail>https://image.ibb.co/gtsNjw/next.png</thumbnail>"\
+			   "</dir>" % (next_page)
+	except:
+	    pass		   
 	jenlist = JenList(xml)
 	display_list(jenlist.get_list(), jenlist.get_content_type())
 	
@@ -1097,3 +1118,6 @@ def getHtml(url, referer=None, hdr=None, data=None):
     data = response.read()    
     response.close()
     return data
+
+def remove_non_ascii(text):
+    return unidecode(text)    

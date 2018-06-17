@@ -1,3 +1,12 @@
+v1.7
+    - Added kodi.log message when xmls contain <name>, asking user to switch to <title>
+    - root_xml_url in settings.xml now supports file://, http://, and base64 encoded strings
+    - message_xml_url moved from news_window.py to the settings.xml file.
+    - Added support for developer to choose urlresolver or resolveurl as their primary resolver
+        - To switch from resolveurl to urlresolver, comment out the resolveurl link in addon.xml
+            and uncomment the line for urlresolver
+        - This only impacts Direct Links, as dependencies used may still use only resolveurl
+
 v1.6
     - Settings.xml updated for service settings
     - New service.py - be sure to read the header

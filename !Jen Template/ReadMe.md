@@ -7,7 +7,7 @@
 
 - Jen Template Download Zip
     - [Official Jen Template Download](https://github.com/muaddibttv/tools_and_parsers/raw/master/!Jen%20Template/plugin.video.jen.zip)
-- Jen Template Source Files (folder)
+- Jen Template Beta Source Files (folder)
     - [/plugin.video.jen](https://github.com/muaddibttv/tools_and_parsers/tree/master/!Jen%20Template/plugin.video.jen)
 - 3rd Party Jen Plugins (for use and learning to make your own) (folder)
     - [/Additional Plugins](https://github.com/muaddibttv/tools_and_parsers/tree/master/!Jen%20Template/Additional%20Plugins)
