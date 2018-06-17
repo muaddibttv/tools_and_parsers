@@ -35,6 +35,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Used to pull game streams from sports-stream.net
 - tools
     - Useful tools for menu items, such as to mark an item non-clickable or open settings to a specific tab and section
+- toonmania
+    - Pulls cartoons and movies from a specific site, all direct link/one click play
 - toonova
     - Pulls cartoons and movies from a specific site, with 3-4 sources per (No subbed/dubbed)
 - topdocs

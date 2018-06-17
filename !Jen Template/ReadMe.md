@@ -59,6 +59,12 @@
     - yt_api
         - Allows you to create menu items to apply Youtube API key information to the Youtube Plugin in Kodi
 
+## Jen Plugin Base Templates
+
+- plugin-scraper-template.py
+    - Works with up to at least v1.6 of Jen Templates
+    - Template for creating a site specific scraper plugin (Like cobp, watchcartoon, topdocs, etc.)
+
 ## Install
 
 - Requires Kodi v17.x+
