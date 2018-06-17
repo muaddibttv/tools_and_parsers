@@ -17,7 +17,7 @@ class Generator:
         self.fanart = None
 
         # CHANGEME to match the playlist ID you want to pull
-        self.channelId = 'UCLEkm0_3IUzDtPypdhIYMjw'
+        self.channelId = 'UCXB9905ejCSMh3f7-WjDDRQ'
         # generate files
         self._generate_yt_templates()
 
