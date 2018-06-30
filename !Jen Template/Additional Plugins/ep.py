@@ -17,11 +17,16 @@
 
     -------------------------------------------------------------
 
+    Changelog:
+        2018.6.29:
+            - Added caching to primary menus (Cache time is 3 hours)
+
 """
 
-import requests,re,json,os,urlparse
-import koding
 import __builtin__
+import base64,time
+import json,re,requests,os,traceback,urlparse
+import koding
 import xbmc,xbmcaddon,xbmcgui
 from koding import route
 from resources.lib.plugin import Plugin
@@ -30,7 +35,7 @@ from resources.lib.util.context import get_context_items
 from resources.lib.util.xml import JenItem, JenList, display_list
 from unidecode import unidecode
 
-CACHE_TIME = 3600  # change to wanted cache time in seconds
+CACHE_TIME = 10800  # change to wanted cache time in seconds
 
 addon_fanart = xbmcaddon.Addon().getAddonInfo('fanart')
 addon_icon = xbmcaddon.Addon().getAddonInfo('icon')
@@ -169,48 +174,51 @@ class EPORNER(Plugin):
 
 @route(mode='EPorner_Cat', args=["url"])
 def category_eporner(url):
-    xml = ""
-    try:
-        url = urlparse.urljoin('https://www.eporner.com/', url)
-        headers = {'User_Agent':User_Agent}
-        html = requests.get(url,headers=headers).content
-        
-        hdy_vid_divs = dom_parser.parseDOM(html, 'div', attrs={'class':'mb hdy'})
-        for vid_section in hdy_vid_divs:
-            thumbnail = re.compile('src="(.+?)"',re.DOTALL).findall(str(vid_section))[0]
-            vid_page_url, title = re.compile('href="(.+?)"+\stitle="(.+?)"',re.DOTALL).findall(str(vid_section))[0]
-            vid_page_url = urlparse.urljoin('https://www.eporner.com/', vid_page_url)
-            xml += "<item>"\
-                   "    <title>%s</title>"\
-                   "    <thumbnail>%s</thumbnail>"\
-                   "    <eporner>%s</eporner>"\
-                   "    <summary>%s</summary>"\
-                   "</item>" % (title,thumbnail,vid_page_url, title)
+    url = urlparse.urljoin('https://www.eporner.com/', url)
 
-        vid_divs = dom_parser.parseDOM(html, 'div', attrs={'class':'mb'})
-        for vid_section in vid_divs:
-            thumbnail = re.compile('src="(.+?)"',re.DOTALL).findall(str(vid_section))[0]
-            vid_page_url, title = re.compile('href="(.+?)"+\stitle="(.+?)"',re.DOTALL).findall(str(vid_section))[0]
-            vid_page_url = urlparse.urljoin('https://www.eporner.com/', vid_page_url)
-            xml += "<item>"\
-                   "    <title>%s</title>"\
-                   "    <thumbnail>%s</thumbnail>"\
-                   "    <eporner>%s</eporner>"\
-                   "    <summary>%s</summary>"\
-                   "</item>" % (title,thumbnail,vid_page_url, title)
-
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
         try:
-            next_page = dom_parser.parseDOM(html, 'a', attrs={'title':'Next page'}, ret='href')[0]
-            next_page = next_page.replace('/', '', 1)
-            xml += "<dir>"\
-                   "    <title>Next Page</title>"\
-                   "    <thumbnail>%s</thumbnail>"\
-                   "    <eporner>%s</eporner>"\
-                   "</dir>" % (next_icon,next_page)
+            headers = {'User_Agent':User_Agent}
+            html = requests.get(url,headers=headers).content
+            
+            hdy_vid_divs = dom_parser.parseDOM(html, 'div', attrs={'class':'mb hdy'})
+            for vid_section in hdy_vid_divs:
+                thumbnail = re.compile('src="(.+?)"',re.DOTALL).findall(str(vid_section))[0]
+                vid_page_url, title = re.compile('href="(.+?)"+\stitle="(.+?)"',re.DOTALL).findall(str(vid_section))[0]
+                vid_page_url = urlparse.urljoin('https://www.eporner.com/', vid_page_url)
+                xml += "<item>"\
+                       "    <title>%s</title>"\
+                       "    <thumbnail>%s</thumbnail>"\
+                       "    <eporner>%s</eporner>"\
+                       "    <summary>%s</summary>"\
+                       "</item>" % (title,thumbnail,vid_page_url, title)
+
+            vid_divs = dom_parser.parseDOM(html, 'div', attrs={'class':'mb'})
+            for vid_section in vid_divs:
+                thumbnail = re.compile('src="(.+?)"',re.DOTALL).findall(str(vid_section))[0]
+                vid_page_url, title = re.compile('href="(.+?)"+\stitle="(.+?)"',re.DOTALL).findall(str(vid_section))[0]
+                vid_page_url = urlparse.urljoin('https://www.eporner.com/', vid_page_url)
+                xml += "<item>"\
+                       "    <title>%s</title>"\
+                       "    <thumbnail>%s</thumbnail>"\
+                       "    <eporner>%s</eporner>"\
+                       "    <summary>%s</summary>"\
+                       "</item>" % (title,thumbnail,vid_page_url, title)
+
+            try:
+                next_page = dom_parser.parseDOM(html, 'a', attrs={'title':'Next page'}, ret='href')[0]
+                next_page = next_page.replace('/', '', 1)
+                xml += "<dir>"\
+                       "    <title>Next Page</title>"\
+                       "    <thumbnail>%s</thumbnail>"\
+                       "    <eporner>%s</eporner>"\
+                       "</dir>" % (next_icon,next_page)
+            except:
+                pass
         except:
             pass
-    except:
-        pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -218,36 +226,39 @@ def category_eporner(url):
 
 @route(mode='EPorner_Stars', args=["url"])
 def pornstars_eporner(url):
-    xml = ""
-    try:
-        url = urlparse.urljoin('https://www.eporner.com/', url)
-        headers = {'User_Agent':User_Agent}
-        html = requests.get(url,headers=headers).content
-        
-        profile_divs = dom_parser.parseDOM(html, 'div', attrs={'class':'mbprofile'})
-        for profile in profile_divs:
-            thumbnail = re.compile('src="(.+?)"',re.DOTALL).findall(str(profile))[0]
-            profile_url, title = re.compile('href="(.+?)"+\stitle="(.+?)"',re.DOTALL).findall(str(profile))[0]
-            #profile_url = profile_url.replace('/', '', 1)
-            xml += "<dir>"\
-                   "    <title>%s</title>"\
-                   "    <thumbnail>%s</thumbnail>"\
-                   "    <eporner>%s</eporner>"\
-                   "    <summary>%s</summary>"\
-                   "</dir>" % (title,thumbnail,profile_url, title)
+    url = urlparse.urljoin('https://www.eporner.com/', url)
 
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
         try:
-            next_page = dom_parser.parseDOM(html, 'a', attrs={'title':'Next page'}, ret='href')[0]
-            next_page = next_page.replace('/', '', 1)
-            xml += "<dir>"\
-                   "    <title>Next Page</title>"\
-                   "    <thumbnail>%s</thumbnail>"\
-                   "    <eporner>%s</eporner>"\
-                   "</dir>" % (next_icon,next_page)
+            headers = {'User_Agent':User_Agent}
+            html = requests.get(url,headers=headers).content
+            
+            profile_divs = dom_parser.parseDOM(html, 'div', attrs={'class':'mbprofile'})
+            for profile in profile_divs:
+                thumbnail = re.compile('src="(.+?)"',re.DOTALL).findall(str(profile))[0]
+                profile_url, title = re.compile('href="(.+?)"+\stitle="(.+?)"',re.DOTALL).findall(str(profile))[0]
+                #profile_url = profile_url.replace('/', '', 1)
+                xml += "<dir>"\
+                       "    <title>%s</title>"\
+                       "    <thumbnail>%s</thumbnail>"\
+                       "    <eporner>%s</eporner>"\
+                       "    <summary>%s</summary>"\
+                       "</dir>" % (title,thumbnail,profile_url, title)
+
+            try:
+                next_page = dom_parser.parseDOM(html, 'a', attrs={'title':'Next page'}, ret='href')[0]
+                next_page = next_page.replace('/', '', 1)
+                xml += "<dir>"\
+                       "    <title>Next Page</title>"\
+                       "    <thumbnail>%s</thumbnail>"\
+                       "    <eporner>%s</eporner>"\
+                       "</dir>" % (next_icon,next_page)
+            except:
+                pass
         except:
             pass
-    except:
-        pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -349,6 +360,61 @@ def play_eporner(url):
         xbmc.executebuiltin("PlayMedia(%s)" % str(vid_url))
     except:
         return
+
+
+def save_to_db(item, url):
+    if not item or not url:
+        return False
+    try:
+        koding.reset_db()
+        koding.Remove_From_Table(
+            "eporner_com_plugin",
+            {
+                "url": url
+            })
+
+        koding.Add_To_Table("eporner_com_plugin",
+                            {
+                                "url": url,
+                                "item": base64.b64encode(item),
+                                "created": time.time()
+                            })
+    except:
+        return False
+
+
+def fetch_from_db(url):
+    koding.reset_db()
+    eporner_plugin_spec = {
+        "columns": {
+            "url": "TEXT",
+            "item": "TEXT",
+            "created": "TEXT"
+        },
+        "constraints": {
+            "unique": "url"
+        }
+    }
+    koding.Create_Table("eporner_com_plugin", eporner_plugin_spec)
+    match = koding.Get_From_Table(
+        "eporner_com_plugin", {"url": url})
+    if match:
+        match = match[0]
+        if not match["item"]:
+            return None
+        created_time = match["created"]
+        if created_time and float(created_time) + CACHE_TIME >= time.time():
+            match_item = match["item"]
+            try:
+                result = base64.b64decode(match_item)
+            except:
+                return None
+            return result
+        else:
+            return
+    else:
+        return 
+
 
 def remove_non_ascii(text):
     return unidecode(text)

@@ -12,6 +12,9 @@
     ----------------------------------------------------------------------------
 
     Changelog:
+        2018.6.29:
+            - Added caching to primary menus (Cache time is 3 hours)
+
         2018-05-13:
             Updated for handling JS "Load More" changes.
 
@@ -112,9 +115,10 @@
 
 """
 
+import __builtin__
+import base64,time
 import json,re,requests,os,traceback,urlparse
 import koding
-import __builtin__
 import xbmc,xbmcaddon,xbmcgui
 from koding import route
 from resources.lib.plugin import Plugin
@@ -123,7 +127,7 @@ from resources.lib.util.context import get_context_items
 from resources.lib.util.xml import JenItem, JenList, display_list
 from unidecode import unidecode
 
-CACHE_TIME = 3600  # change to wanted cache time in seconds
+CACHE_TIME = 10800  # change to wanted cache time in seconds
 
 addon_fanart = xbmcaddon.Addon().getAddonInfo('fanart')
 addon_icon   = xbmcaddon.Addon().getAddonInfo('icon')
@@ -199,33 +203,36 @@ class WatchCartoon(Plugin):
 
 @route(mode='PCOCats', args=["url"])
 def get_pcocats(url):
-    xml = ""
     url = url.replace('pcocategory/', '') # Strip our category tag off.
-    try:
-        url = urlparse.urljoin(pcobase_link, url)
-        html = requests.get(url).content
+    url = urlparse.urljoin(pcobase_link, url)
 
-        div_list = re.compile('<div class="podcast-container flex no-wrap" data-program-name="(.+?)">(.+?)</a></div>',re.DOTALL).findall(html)
-        for show_title, content in div_list:
-            try:
-                show_url = re.compile('href="(.+?)"',re.DOTALL).findall(content)[0]
-                show_url = show_url.replace('/','')
-                if 'viewProgram' in show_url:
-                    url = urlparse.urljoin(pcobase_link, show_url)
-                    html = requests.get(url).content
-                    more_ep_block = re.compile('<div class="col-xs-12">(.+?)</div>',re.DOTALL).findall(html)[0]
-                    show_url = re.compile('href="(.+?)"',re.DOTALL).findall(more_ep_block)[0].replace('/','').replace('?showAllEpisodes=true','')
-                show_icon = urlparse.urljoin(pcobase_link, re.compile('<img src="(.+?)"',re.DOTALL).findall(content)[0])
-                xml += "<dir>"\
-                       "    <title>%s</title>"\
-                       "    <podcastone>pcoshow/%s</podcastone>"\
-                       "    <thumbnail>%s</thumbnail>"\
-                       "    <summary>%s</summary>"\
-                       "</dir>" % (show_title,show_url,show_icon,show_title)
-            except:
-                continue
-    except:
-        pass
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
+        try:
+            html = requests.get(url).content
+
+            div_list = re.compile('<div class="podcast-container flex no-wrap" data-program-name="(.+?)">(.+?)</a></div>',re.DOTALL).findall(html)
+            for show_title, content in div_list:
+                try:
+                    show_url = re.compile('href="(.+?)"',re.DOTALL).findall(content)[0]
+                    show_url = show_url.replace('/','')
+                    if 'viewProgram' in show_url:
+                        url = urlparse.urljoin(pcobase_link, show_url)
+                        html = requests.get(url).content
+                        more_ep_block = re.compile('<div class="col-xs-12">(.+?)</div>',re.DOTALL).findall(html)[0]
+                        show_url = re.compile('href="(.+?)"',re.DOTALL).findall(more_ep_block)[0].replace('/','').replace('?showAllEpisodes=true','')
+                    show_icon = urlparse.urljoin(pcobase_link, re.compile('<img src="(.+?)"',re.DOTALL).findall(content)[0])
+                    xml += "<dir>"\
+                           "    <title>%s</title>"\
+                           "    <podcastone>pcoshow/%s</podcastone>"\
+                           "    <thumbnail>%s</thumbnail>"\
+                           "    <summary>%s</summary>"\
+                           "</dir>" % (show_title,show_url,show_icon,show_title)
+                except:
+                    continue
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -233,36 +240,36 @@ def get_pcocats(url):
 
 @route(mode='PCOShow', args=["url"])
 def get_pcoshow(url):
-    xml = ""
     url = url.replace('pcoshow/', '') # Strip our show tag off.
+    url = urlparse.urljoin(pcobase_link, url)
+    url = url + '?showAllEpisodes=true'
 
-    try:
-        url = urlparse.urljoin(pcobase_link, url)
-        url = url + '?showAllEpisodes=true'
-        html = requests.get(url).content
-        prog_id = re.compile('progID: (.+?),',re.DOTALL).findall(html)[0]
-        url = pcoepisodes_link % (prog_id)
-        html = requests.get(url).content
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
+        try:
+            html = requests.get(url).content
+            prog_id = re.compile('progID: (.+?),',re.DOTALL).findall(html)[0]
+            url = pcoepisodes_link % (prog_id)
+            html = requests.get(url).content
 
-        # https://www.podcastone.com/pg/jsp/program/pasteps_cms.jsp?size=1000&amountToDisplay=1000&page=1&infiniteScroll=true&progID=1181&showTwitter=false&pmProtect=false&displayPremiumEpisodes=false&startAt=0
-        past_episodes = dom_parser.parseDOM(html, 'div', attrs={'class':'flex no-wrap align-center'})
-        for episode in past_episodes:
-            try:
-                ep_link, ep_title = re.compile('<h3 class="dateTime"><a href="(.+?)" style="color:inherit;">(.+?)</a>',re.DOTALL).findall(episode)[0]
-                ep_page  = urlparse.urljoin(pcobase_link, ep_link)
-                ep_icon  = re.compile('img src="(.+?)"',re.DOTALL).findall(episode)[0]
-                xml += "<item>"\
-                       "    <title>%s</title>"\
-                       "    <podcastone>pcoepisode/%s</podcastone>"\
-                       "    <thumbnail>%s</thumbnail>"\
-                       "    <summary>%s</summary>"\
-                       "</item>" % (ep_title,ep_page,ep_icon,ep_title)
-            except:
-                continue
-    except:
-        #failure = traceback.format_exc()
-        #xbmcgui.Dialog().textviewer('Total Failure', str(failure))
-        pass
+            # https://www.podcastone.com/pg/jsp/program/pasteps_cms.jsp?size=1000&amountToDisplay=1000&page=1&infiniteScroll=true&progID=1181&showTwitter=false&pmProtect=false&displayPremiumEpisodes=false&startAt=0
+            past_episodes = dom_parser.parseDOM(html, 'div', attrs={'class':'flex no-wrap align-center'})
+            for episode in past_episodes:
+                try:
+                    ep_link, ep_title = re.compile('<h3 class="dateTime"><a href="(.+?)" style="color:inherit;">(.+?)</a>',re.DOTALL).findall(episode)[0]
+                    ep_page  = urlparse.urljoin(pcobase_link, ep_link)
+                    ep_icon  = re.compile('img src="(.+?)"',re.DOTALL).findall(episode)[0]
+                    xml += "<item>"\
+                           "    <title>%s</title>"\
+                           "    <podcastone>pcoepisode/%s</podcastone>"\
+                           "    <thumbnail>%s</thumbnail>"\
+                           "    <summary>%s</summary>"\
+                           "</item>" % (ep_title,ep_page,ep_icon,ep_title)
+                except:
+                    continue
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -289,10 +296,58 @@ def get_pcoepisode(url):
         pass
 
 
-def refreshtitle(title):
-    title = replaceEscapeCodes(title)
-    title = replaceHTMLCodes(title).replace('English Dubbed','[COLOR yellow](English Dubbed)[/COLOR]').replace('English Subbed','[COLOR orange](English Subbed)[/COLOR]')
-    return title
+def save_to_db(item, url):
+    if not item or not url:
+        return False
+    try:
+        koding.reset_db()
+        koding.Remove_From_Table(
+            "pcastone_com_plugin",
+            {
+                "url": url
+            })
+
+        koding.Add_To_Table("pcastone_com_plugin",
+                            {
+                                "url": url,
+                                "item": base64.b64encode(item),
+                                "created": time.time()
+                            })
+    except:
+        return False
+
+
+def fetch_from_db(url):
+    koding.reset_db()
+    pcastone_plugin_spec = {
+        "columns": {
+            "url": "TEXT",
+            "item": "TEXT",
+            "created": "TEXT"
+        },
+        "constraints": {
+            "unique": "url"
+        }
+    }
+    koding.Create_Table("pcastone_com_plugin", pcastone_plugin_spec)
+    match = koding.Get_From_Table(
+        "pcastone_com_plugin", {"url": url})
+    if match:
+        match = match[0]
+        if not match["item"]:
+            return None
+        created_time = match["created"]
+        if created_time and float(created_time) + CACHE_TIME >= time.time():
+            match_item = match["item"]
+            try:
+                result = base64.b64decode(match_item)
+            except:
+                return None
+            return result
+        else:
+            return
+    else:
+        return 
 
 
 def replaceHTMLCodes(txt):
@@ -307,21 +362,3 @@ def replaceHTMLCodes(txt):
     txt = txt.replace("&amp;", "&")
     txt = txt.strip()
     return txt
-
-
-def replaceEscapeCodes(txt):
-    try:
-        import html.parser as html_parser
-    except:
-        import HTMLParser as html_parser
-    txt = html_parser.HTMLParser().unescape(txt)
-    return txt
-
-
-def remove_non_ascii(text):
-    try:
-        text = text.decode('utf-8').replace(u'\xc2', u'A').replace(u'\xc3', u'A').replace(u'\xc4', u'A')
-    except:
-        pass
-    return unidecode(text)
-

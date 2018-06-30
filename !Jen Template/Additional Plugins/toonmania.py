@@ -15,63 +15,67 @@
             over to be supported as a Jen Plugin.
 
     Changelog:
+        2018.6.20:
+            - Added caching to primary menus (Cache time is 3 hours)
+
         2018-06-16:
             Initial Build
 
     Usage Examples:
 
-    <dir>
-        <title>New Movies</title>
-        <toonmania>category/GetNewMovies</toonmania>
-    </dir>
+        <dir>
+            <title>New Movies</title>
+            <toonmania>category/GetNewMovies</toonmania>
+        </dir>
 
-    <dir>
-        <title>All Movies</title>
-        <toonmania>category/GetAllMovies</toonmania>
-    </dir>
+        <dir>
+            <title>All Movies</title>
+            <toonmania>category/GetAllMovies</toonmania>
+        </dir>
 
-    <dir>
-        <title>Popular Movies</title>
-        <toonmania>category/GetPopularMovies</toonmania>
-    </dir>
+        <dir>
+            <title>Popular Movies</title>
+            <toonmania>category/GetPopularMovies</toonmania>
+        </dir>
 
-    <dir>
-        <title>New Cartoons</title>
-        <toonmania>category/GetNewCartoon</toonmania>
-    </dir>
+        <dir>
+            <title>New Cartoons</title>
+            <toonmania>category/GetNewCartoon</toonmania>
+        </dir>
 
-    <dir>
-        <title>All Cartoons</title>
-        <toonmania>category/GetAllCartoon</toonmania>
-    </dir>
+        <dir>
+            <title>All Cartoons</title>
+            <toonmania>category/GetAllCartoon</toonmania>
+        </dir>
 
-    <dir>
-        <title>Popular Cartoons</title>
-        <toonmania>category/GetPopularCartoon</toonmania>
-    </dir>
+        <dir>
+            <title>Popular Cartoons</title>
+            <toonmania>category/GetPopularCartoon</toonmania>
+        </dir>
 
-    <dir>
-        <title>New Dubbed Anime</title>
-        <toonmania>category/GetNewDubbed</toonmania>
-    </dir>
+        <dir>
+            <title>New Dubbed Anime</title>
+            <toonmania>category/GetNewDubbed</toonmania>
+        </dir>
 
-    <dir>
-        <title>All Dubbed Anime</title>
-        <toonmania>category/GetAllDubbed</toonmania>
-    </dir>
+        <dir>
+            <title>All Dubbed Anime</title>
+            <toonmania>category/GetAllDubbed</toonmania>
+        </dir>
 
-    <dir>
-        <title>Popular Dubbed Anime</title>
-        <toonmania>category/GetPopularDubbed</toonmania>
-    </dir>
+        <dir>
+            <title>Popular Dubbed Anime</title>
+            <toonmania>category/GetPopularDubbed</toonmania>
+        </dir>
 
 
 
 """
 
+import __builtin__
+import base64,time
 import json,re,requests,os,traceback,urlparse
 import koding
-import __builtin__
 import xbmc,xbmcaddon,xbmcgui
 from koding import route
 from resources.lib.plugin import Plugin
@@ -142,31 +146,34 @@ class ToonMania(Plugin):
 
 @route(mode='TMCategories', args=["url"])
 def get_TMCategories(url):
-    xml = ""
     url = url.replace('category/', '')
-    try:
-        url = urlparse.urljoin(base_main_link, url)
-        html = requests.get(url,headers=header).content
-        js = json.loads(html)
-        for item in js:
-            try:
-                title = clean_hex(item['name'])
-                id = clean_hex(item['id'])
-                desc = clean_hex(item['description'])
-                thumbnail = 'http://www.animetoon.tv/images/series/big/'+item['id']+'.jpg'
-                xml += "<dir>"\
-                       "    <title>%s</title>"\
-                       "    <meta>"\
-                       "        <summary>%s</summary>"\
-                       "    </meta>"\
-                       "    <toonmania>subitem/%s</toonmania>"\
-                       "    <thumbnail>%s</thumbnail>"\
-                       "</dir>" % (title,desc,id,thumbnail)
-            except:
-                continue
+    url = urlparse.urljoin(base_main_link, url)
 
-    except:
-        pass
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
+        try:
+            html = requests.get(url,headers=header).content
+            js = json.loads(html)
+            for item in js:
+                try:
+                    title = clean_hex(item['name'])
+                    id = clean_hex(item['id'])
+                    desc = clean_hex(item['description'])
+                    thumbnail = 'http://www.animetoon.tv/images/series/big/'+item['id']+'.jpg'
+                    xml += "<dir>"\
+                           "    <title>%s</title>"\
+                           "    <meta>"\
+                           "        <summary>%s</summary>"\
+                           "    </meta>"\
+                           "    <toonmania>subitem/%s</toonmania>"\
+                           "    <thumbnail>%s</thumbnail>"\
+                           "</dir>" % (title,desc,id,thumbnail)
+                except:
+                    continue
+            save_to_db(xml, url)
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -174,41 +181,44 @@ def get_TMCategories(url):
 
 @route(mode='TMSubItem', args=["url"])
 def get_TMSubItem(url):
-    xml = ""
     url = url.replace('subitem/', '')
     imgid = url
-    try:
-        url = urlparse.urljoin(base_details_link, url)
-        html = requests.get(url,headers=header).content
-        id2 = re.compile('"id":"(.+?)"').findall(html) # THERE IS MORE THAN 1 ID
-        i=0
-        for num in id2:
-            try:
-                url   = urlparse.urljoin(base_videos_link, num)
-                page  = requests.get(url,headers=header).content
-                links = re.compile('"(.+?)"').findall(page.replace('\/','/'))
-                for link in links:
-                    if 'videozoome' in link:
-                        page = requests.get(link).content
-                        try:
-                            link = re.compile('file: "(.+?)"').findall(page)[-1]
-                        except:
-                            link = re.compile('src: "(.+?)"').findall(page)[-1]
-                        i=i+1
-                        title = 'Part ' + str(i)
-                        xml += "<item>"\
-                               "    <title>%s</title>"\
-                               "    <meta>"\
-                               "        <summary>%s</summary>"\
-                               "    </meta>"\
-                               "    <link>%s</link>"\
-                               "    <thumbnail>%s</thumbnail>"\
-                               "</item>" % (title,title,link,addon_icon)
-            except:
-                continue
+    url = urlparse.urljoin(base_details_link, url)
 
-    except:
-        pass
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
+        try:
+            html = requests.get(url,headers=header).content
+            id2 = re.compile('"id":"(.+?)"').findall(html) # THERE IS MORE THAN 1 ID
+            i=0
+            for num in id2:
+                try:
+                    nurl   = urlparse.urljoin(base_videos_link, num)
+                    page  = requests.get(nurl,headers=header).content
+                    links = re.compile('"(.+?)"').findall(page.replace('\/','/'))
+                    for link in links:
+                        if 'videozoome' in link:
+                            page = requests.get(link).content
+                            try:
+                                link = re.compile('file: "(.+?)"').findall(page)[-1]
+                            except:
+                                link = re.compile('src: "(.+?)"').findall(page)[-1]
+                            i=i+1
+                            title = 'Part ' + str(i)
+                            xml += "<item>"\
+                                   "    <title>%s</title>"\
+                                   "    <meta>"\
+                                   "        <summary>%s</summary>"\
+                                   "    </meta>"\
+                                   "    <link>%s</link>"\
+                                   "    <thumbnail>%s</thumbnail>"\
+                                   "</item>" % (title,title,link,addon_icon)
+                except:
+                    continue
+            save_to_db(xml, url)
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -221,6 +231,60 @@ def clean_hex(text):
         else: return unichr(int(text[2:-1])).encode('utf-8')
     try: return re.sub("(?i)&#\w+;", fixup, text.decode('ISO-8859-1').encode('utf-8'))
     except: return re.sub("(?i)&#\w+;", fixup, text.encode("ascii", "ignore").encode('utf-8'))
+
+
+def save_to_db(item, url):
+    if not item or not url:
+        return False
+    try:
+        koding.reset_db()
+        koding.Remove_From_Table(
+            "toonmania_com_plugin",
+            {
+                "url": url
+            })
+
+        koding.Add_To_Table("toonmania_com_plugin",
+                            {
+                                "url": url,
+                                "item": base64.b64encode(item),
+                                "created": time.time()
+                            })
+    except:
+        return False
+
+
+def fetch_from_db(url):
+    koding.reset_db()
+    toonmania_plugin_spec = {
+        "columns": {
+            "url": "TEXT",
+            "item": "TEXT",
+            "created": "TEXT"
+        },
+        "constraints": {
+            "unique": "url"
+        }
+    }
+    koding.Create_Table("toonmania_com_plugin", toonmania_plugin_spec)
+    match = koding.Get_From_Table(
+        "toonmania_com_plugin", {"url": url})
+    if match:
+        match = match[0]
+        if not match["item"]:
+            return None
+        created_time = match["created"]
+        if created_time and float(created_time) + CACHE_TIME >= time.time():
+            match_item = match["item"]
+            try:
+                result = base64.b64decode(match_item)
+            except:
+                return None
+            return result
+        else:
+            return
+    else:
+        return 
 
 
 def remove_non_ascii(text):

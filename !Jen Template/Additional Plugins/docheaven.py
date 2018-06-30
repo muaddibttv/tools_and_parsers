@@ -15,6 +15,9 @@
         Drop this PY in the plugins folder. See examples below on use.
 
     Version:
+        2018.6.20:
+            - Added caching to primary menus (Cache time is 3 hours)
+
         2018.5.17
             - Initial Release
 
@@ -227,9 +230,10 @@
 
 """
 
-import re,requests,os,traceback,urlparse
-import koding
 import __builtin__
+import base64,time
+import json,re,requests,os,traceback,urlparse
+import koding
 import xbmc,xbmcaddon,xbmcgui
 from koding import route
 from resources.lib.plugin import Plugin
@@ -237,6 +241,8 @@ from resources.lib.util import dom_parser
 from resources.lib.util.context import get_context_items
 from resources.lib.util.xml import JenItem, JenList, display_list
 from unidecode import unidecode
+
+CACHE_TIME = 10800  # change to wanted cache time in seconds
 
 addon_id = xbmcaddon.Addon().getAddonInfo('id')
 addon_fanart = xbmcaddon.Addon().getAddonInfo('fanart')
@@ -298,97 +304,155 @@ class DocuHeaven(Plugin):
 
 @route(mode='DHCats', args=["url"])
 def get_DHcats(url):
-    xml = ""
     url = url.replace('dhcategory/', '') # Strip our category tag off.
     orig_cat = url.split("/")[0]
-    try:
-        url = urlparse.urljoin(docu_cat_list, url)
-        html = requests.get(url).content
-        doc_list = dom_parser.parseDOM(html, 'article')
-        for content in doc_list:
-            try:
-                docu_info = re.compile('<h2>(.+?)</h2>',re.DOTALL).findall(content)[0]
+    url = urlparse.urljoin(docu_cat_list, url)
 
-                docu_title = re.compile('<a.+?">(.+?)</a>',re.DOTALL).findall(docu_info)[0]
-                docu_title = docu_title.replace("&amp;","&").replace('&#39;',"'").replace('&quot;','"').replace('&#39;',"'").replace('&#8211;',' - ').replace('&#8217;',"'").replace('&#8216;',"'").replace('&#038;','&').replace('&acirc;','')
-                docu_summary = re.compile('<p>(.+?)</p>',re.DOTALL).findall(content)[0].replace('&quot;','"').replace('&#39;',"'").replace('&#8211;',' - ').replace('&#8217;',"'").replace('&#8216;',"'").replace('&#038;','&').replace('&acirc;','')
-                try:
-                    docu_icon = re.compile('data-src="(.+?)"',re.DOTALL).findall(content)[0]
-                except:
-                    docu_icon = re.compile('src="(.+?)"',re.DOTALL).findall(content)[0]
-
-                docu_url = re.compile('href="(.+?)"',re.DOTALL).findall(docu_info)[0]
-                docu_html = requests.get(docu_url).content
-
-                try:
-                    docu_item = dom_parser.parseDOM(docu_html, 'meta', attrs={'itemprop':'embedUrl'}, ret='content')[0]
-                except:
-                    docu_item = dom_parser.parseDOM(docu_html, 'iframe', ret='src')[0]
-
-                if 'http:' not in docu_item and  'https:' not in docu_item:
-                    docu_item = 'https:' + docu_item
-                docu_url = docu_item
-
-                if 'youtube' in docu_url:
-                    if 'videoseries' not in docu_url:
-                        xml += "<item>"\
-                               "    <title>%s</title>"\
-                               "    <link>%s</link>"\
-                               "    <thumbnail>%s</thumbnail>"\
-                               "    <summary>%s</summary>"\
-                               "</item>" % (docu_title,docu_url,docu_icon,docu_summary)
-                    else:
-                        # videoseries stuff?
-                        video_id = docu_url.split("=")[-1]
-                        docu_url = 'plugin://plugin.video.youtube/playlist/%s/' % video_id
-                        xml += "<item>"\
-                               "    <title>%s</title>"\
-                               "    <link>%s</link>"\
-                               "    <thumbnail>%s</thumbnail>"\
-                               "    <summary>%s</summary>"\
-                               "</item>" % (docu_title,docu_url,docu_icon,docu_summary)
-                elif 'archive.org/embed' in docu_url:
-                    docu_html = requests.get(docu_url).content
-                    video_element = dom_parser.parseDOM(docu_html, 'source', ret='src')[0]
-                    docu_url = urlparse.urljoin('https://archive.org/', video_element)
-                    xml += "<item>"\
-                           "    <title>%s</title>"\
-                           "    <link>%s</link>"\
-                           "    <thumbnail>%s</thumbnail>"\
-                           "    <summary>%s</summary>"\
-                           "</item>" % (docu_title,docu_url,docu_icon,docu_summary)
-                elif any(x in docu_url for x in reg_items):
-                    xml += "<item>"\
-                           "    <title>%s</title>"\
-                           "    <link>%s</link>"\
-                           "    <thumbnail>%s</thumbnail>"\
-                           "    <summary>%s</summary>"\
-                           "</item>" % (docu_title,docu_url,docu_icon,docu_summary)
-                elif any(x in docu_url for x in unreg_items):
-                    # most of these gone now so screw it lol, and no valid player know yet to work with nfb
-                    continue
-                else:
-                    xbmcgui.Dialog().ok('Unknown Host - ' + docu_title,str(docu_url)) 
-            except:
-                continue
-
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
         try:
-            navi_content = dom_parser.parseDOM(html, 'div', attrs={'class':'numeric-nav'})[0]
-            if '>NEXT' in navi_content:
-                links = dom_parser.parseDOM(navi_content, 'a', ret='href')
-                link = links[(len(links)-1)]
-                page = link.split("/")[-2]
-                xml += "<dir>"\
-                       "    <title>Next Page >></title>"\
-                       "    <docuh>dhcategory/%s/page/%s</docuh>"\
-                       "</dir>" % (orig_cat,page)
+            html = requests.get(url).content
+            doc_list = dom_parser.parseDOM(html, 'article')
+            for content in doc_list:
+                try:
+                    docu_info = re.compile('<h2>(.+?)</h2>',re.DOTALL).findall(content)[0]
+
+                    docu_title = re.compile('<a.+?">(.+?)</a>',re.DOTALL).findall(docu_info)[0]
+                    docu_title = docu_title.replace("&amp;","&").replace('&#39;',"'").replace('&quot;','"').replace('&#39;',"'").replace('&#8211;',' - ').replace('&#8217;',"'").replace('&#8216;',"'").replace('&#038;','&').replace('&acirc;','')
+                    docu_summary = re.compile('<p>(.+?)</p>',re.DOTALL).findall(content)[0].replace('&quot;','"').replace('&#39;',"'").replace('&#8211;',' - ').replace('&#8217;',"'").replace('&#8216;',"'").replace('&#038;','&').replace('&acirc;','')
+                    try:
+                        docu_icon = re.compile('data-src="(.+?)"',re.DOTALL).findall(content)[0]
+                    except:
+                        docu_icon = re.compile('src="(.+?)"',re.DOTALL).findall(content)[0]
+
+                    docu_url = re.compile('href="(.+?)"',re.DOTALL).findall(docu_info)[0]
+                    docu_html = requests.get(docu_url).content
+
+                    try:
+                        docu_item = dom_parser.parseDOM(docu_html, 'meta', attrs={'itemprop':'embedUrl'}, ret='content')[0]
+                    except:
+                        docu_item = dom_parser.parseDOM(docu_html, 'iframe', ret='src')[0]
+
+                    if 'http:' not in docu_item and  'https:' not in docu_item:
+                        docu_item = 'https:' + docu_item
+                    docu_url = docu_item
+
+                    if 'youtube' in docu_url:
+                        if 'videoseries' not in docu_url:
+                            xml += "<item>"\
+                                   "    <title>%s</title>"\
+                                   "    <link>%s</link>"\
+                                   "    <thumbnail>%s</thumbnail>"\
+                                   "    <summary>%s</summary>"\
+                                   "</item>" % (docu_title,docu_url,docu_icon,docu_summary)
+                        else:
+                            # videoseries stuff?
+                            video_id = docu_url.split("=")[-1]
+                            docu_url = 'plugin://plugin.video.youtube/playlist/%s/' % video_id
+                            xml += "<item>"\
+                                   "    <title>%s</title>"\
+                                   "    <link>%s</link>"\
+                                   "    <thumbnail>%s</thumbnail>"\
+                                   "    <summary>%s</summary>"\
+                                   "</item>" % (docu_title,docu_url,docu_icon,docu_summary)
+                    elif 'archive.org/embed' in docu_url:
+                        docu_html = requests.get(docu_url).content
+                        video_element = dom_parser.parseDOM(docu_html, 'source', ret='src')[0]
+                        docu_url = urlparse.urljoin('https://archive.org/', video_element)
+                        xml += "<item>"\
+                               "    <title>%s</title>"\
+                               "    <link>%s</link>"\
+                               "    <thumbnail>%s</thumbnail>"\
+                               "    <summary>%s</summary>"\
+                               "</item>" % (docu_title,docu_url,docu_icon,docu_summary)
+                    elif any(x in docu_url for x in reg_items):
+                        xml += "<item>"\
+                               "    <title>%s</title>"\
+                               "    <link>%s</link>"\
+                               "    <thumbnail>%s</thumbnail>"\
+                               "    <summary>%s</summary>"\
+                               "</item>" % (docu_title,docu_url,docu_icon,docu_summary)
+                    elif any(x in docu_url for x in unreg_items):
+                        # most of these gone now so screw it lol, and no valid player know yet to work with nfb
+                        continue
+                    else:
+                        xbmcgui.Dialog().ok('Unknown Host - ' + docu_title,str(docu_url)) 
+                except:
+                    continue
+
+            try:
+                navi_content = dom_parser.parseDOM(html, 'div', attrs={'class':'numeric-nav'})[0]
+                if '>NEXT' in navi_content:
+                    links = dom_parser.parseDOM(navi_content, 'a', ret='href')
+                    link = links[(len(links)-1)]
+                    page = link.split("/")[-2]
+                    xml += "<dir>"\
+                           "    <title>Next Page >></title>"\
+                           "    <docuh>dhcategory/%s/page/%s</docuh>"\
+                           "</dir>" % (orig_cat,page)
+            except:
+                pass
+            save_to_db(xml, url)
         except:
             pass
-    except:
-        pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
+
+
+def save_to_db(item, url):
+    if not item or not url:
+        return False
+    try:
+        koding.reset_db()
+        koding.Remove_From_Table(
+            "docuheaven_com_plugin",
+            {
+                "url": url
+            })
+
+        koding.Add_To_Table("docuheaven_com_plugin",
+                            {
+                                "url": url,
+                                "item": base64.b64encode(item),
+                                "created": time.time()
+                            })
+    except:
+        return False
+
+
+def fetch_from_db(url):
+    koding.reset_db()
+    docuh_plugin_spec = {
+        "columns": {
+            "url": "TEXT",
+            "item": "TEXT",
+            "created": "TEXT"
+        },
+        "constraints": {
+            "unique": "url"
+        }
+    }
+    koding.Create_Table("docuheaven_com_plugin", docuh_plugin_spec)
+    match = koding.Get_From_Table(
+        "docuheaven_com_plugin", {"url": url})
+    if match:
+        match = match[0]
+        if not match["item"]:
+            return None
+        created_time = match["created"]
+        if created_time and float(created_time) + CACHE_TIME >= time.time():
+            match_item = match["item"]
+            try:
+                result = base64.b64decode(match_item)
+            except:
+                return None
+            return result
+        else:
+            return
+    else:
+        return 
 
 
 def remove_non_ascii(text):

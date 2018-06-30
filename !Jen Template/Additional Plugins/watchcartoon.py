@@ -2,87 +2,84 @@
 # encoding=utf8
 """
 
-    Copyright (C) 2018, MuadDib
+    Copyright (C) 2018 MuadDib
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+    ----------------------------------------------------------------------------
+    "THE BEER-WARE LICENSE" (Revision 42):
+    @tantrumdev wrote this file.  As long as you retain this notice you
+    can do whatever you want with this stuff. If we meet some day, and you think
+    this stuff is worth it, you can buy him a beer in return. - Muad'Dib
+    ----------------------------------------------------------------------------
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    -------------------------------------------------------------
+    Changelog:
+        2018.6.20:
+            - Added caching to primary menus (Cache time is 3 hours)
 
     Usage Examples:
 
-<dir>
-    <title>50 Latest Releases</title>
-    <wctoon>topfifty/last-50-recent-release</wctoon>
-</dir>
+        <dir>
+            <title>50 Latest Releases</title>
+            <wctoon>topfifty/last-50-recent-release</wctoon>
+        </dir>
 
-<dir>
-    <title>Today's Picks</title>
-    <wctoon>main/today</wctoon>
-</dir>
+        <dir>
+            <title>Today's Picks</title>
+            <wctoon>main/today</wctoon>
+        </dir>
 
-<dir>
-    <title>Most Popular</title>
-    <wctoon>main/popular</wctoon>
-</dir>
+        <dir>
+            <title>Most Popular</title>
+            <wctoon>main/popular</wctoon>
+        </dir>
 
-<dir>
-    <title>Dubbed Anime</title>
-    <wctoon>category/dubbed-anime-list</wctoon>
-</dir>
+        <dir>
+            <title>Dubbed Anime</title>
+            <wctoon>category/dubbed-anime-list</wctoon>
+        </dir>
 
-<dir>
-    <title>Subbed Anime</title>
-    <wctoon>category/subbed-anime-list</wctoon>
-</dir>
+        <dir>
+            <title>Subbed Anime</title>
+            <wctoon>category/subbed-anime-list</wctoon>
+        </dir>
 
-<dir>
-    <title>Cartoons</title>
-    <wctoon>category/cartoon-list</wctoon>
-</dir>
+        <dir>
+            <title>Cartoons</title>
+            <wctoon>category/cartoon-list</wctoon>
+        </dir>
 
-<dir>
-    <title>Movies</title>
-    <wctoon>category/movie-list</wctoon>
-</dir>
+        <dir>
+            <title>Movies</title>
+            <wctoon>category/movie-list</wctoon>
+        </dir>
 
-<dir>
-    <title>Ova Series</title>
-    <wctoon>category/ova-list</wctoon>
-</dir>
+        <dir>
+            <title>Ova Series</title>
+            <wctoon>category/ova-list</wctoon>
+        </dir>
 
-<dir>
-    <title>Search Site</title>
-    <wctoon>wcsearch</wctoon>
-</dir>
+        <dir>
+            <title>Search Site</title>
+            <wctoon>wcsearch</wctoon>
+        </dir>
 
-<dir>
-    <title>Everything 101 Dalmatians</title>
-    <wctoon>wcsearch/101 dalmatians</wctoon>
-</dir>
+        <dir>
+            <title>Everything 101 Dalmatians</title>
+            <wctoon>wcsearch/101 dalmatians</wctoon>
+        </dir>
 
-<dir>
-    <title>Action Genre</title>
-    <wctoon>wcgenre/14</wctoon>
-</dir>
+        <dir>
+            <title>Action Genre</title>
+            <wctoon>wcgenre/14</wctoon>
+        </dir>
 
 
 
 """
 
-import base64,json,re,requests,os,traceback,urlparse
-import koding
 import __builtin__
+import base64,time
+import json,re,requests,os,traceback,urlparse
+import koding
 import xbmc,xbmcaddon,xbmcgui
 from koding import route
 from resources.lib.plugin import Plugin
@@ -91,7 +88,7 @@ from resources.lib.util.context import get_context_items
 from resources.lib.util.xml import JenItem, JenList, display_list
 from unidecode import unidecode
 
-CACHE_TIME = 3600  # change to wanted cache time in seconds
+CACHE_TIME = 10800  # change to wanted cache time in seconds
 
 addon_fanart = xbmcaddon.Addon().getAddonInfo('fanart')
 addon_icon   = xbmcaddon.Addon().getAddonInfo('icon')
@@ -232,47 +229,49 @@ class WatchCartoon(Plugin):
 
 @route(mode='WatchCartoon', args=["url"])
 def get_wcstream(url):
-    xml = ""
     url = url.replace('category/', '') # Strip our category tag off.
-    try:
-        url = urlparse.urljoin('https://www.watchcartoononline.io', url)
+    url = urlparse.urljoin('https://www.watchcartoononline.io', url)
 
-        html = requests.get(url).content
-        ddmcc = dom_parser.parseDOM(html, 'div', attrs={'class':'ddmcc'})[0]
-        # pull root List, as all the minor lists are contained within it
-        lists = dom_parser.parseDOM(ddmcc, 'li')
-
-        for entry in lists:
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
             try:
-                movie_style = 0
+            html = requests.get(url).content
+            ddmcc = dom_parser.parseDOM(html, 'div', attrs={'class':'ddmcc'})[0]
+            # pull root List, as all the minor lists are contained within it
+            lists = dom_parser.parseDOM(ddmcc, 'li')
+
+            for entry in lists:
                 try:
-                    # if this fails, means it is a movie/ova series entry as they use different html for those categories
-                    show_url, title = re.compile('<a href="(.+?)".+?>(.+?)</a>',re.DOTALL).findall(entry)[0]
+                    movie_style = 0
+                    try:
+                        # if this fails, means it is a movie/ova series entry as they use different html for those categories
+                        show_url, title = re.compile('<a href="(.+?)".+?>(.+?)</a>',re.DOTALL).findall(entry)[0]
+                    except:
+                        show_url, title = re.compile('<a href="(.+?)">(.+?)</a>',re.DOTALL).findall(entry)[0]
+                        movie_style = 1
+                    title = refreshtitle(title)
+                    title = remove_non_ascii(title)
+
+                    if movie_style == 1:
+                        xml += "<item>"\
+                               "    <title>%s</title>"\
+                               "    <wctoon>direct/%s</wctoon>"\
+                               "    <thumbnail>%s</thumbnail>"\
+                               "    <summary>%s</summary>"\
+                               "</item>" % (title,show_url,addon_icon,title)
+                    else:
+                        xml += "<dir>"\
+                               "    <title>%s</title>"\
+                               "    <wctoon>wcepisode/%s</wctoon>"\
+                               "    <thumbnail>%s</thumbnail>"\
+                               "    <summary>%s</summary>"\
+                               "</dir>" % (title,show_url,addon_icon,title)
                 except:
-                    show_url, title = re.compile('<a href="(.+?)">(.+?)</a>',re.DOTALL).findall(entry)[0]
-                    movie_style = 1
-                title = refreshtitle(title)
-                title = remove_non_ascii(title)
-
-                if movie_style == 1:
-                    xml += "<item>"\
-                           "    <title>%s</title>"\
-                           "    <wctoon>direct/%s</wctoon>"\
-                           "    <thumbnail>%s</thumbnail>"\
-                           "    <summary>%s</summary>"\
-                           "</item>" % (title,show_url,addon_icon,title)
-                else:
-                    xml += "<dir>"\
-                           "    <title>%s</title>"\
-                           "    <wctoon>wcepisode/%s</wctoon>"\
-                           "    <thumbnail>%s</thumbnail>"\
-                           "    <summary>%s</summary>"\
-                           "</dir>" % (title,show_url,addon_icon,title)
-            except:
-                continue
-
-    except:
-        pass
+                    continue
+            save_to_db(xml, url)
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -280,31 +279,34 @@ def get_wcstream(url):
 
 @route(mode='TopFifty', args=["url"])
 def get_wctopfiftystream(url):
-    xml = ""
     url = url.replace('topfifty/', '') # Strip our category tag off.
+    url = urlparse.urljoin('https://www.watchcartoononline.io', url)
 
-    try:
-        url = urlparse.urljoin('https://www.watchcartoononline.io', url)
-        html = requests.get(url).content
-        thediv = dom_parser.parseDOM(html, 'div', attrs={'class':'menulaststyle'})[0]
-        lists = dom_parser.parseDOM(thediv, 'li')
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
+        try:
+            html = requests.get(url).content
+            thediv = dom_parser.parseDOM(html, 'div', attrs={'class':'menulaststyle'})[0]
+            lists = dom_parser.parseDOM(thediv, 'li')
 
-        for entry in lists:
-            try:
-                show_url, title = re.compile('<a href="(.+?)".+?>(.+?)</a>',re.DOTALL).findall(entry)[0]
-                title = refreshtitle(title)
-                title = remove_non_ascii(title)
+            for entry in lists:
+                try:
+                    show_url, title = re.compile('<a href="(.+?)".+?>(.+?)</a>',re.DOTALL).findall(entry)[0]
+                    title = refreshtitle(title)
+                    title = remove_non_ascii(title)
 
-                xml += "<item>"\
-                       "    <title>%s</title>"\
-                       "    <wctoon>direct/%s</wctoon>"\
-                       "    <thumbnail>%s</thumbnail>"\
-                       "    <summary>%s</summary>"\
-                       "</item>" % (title,show_url,addon_icon,title)
-            except:
-                continue
-    except:
-        pass
+                    xml += "<item>"\
+                           "    <title>%s</title>"\
+                           "    <wctoon>direct/%s</wctoon>"\
+                           "    <thumbnail>%s</thumbnail>"\
+                           "    <summary>%s</summary>"\
+                           "</item>" % (title,show_url,addon_icon,title)
+                except:
+                    continue
+            save_to_db(xml, url)
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -357,30 +359,32 @@ def get_wcmainstream(subid):
 
 @route(mode='WCEpisodes', args=["url"])
 def get_wcepisodes(url):
-    xml = ""
     url = url.replace('wcepisode/', '') # Strip our episode tag off.
+    url = urlparse.urljoin('https://www.watchcartoononline.io', url)
 
-    try:
-        url = urlparse.urljoin('https://www.watchcartoononline.io', url)
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
+        try:
+            html = requests.get(url).content
+            thediv = dom_parser.parseDOM(html, 'div', attrs={'id':'catlist-listview'})[0]
+            lists = dom_parser.parseDOM(thediv, 'li')
 
-        html = requests.get(url).content
-        thediv = dom_parser.parseDOM(html, 'div', attrs={'id':'catlist-listview'})[0]
-        lists = dom_parser.parseDOM(thediv, 'li')
+            for entry in lists:
+                show_url, title = re.compile('<a href="(.+?)".+?>(.+?)</a>',re.DOTALL).findall(entry)[0]
+                title = refreshtitle(title).replace('Episode ', 'EP:')
+                title = remove_non_ascii(title)
+                show_icon = dom_parser.parseDOM(html, 'meta', attrs={'property':'og:image'}, ret='content')[0]
 
-        for entry in lists:
-            show_url, title = re.compile('<a href="(.+?)".+?>(.+?)</a>',re.DOTALL).findall(entry)[0]
-            title = refreshtitle(title).replace('Episode ', 'EP:')
-            title = remove_non_ascii(title)
-            show_icon = dom_parser.parseDOM(html, 'meta', attrs={'property':'og:image'}, ret='content')[0]
-
-            xml += "<item>"\
-                   "    <title>%s</title>"\
-                   "    <wctoon>direct/%s</wctoon>"\
-                   "    <thumbnail>%s</thumbnail>"\
-                   "    <summary>%s</summary>"\
-                   "</item>" % (title,show_url,show_icon,title)
-    except:
-        pass
+                xml += "<item>"\
+                       "    <title>%s</title>"\
+                       "    <wctoon>direct/%s</wctoon>"\
+                       "    <thumbnail>%s</thumbnail>"\
+                       "    <summary>%s</summary>"\
+                       "</item>" % (title,show_url,show_icon,title)
+            save_to_db(xml, url)
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -388,63 +392,69 @@ def get_wcepisodes(url):
 
 @route(mode='WCGenre', args=["url"])
 def get_wcgenre(url):
-    xml = ""
     if 'all' in url:
         get_wcgenrelist()
         return
     else:
         url = url.replace('wcgenre/', '') # Strip our genre tag off.
-
-    try:
         url = urlparse.urljoin('https://www.watchcartoononline.io/search-by-genre/', url)
-        html = requests.get(url).content
-        ddmcc = dom_parser.parseDOM(html, 'div', attrs={'class':'ddmcc'})[0]
-        # pull root List, as all the minor lists are contained within it
-        lists = dom_parser.parseDOM(ddmcc, 'li')
 
-        for entry in lists:
-            show_url, title = re.compile('href="(.+?)">(.+?)</a>',re.DOTALL).findall(entry)[0]
-            title = refreshtitle(title)
-            title = remove_non_ascii(title)
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
+        try:
+            html = requests.get(url).content
+            ddmcc = dom_parser.parseDOM(html, 'div', attrs={'class':'ddmcc'})[0]
+            # pull root List, as all the minor lists are contained within it
+            lists = dom_parser.parseDOM(ddmcc, 'li')
 
-            xml += "<dir>"\
-                   "    <title>%s</title>"\
-                   "    <wctoon>wcepisode/%s</wctoon>"\
-                   "    <thumbnail>%s</thumbnail>"\
-                   "    <summary>%s</summary>"\
-                   "</dir>" % (title,show_url,addon_icon,title)
-    except:
-        pass
+            for entry in lists:
+                show_url, title = re.compile('href="(.+?)">(.+?)</a>',re.DOTALL).findall(entry)[0]
+                title = refreshtitle(title)
+                title = remove_non_ascii(title)
+
+                xml += "<dir>"\
+                       "    <title>%s</title>"\
+                       "    <wctoon>wcepisode/%s</wctoon>"\
+                       "    <thumbnail>%s</thumbnail>"\
+                       "    <summary>%s</summary>"\
+                       "</dir>" % (title,show_url,addon_icon,title)
+            save_to_db(xml, url)
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
 
 
 def get_wcgenrelist():
-    xml = ""
+    url = 'https://www.watchcartoononline.io/search-by-genre/'
 
-    try:
-        url = 'https://www.watchcartoononline.io/search-by-genre/'
-        html = requests.get(url).content
-        ddmcc = dom_parser.parseDOM(html, 'div', attrs={'class':'ddmcc'})[0]
-        # pull root List, as all the minor lists are contained within it
-        lists = dom_parser.parseDOM(ddmcc, 'li')
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
+        try:
+            html = requests.get(url).content
+            ddmcc = dom_parser.parseDOM(html, 'div', attrs={'class':'ddmcc'})[0]
+            # pull root List, as all the minor lists are contained within it
+            lists = dom_parser.parseDOM(ddmcc, 'li')
 
-        for entry in lists:
-            show_url, title = re.compile('href="(.+?)">(.+?)</a>',re.DOTALL).findall(entry)[0]
-            # convert show_url to get last tag in the url for the xml creation
-            show_url =  show_url.split('/')[-1]
-            title = refreshtitle(title)
-            title = remove_non_ascii(title)
+            for entry in lists:
+                show_url, title = re.compile('href="(.+?)">(.+?)</a>',re.DOTALL).findall(entry)[0]
+                # convert show_url to get last tag in the url for the xml creation
+                show_url =  show_url.split('/')[-1]
+                title = refreshtitle(title)
+                title = remove_non_ascii(title)
 
-            xml += "<dir>"\
-                   "    <title>%s</title>"\
-                   "    <wctoon>wcgenre/%s</wctoon>"\
-                   "    <thumbnail>%s</thumbnail>"\
-                   "    <summary>%s</summary>"\
-                   "</dir>" % (title,show_url,addon_icon,title)
-    except:
-        pass
+                xml += "<dir>"\
+                       "    <title>%s</title>"\
+                       "    <wctoon>wcgenre/%s</wctoon>"\
+                       "    <thumbnail>%s</thumbnail>"\
+                       "    <summary>%s</summary>"\
+                       "</dir>" % (title,show_url,addon_icon,title)
+            save_to_db(xml, url)
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -538,10 +548,66 @@ def get_wcplayvideo(url):
     except:
         pass
 
+
+def save_to_db(item, url):
+    if not item or not url:
+        return False
+    try:
+        koding.reset_db()
+        koding.Remove_From_Table(
+            "wctoonio_com_plugin",
+            {
+                "url": url
+            })
+
+        koding.Add_To_Table("wctoonio_com_plugin",
+                            {
+                                "url": url,
+                                "item": base64.b64encode(item),
+                                "created": time.time()
+                            })
+    except:
+        return False
+
+
+def fetch_from_db(url):
+    koding.reset_db()
+    wctoonio_plugin_spec = {
+        "columns": {
+            "url": "TEXT",
+            "item": "TEXT",
+            "created": "TEXT"
+        },
+        "constraints": {
+            "unique": "url"
+        }
+    }
+    koding.Create_Table("wctoonio_com_plugin", wctoonio_plugin_spec)
+    match = koding.Get_From_Table(
+        "wctoonio_com_plugin", {"url": url})
+    if match:
+        match = match[0]
+        if not match["item"]:
+            return None
+        created_time = match["created"]
+        if created_time and float(created_time) + CACHE_TIME >= time.time():
+            match_item = match["item"]
+            try:
+                result = base64.b64decode(match_item)
+            except:
+                return None
+            return result
+        else:
+            return
+    else:
+        return 
+
+
 def refreshtitle(title):
     title = replaceEscapeCodes(title)
     title = replaceHTMLCodes(title).replace('English Dubbed','[COLOR yellow](English Dubbed)[/COLOR]').replace('English Subbed','[COLOR orange](English Subbed)[/COLOR]')
     return title
+
 
 def replaceHTMLCodes(txt):
     txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
@@ -556,6 +622,7 @@ def replaceHTMLCodes(txt):
     txt = txt.strip()
     return txt
 
+
 def replaceEscapeCodes(txt):
     try:
         import html.parser as html_parser
@@ -563,6 +630,7 @@ def replaceEscapeCodes(txt):
         import HTMLParser as html_parser
     txt = html_parser.HTMLParser().unescape(txt)
     return txt
+
 
 def remove_non_ascii(text):
     try:

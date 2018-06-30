@@ -12,6 +12,9 @@
     ----------------------------------------------------------------------------
 
     Changelog:
+        2018.6.29:
+            - Added caching to primary menus (Cache time is 3 hours)
+
         2018-05-13:
             Updated for when pages have malformed download links.
 
@@ -112,9 +115,10 @@
 
 """
 
+import __builtin__
+import base64,time
 import json,re,requests,os,traceback,urlparse
 import koding
-import __builtin__
 import xbmc,xbmcaddon,xbmcgui
 from koding import route
 from resources.lib.plugin import Plugin
@@ -123,7 +127,7 @@ from resources.lib.util.context import get_context_items
 from resources.lib.util.xml import JenItem, JenList, display_list
 from unidecode import unidecode
 
-CACHE_TIME = 3600  # change to wanted cache time in seconds
+CACHE_TIME = 10800  # change to wanted cache time in seconds
 
 addon_fanart = xbmcaddon.Addon().getAddonInfo('fanart')
 addon_icon   = xbmcaddon.Addon().getAddonInfo('icon')
@@ -198,33 +202,36 @@ class WatchCartoon(Plugin):
 
 @route(mode='PBCats', args=["url"])
 def get_pbcats(url):
-    xml = ""
     url = url.replace('pbcategory/', '') # Strip our category tag off.
-    try:
-        url = urlparse.urljoin(pbcats_link, url)
-        html = requests.get(url).content
+    url = urlparse.urljoin(pbcats_link, url)
 
-        page_list = dom_parser.parseDOM(html, 'ul', attrs={'class': 'thumbnails'})[0]
-        show_list = dom_parser.parseDOM(page_list, 'li', attrs={'class': 'span3'})
-        for entry in show_list:
-            try:
-                show_url = dom_parser.parseDOM(entry, 'a', ret='href')[0]
-                show_icon = dom_parser.parseDOM(entry, 'img', ret='src')[0]
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
+        try:
+            html = requests.get(url).content
 
-                show_title = dom_parser.parseDOM(entry, 'h4')[0]
-                show_title = refreshtitle(show_title)
-                show_title = remove_non_ascii(show_title)
+            page_list = dom_parser.parseDOM(html, 'ul', attrs={'class': 'thumbnails'})[0]
+            show_list = dom_parser.parseDOM(page_list, 'li', attrs={'class': 'span3'})
+            for entry in show_list:
+                try:
+                    show_url = dom_parser.parseDOM(entry, 'a', ret='href')[0]
+                    show_icon = dom_parser.parseDOM(entry, 'img', ret='src')[0]
 
-                xml += "<dir>"\
-                       "    <title>%s</title>"\
-                       "    <podbay>pbshow/%s</podbay>"\
-                       "    <thumbnail>%s</thumbnail>"\
-                       "    <summary>%s</summary>"\
-                       "</dir>" % (show_title,show_url,show_icon,show_title)
-            except:
-                continue
-    except:
-        pass
+                    show_title = dom_parser.parseDOM(entry, 'h4')[0]
+                    show_title = refreshtitle(show_title)
+                    show_title = remove_non_ascii(show_title)
+
+                    xml += "<dir>"\
+                           "    <title>%s</title>"\
+                           "    <podbay>pbshow/%s</podbay>"\
+                           "    <thumbnail>%s</thumbnail>"\
+                           "    <summary>%s</summary>"\
+                           "</dir>" % (show_title,show_url,show_icon,show_title)
+                except:
+                    continue
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -232,31 +239,31 @@ def get_pbcats(url):
 
 @route(mode='PBShow', args=["url"])
 def get_pbshow(url):
-    xml = ""
     url = url.replace('pbshow/', '') # Strip our show tag off.
+    url = urlparse.urljoin(pbshow_link, url)
 
-    try:
-        url = urlparse.urljoin(pbshow_link, url)
-        html = requests.get(url).content
+    xml = fetch_from_db(url)
+    if not xml:
+        xml = ""
+        try:
+            html = requests.get(url).content
 
-        show_icon = re.compile('<meta property="og:image" content="(.+?)"').findall(html)[0]
-        table_content = dom_parser.parseDOM(html, 'div', attrs={'class': 'span8 well'})[0]
-        table_rows = dom_parser.parseDOM(table_content, 'tr')
-        for row in table_rows:
-            if 'href' in row:
-                ep_page, ep_summary, ep_title = re.compile('<a href="(.+?)".+?title="(.*?)">(.+?)</a>',re.DOTALL).findall(row)[0]
-            else:
-                continue
-            xml += "<item>"\
-                   "    <title>%s</title>"\
-                   "    <podbay>pbepisode/%s</podbay>"\
-                   "    <thumbnail>%s</thumbnail>"\
-                   "    <summary>%s</summary>"\
-                   "</item>" % (ep_title,ep_page,show_icon,ep_summary)
-    except:
-        #failure = traceback.format_exc()
-        #xbmcgui.Dialog().textviewer('Total Failure', str(failure))
-        pass
+            show_icon = re.compile('<meta property="og:image" content="(.+?)"').findall(html)[0]
+            table_content = dom_parser.parseDOM(html, 'div', attrs={'class': 'span8 well'})[0]
+            table_rows = dom_parser.parseDOM(table_content, 'tr')
+            for row in table_rows:
+                if 'href' in row:
+                    ep_page, ep_summary, ep_title = re.compile('<a href="(.+?)".+?title="(.*?)">(.+?)</a>',re.DOTALL).findall(row)[0]
+                else:
+                    continue
+                xml += "<item>"\
+                       "    <title>%s</title>"\
+                       "    <podbay>pbepisode/%s</podbay>"\
+                       "    <thumbnail>%s</thumbnail>"\
+                       "    <summary>%s</summary>"\
+                       "</item>" % (ep_title,ep_page,show_icon,ep_summary)
+        except:
+            pass
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -283,33 +290,58 @@ def get_pbepisode(url):
         pass
 
 
-def refreshtitle(title):
-    title = replaceEscapeCodes(title)
-    title = replaceHTMLCodes(title).replace('English Dubbed','[COLOR yellow](English Dubbed)[/COLOR]').replace('English Subbed','[COLOR orange](English Subbed)[/COLOR]')
-    return title
-
-
-def replaceHTMLCodes(txt):
-    txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
+def save_to_db(item, url):
+    if not item or not url:
+        return False
     try:
-        import html.parser as html_parser
+        koding.reset_db()
+        koding.Remove_From_Table(
+            "podbay_com_plugin",
+            {
+                "url": url
+            })
+
+        koding.Add_To_Table("podbay_com_plugin",
+                            {
+                                "url": url,
+                                "item": base64.b64encode(item),
+                                "created": time.time()
+                            })
     except:
-        import HTMLParser as html_parser
-    txt = html_parser.HTMLParser().unescape(txt)
-    txt = html_parser.HTMLParser().unescape(txt)
-    txt = txt.replace("&quot;", "\"")
-    txt = txt.replace("&amp;", "&")
-    txt = txt.strip()
-    return txt
+        return False
 
 
-def replaceEscapeCodes(txt):
-    try:
-        import html.parser as html_parser
-    except:
-        import HTMLParser as html_parser
-    txt = html_parser.HTMLParser().unescape(txt)
-    return txt
+def fetch_from_db(url):
+    koding.reset_db()
+    podbay_plugin_spec = {
+        "columns": {
+            "url": "TEXT",
+            "item": "TEXT",
+            "created": "TEXT"
+        },
+        "constraints": {
+            "unique": "url"
+        }
+    }
+    koding.Create_Table("podbay_com_plugin", podbay_plugin_spec)
+    match = koding.Get_From_Table(
+        "podbay_com_plugin", {"url": url})
+    if match:
+        match = match[0]
+        if not match["item"]:
+            return None
+        created_time = match["created"]
+        if created_time and float(created_time) + CACHE_TIME >= time.time():
+            match_item = match["item"]
+            try:
+                result = base64.b64decode(match_item)
+            except:
+                return None
+            return result
+        else:
+            return
+    else:
+        return 
 
 
 def remove_non_ascii(text):
