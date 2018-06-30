@@ -219,7 +219,6 @@ def get_pbcats(url):
                     show_icon = dom_parser.parseDOM(entry, 'img', ret='src')[0]
 
                     show_title = dom_parser.parseDOM(entry, 'h4')[0]
-                    show_title = refreshtitle(show_title)
                     show_title = remove_non_ascii(show_title)
 
                     xml += "<dir>"\

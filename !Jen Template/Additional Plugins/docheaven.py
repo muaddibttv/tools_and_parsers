@@ -254,7 +254,7 @@ docu_cat_list = 'http://documentaryheaven.com/category/'
 """
 Add strings to the reg_items for domains that are supported naturally by resolveurl
 """
-reg_items = {'vimeo','dailymotion','rutube','vid.ag','vidzi.tv'}
+reg_items = {'vimeo','dailymotion','rutube','vid.ag','vidzi.tv','drive.google.com'}
 unreg_items = {'myspace','nfb.ca','thevideobee','snagfilms','dotsub','en.musicplayon.com','vkontakte.ru','veehd.com','liveleak.com','imdb.com','disclose.tv','videoweed.es','putlocker','vid.ag','vice.com'}
 """
 Examples for unreg_items, to look into future support or if requested to fix by adding to/fixing in resolveurl
