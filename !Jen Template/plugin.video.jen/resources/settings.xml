@@ -3,7 +3,7 @@
     <category label="Customization">
         <setting label="32507" type="lsep"/>
         <setting label="30717" type="bool" id="metadata" default="true"/>
-        <setting label="Disable metadata Dialog" type="bool" id="disable_metadata_dialog" default="false"/>
+        <setting label="Disable Metadata Dialog" type="bool" id="disable_metadata_dialog" default="false"/>
         <setting label="32508" type="select" values="Trakt|TMDB" id="movie_metadata_provider" default="Trakt"/>
         <setting label="32509" type="select" values="Trakt|TVDB" id="tv_metadata_provider" default="Trakt"/>
         <setting label="32510" type="lsep" visible="false"/>
@@ -52,7 +52,7 @@
         <setting label="30760" type="lsep" visible="false"/>
         <setting id="disable_messages" label="30767" type="bool" default="false" visible="false"/>
         <setting id="enable_offensive" label="30761" type="bool" default="false" enable="eq(-1,false)" visible="false"/>
-        <setting label="queueing Options" type="lsep" visible="false"/>
+        <setting label="Queueing Options" type="lsep" visible="false"/>
         <setting id="include_watched_queue" label="Include Watched In Collection Queueing" type="bool" default="false" visible="false"/>
         <setting id="autostart_queue" label="Auto start queue if empty" type="bool" default="true" visible="false"/>
     </category>

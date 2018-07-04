@@ -204,7 +204,7 @@ def clear_cache():
             xbmc.translatePath(xbmcaddon.Addon().getSetting("cache_folder")),
             "artcache")
         koding.Delete_Folders(dest_folder)
-    xbmc.log("running hook:", xbmc.LOGNOTICE)
+    xbmc.log("running hook: clear cache", xbmc.LOGNOTICE)
     run_hook("clear_cache")
 
 

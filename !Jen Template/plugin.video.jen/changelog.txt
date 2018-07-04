@@ -8,6 +8,8 @@ v1.7
     - Fixed missing Exception raised in tvdb api base. (Bugatsinho)
     - Updated addon.xml for Kodi 18 support - Backwards compatible with 17 (Bugatsinho)
         Add this to the metadata section: <reuselanguageinvoker>false</reuselanguageinvoker>
+    - Update to hook running msg for when initiating Clear Cache in debug log.
+    - Update to clear cache in Trakt, TMDB plugins
 
 v1.6
     - Settings.xml updated for service settings

@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     Version:
+        2018-07-02
+            - Updated Clear Cache Hook
         2018-06-26
             - Added customizable settings for 2 colors (COLOR1 for Movie/Show titles; COLOR2 for Season/Episode numbers as well as for "Next Page >>")
             - Added Year in () to end of titles for both TV Shows & Movies (including Trailers) 
@@ -174,7 +176,7 @@ import time
 
 import koding
 import resources.lib.external.tmdbsimple as tmdbsimple
-import xbmcaddon
+import xbmcaddon,xbmcgui
 from koding import route
 from resources.lib.plugin import Plugin
 from resources.lib.util.context import get_context_items
@@ -260,6 +262,11 @@ class TMDB(Plugin):
             result_item["properties"] = {'fanart_image': result_item["fanart"]}
             result_item['fanart_small'] = result_item["fanart"]
             return result_item
+
+    def clear_cache(self):
+        dialog = xbmcgui.Dialog()
+        if dialog.yesno(xbmcaddon.Addon().getAddonInfo('name'), "Clear TMDB Plugin Cache?"):
+            koding.Remove_Table("tmdb_plugin")
 
 
 @route(mode='tmdb', args=["url"])

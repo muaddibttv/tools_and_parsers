@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     Version:
+        2018-07-02
+            - Updated Clear Cache Hook
         2018-05-14
             Latest version to include with a Jen Release
 
@@ -102,9 +104,7 @@ import requests
 
 import koding
 import resources.lib.external.tmdbsimple as tmdbsimple
-import xbmc
-import xbmcaddon
-import xbmcgui
+import xbmc,xbmcaddon,xbmcgui
 from ..plugin import Plugin
 from koding import route
 from resources.lib.util.context import get_context_items
@@ -223,7 +223,7 @@ class Trakt(Plugin):
 
     def clear_cache(self):
         dialog = xbmcgui.Dialog()
-        if dialog.yesno(addon_name, "Clear Trakt Plugin Cache?"):
+        if dialog.yesno(xbmcaddon.Addon().getAddonInfo('name'), "Clear Trakt Plugin Cache?"):
             koding.Remove_Table("trakt_plugin")
 
 
