@@ -4,9 +4,10 @@
 
     ----------------------------------------------------------------------------
     "THE BEER-WARE LICENSE" (Revision 42):
-    @tantrumdev wrote this file.  As long as you retain this notice you
-    can do whatever you want with this stuff. If we meet some day, and you think
-    this stuff is worth it, you can buy him a beer in return. - Muad'Dib
+    @tantrumdev wrote this file.  As long as you retain this notice you can do 
+    whatever you want with this stuff. Just Ask first when not released through
+    the tools and parser GIT. If we meet some day, and you think this stuff is
+    worth it, you can buy him a beer in return. - Muad'Dib
     ----------------------------------------------------------------------------
 
 
@@ -15,6 +16,10 @@
         Drop this PY in the plugins folder. See examples below on use.
 
     Version:
+        2018.7.2:
+            - Added Clear Cache function
+            - Minor update on fetch cache returns
+
         2018.6.20:
             - Added caching to primary menus (Cache time is 3 hours)
 
@@ -254,8 +259,8 @@ docu_cat_list = 'http://documentaryheaven.com/category/'
 """
 Add strings to the reg_items for domains that are supported naturally by resolveurl
 """
-reg_items = {'vimeo','dailymotion','rutube','vid.ag','vidzi.tv','drive.google.com'}
-unreg_items = {'myspace','nfb.ca','thevideobee','snagfilms','dotsub','en.musicplayon.com','vkontakte.ru','veehd.com','liveleak.com','imdb.com','disclose.tv','videoweed.es','putlocker','vid.ag','vice.com'}
+reg_items = {'vimeo','dailymotion','rutube','vid.ag','thevideobee','vidzi.tv'}
+unreg_items = {'myspace','nfb.ca','snagfilms','dotsub','en.musicplayon.com','vkontakte.ru','veehd.com','liveleak.com','imdb.com','disclose.tv','videoweed.es','putlocker','vid.ag','vice.com'}
 """
 Examples for unreg_items, to look into future support or if requested to fix by adding to/fixing in resolveurl
 
@@ -302,6 +307,11 @@ class DocuHeaven(Plugin):
             result_item['fanart_small'] = result_item["fanart"]
             return result_item
 
+    def clear_cache(self):
+        dialog = xbmcgui.Dialog()
+        if dialog.yesno(xbmcaddon.Addon().getAddonInfo('name'), "Clear Documentary Heaven Plugin Cache?"):
+            koding.Remove_Table("docuheaven_com_plugin")
+
 @route(mode='DHCats', args=["url"])
 def get_DHcats(url):
     url = url.replace('dhcategory/', '') # Strip our category tag off.
@@ -337,6 +347,8 @@ def get_DHcats(url):
                     if 'http:' not in docu_item and  'https:' not in docu_item:
                         docu_item = 'https:' + docu_item
                     docu_url = docu_item
+
+                    replaceHTMLCodes(docu_title)
 
                     if 'youtube' in docu_url:
                         if 'videoseries' not in docu_url:
@@ -393,9 +405,10 @@ def get_DHcats(url):
                            "</dir>" % (orig_cat,page)
             except:
                 pass
-            save_to_db(xml, url)
         except:
             pass
+
+        save_to_db(xml, url)
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -450,9 +463,17 @@ def fetch_from_db(url):
                 return None
             return result
         else:
-            return
+            return None
     else:
-        return 
+        return None
+
+
+def replaceHTMLCodes(txt):
+    txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
+    txt = txt.replace("&quot;", "\"").replace("&amp;", "&")
+    txt = txt.replace('&#8216;','\'').replace('&#8217;','\'').replace('&#038;','&').replace('&#8230;','....')
+    txt = txt.strip()
+    return txt
 
 
 def remove_non_ascii(text):

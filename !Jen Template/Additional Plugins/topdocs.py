@@ -4,9 +4,10 @@
 
     ----------------------------------------------------------------------------
     "THE BEER-WARE LICENSE" (Revision 42):
-    @tantrumdev wrote this file.  As long as you retain this notice you
-    can do whatever you want with this stuff. If we meet some day, and you think
-    this stuff is worth it, you can buy him a beer in return. - Muad'Dib
+    @tantrumdev wrote this file.  As long as you retain this notice you can do 
+    whatever you want with this stuff. Just Ask first when not released through
+    the tools and parser GIT. If we meet some day, and you think this stuff is
+    worth it, you can buy him a beer in return. - Muad'Dib
     ----------------------------------------------------------------------------
 
 
@@ -15,6 +16,10 @@
         Drop this PY in the plugins folder. See examples below on use.
 
     Version:
+        2018.7.2:
+            - Added Clear Cache function
+            - Minor update on fetch cache returns
+
         2018.6.20:
             - Added caching to primary menus (Cache time is 3 hours)
 
@@ -206,6 +211,11 @@ class TopDocs(Plugin):
             result_item['fanart_small'] = result_item["fanart"]
             return result_item
 
+    def clear_cache(self):
+        dialog = xbmcgui.Dialog()
+        if dialog.yesno(xbmcaddon.Addon().getAddonInfo('name'), "Clear Top Documentaries Plugin Cache?"):
+            koding.Remove_Table("topdocs_com_plugin")
+
 @route(mode='TDCats', args=["url"])
 def get_tdcats(url):
     url = url.replace('tdcategory/', '') # Strip our category tag off.
@@ -242,6 +252,8 @@ def get_tdcats(url):
                     if 'http:' not in docu_item and  'https:' not in docu_item:
                         docu_item = 'https:' + docu_item
                     docu_url = docu_item
+
+                    docu_title = replaceHTMLCodes(docu_title)
 
                     if 'youtube' in docu_url:
                         if 'videoseries' not in docu_url:
@@ -356,9 +368,17 @@ def fetch_from_db(url):
                 return None
             return result
         else:
-            return
+            return None
     else:
-        return 
+        return None
+
+
+def replaceHTMLCodes(txt):
+    txt = re.sub("(&#[0-9]+)([^;^0-9]+)", "\\1;\\2", txt)
+    txt = txt.replace("&quot;", "\"").replace("&amp;", "&")
+    txt = txt.replace('&#8216;','\'').replace('&#8217;','\'').replace('&#038;','&').replace('&#8230;','....')
+    txt = txt.strip()
+    return txt
 
 
 def remove_non_ascii(text):

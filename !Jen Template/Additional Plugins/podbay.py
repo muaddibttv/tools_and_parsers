@@ -6,12 +6,17 @@
 
     ----------------------------------------------------------------------------
     "THE BEER-WARE LICENSE" (Revision 42):
-    @tantrumdev wrote this file.  As long as you retain this notice you
-    can do whatever you want with this stuff. If we meet some day, and you think
-    this stuff is worth it, you can buy him a beer in return. - Muad'Dib
+    @tantrumdev wrote this file.  As long as you retain this notice you can do 
+    whatever you want with this stuff. Just Ask first when not released through
+    the tools and parser GIT. If we meet some day, and you think this stuff is
+    worth it, you can buy him a beer in return. - Muad'Dib
     ----------------------------------------------------------------------------
 
     Changelog:
+        2018.7.2:
+            - Added Clear Cache function
+            - Minor update on fetch cache returns
+
         2018.6.29:
             - Added caching to primary menus (Cache time is 3 hours)
 
@@ -199,6 +204,11 @@ class WatchCartoon(Plugin):
             result_item['fanart_small'] = result_item["fanart"]
             return result_item
 
+    def clear_cache(self):
+        dialog = xbmcgui.Dialog()
+        if dialog.yesno(xbmcaddon.Addon().getAddonInfo('name'), "Clear Podbay.fm Plugin Cache?"):
+            koding.Remove_Table("podbay_com_plugin")
+
 
 @route(mode='PBCats', args=["url"])
 def get_pbcats(url):
@@ -232,6 +242,8 @@ def get_pbcats(url):
         except:
             pass
 
+        save_to_db(xml, url)
+
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
 
@@ -263,6 +275,8 @@ def get_pbshow(url):
                        "</item>" % (ep_title,ep_page,show_icon,ep_summary)
         except:
             pass
+
+        save_to_db(xml, url)
 
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
@@ -338,9 +352,9 @@ def fetch_from_db(url):
                 return None
             return result
         else:
-            return
+            return None
     else:
-        return 
+        return None
 
 
 def remove_non_ascii(text):

@@ -14,6 +14,9 @@
         Drop this PY in the plugins folder, and use whatever tools below you want.
 
     Version:
+        2018.7.6
+            - Updated example of passreq use
+
         2018.6.23
             - Updated link for pairing The Video Me
 
@@ -67,11 +70,13 @@
             <pairwith>openload</pairwith>
         </item>
 
+        Decoded version of PassReq below: ThisIsThePassword|file://submenu.xml
         <item>
             <title>Password Protected Local File</title>
             <passreq>VGhpc0lzVGhlUGFzc3dvcmR8ZmlsZTovL3N1Ym1lbnUueG1s</passreq>
         </item>
 
+        Decoded version of the PassReq below: ThisIsThePassword|http://www.example.com/submenu.xml
         <item>
             <title>Password Protected Remote File</title>
             <passreq>VGhpc0lzVGhlUGFzc3dvcmR8aHR0cDovL3d3dy5leGFtcGxlLmNvbS9zdWJtZW51LnhtbA==</passreq>

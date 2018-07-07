@@ -6,12 +6,17 @@
 
     ----------------------------------------------------------------------------
     "THE BEER-WARE LICENSE" (Revision 42):
-    @tantrumdev wrote this file.  As long as you retain this notice you
-    can do whatever you want with this stuff. If we meet some day, and you think
-    this stuff is worth it, you can buy him a beer in return. - Muad'Dib
+    @tantrumdev wrote this file.  As long as you retain this notice you can do 
+    whatever you want with this stuff. Just Ask first when not released through
+    the tools and parser GIT. If we meet some day, and you think this stuff is
+    worth it, you can buy him a beer in return. - Muad'Dib
     ----------------------------------------------------------------------------
 
     Changelog:
+        2018.7.2:
+            - Added Clear Cache function
+            - Minor update on fetch cache returns
+
         2018.6.21:
             - Added caching to primary menus (Cache time is 3 hours)
 
@@ -126,6 +131,11 @@ class COBP(Plugin):
             result_item['fanart_small'] = result_item["fanart"]
             return result_item
 
+    def clear_cache(self):
+        dialog = xbmcgui.Dialog()
+        if dialog.yesno(xbmcaddon.Addon().getAddonInfo('name'), "Clear COBP Plugin Cache?"):
+            koding.Remove_Table("cobp_com_plugin")
+
 
 @route(mode='COBP', args=["url"])
 def get_stream(url):
@@ -170,6 +180,7 @@ def get_stream(url):
                        "</dir>" % (next_page,next_icon)
             except:
                 pass
+            save_to_db(xml, url)
         except:
             pass
 
@@ -240,9 +251,9 @@ def fetch_from_db(url):
                 return None
             return result
         else:
-            return
+            return None
     else:
-        return 
+        return None
 
 
 def remove_non_ascii(text):
