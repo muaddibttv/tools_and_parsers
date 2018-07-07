@@ -1,14 +1,19 @@
 """
+
     Copyright (C) 2018 MuadDib
 
     ----------------------------------------------------------------------------
     "THE BEER-WARE LICENSE" (Revision 42):
-    @tantrumdev wrote this file.  As long as you retain this notice you
-    can do whatever you want with this stuff. If we meet some day, and you think
-    this stuff is worth it, you can buy him a beer in return. - Muad'Dib
+    @tantrumdev wrote this file.  As long as you retain this notice you can do 
+    whatever you want with this stuff. Just Ask first when not released through
+    the tools and parser GIT. If we meet some day, and you think this stuff is
+    worth it, you can buy him a beer in return. - Muad'Dib
     ----------------------------------------------------------------------------
 
     Changelog:
+        2018.7.7
+            - Updated for passing View Mode
+
         2018.6.17
             - Initial Release
 
@@ -16,40 +21,17 @@
     Usage Examples:
 
     Text inside the tags are a formatted base64 encoded string. The format is below.
-    Format: Base ID|Table Name|Max Results|Sort By|API Key
+    View Mode and Sort By can both be ignored in the searches by using None in those blocks.
+    Format: Base ID|Table Name|Max Results|Sort By|View Mode|API Key
 
     Returns the Tv Channels
 
-    -- Base64 Unencoded String: appycq5PhSS0tygok|tv_channels|700|channel|keyikW1exArRfNAWj
+    -- Base64 Unencoded String: appycq5PhSS0tygok|tv_channels|700|channel|None|keyikW1exArRfNAWj
     <dir>
         <title>TV Channels #1</title>
-        <arraki_air>YXBweWNxNVBoU1MwdHlnb2t8dHZfY2hhbm5lbHN8NzAwfGNoYW5uZWx8a2V5aWtXMWV4QXJSZk5BV2o=</arraki_air>
+        <arraki_air>YXBweWNxNVBoU1MwdHlnb2t8dHZfY2hhbm5lbHN8NzAwfGNoYW5uZWx8Tm9uZXxrZXlpa1cxZXhBclJmTkFXag==</arraki_air>
     </dir>
 
-    <dir>
-        <title>TV Channels #2[/COLOR]</title>
-        <arraki_air>YXBweWNxNVBoU1MwdHlnb2t8Y2hhbm5lbHMyfDcwMHxjaGFubmVsfGtleWlrVzFleEFyUmZOQVdq</arraki_air>
-    </dir>
-
-    Returns the Sports Channels
-
-    <dir>
-        <title>Sports Channels</title>
-        <arraki_air>YXBweWNxNVBoU1MwdHlnb2t8c3BvcnRzX2NoYW5uZWxzfDcwMHxjaGFubmVsfGtleWlrVzFleEFyUmZOQVdq</arraki_air>
-    </dir>
-
-
-    Returns the m3u Lists-
-    <dir>
-        <title>M3U Lists</title>
-        <arraki_air>YXBweWNxNVBoU1MwdHlnb2t8bTN1X2xpc3RzfDcwMHxjaGFubmVsfGtleWlrVzFleEFyUmZOQVdq</arraki_air>
-    </dir>
-
-    Returns the 24-7 Channels
-    <dir>
-        <title>24-7 Channels</title>
-        <arraki_air>YXBweWNxNVBoU1MwdHlnb2t8MjQ3fDcwMHxjaGFubmVsfGtleWlrVzFleEFyUmZOQVdq</arraki_air>
-    </dir>
 
     --------------------------------------------------------------
 
@@ -62,7 +44,7 @@ import re
 import os
 import xbmc
 import xbmcaddon
-import json
+import json,traceback,xbmcgui
 from koding import route
 from ..plugin import Plugin
 from resources.lib.util.context import get_context_items
@@ -115,40 +97,93 @@ def get_arraki_air_table(param_string):
     param_string = param_string.decode('base64')
     param_string = param_string.split('|')
 
-    # App ID, Table ID, Max Results, Sort ID, API Key
-    at = Airtable(param_string[0], param_string[1], api_key=param_string[4])
-    match = at.get_all(maxRecords=param_string[2], sort=[param_string[3]])
-    results = re.compile("fanart': u'(.+?)'.+?link': u'(.+?)'.+?thumbnail': u'(.+?)'.+?channel': u'(.+?)'.+?summary': u'(.+?)'",re.DOTALL).findall(str(match))
-    for fanart,link,thumbnail,channel,summary in results:
-        if "plugin" in link:
+    view = param_string[4]
+    sort = param_string[3]
+    maxRecords = param_string[2]
 
-            xml += "<plugin>"\
-                   "<title>%s</title>"\
-                   "<meta>"\
-                   "<summary>%s</summary>"\
-                   "</meta>"\
-                   "<link>"\
-                   "<sublink>%s</sublink>"\
-                   "</link>"\
-                   "<thumbnail>%s</thumbnail>"\
-                   "<fanart>%s</fanart>"\
-                   "</plugin>" % (channel,channel,thumbnail,fanart,summary,link)
-                
-        else:
-            xml +=  "<item>"\
-                    "<title>%s</title>"\
-                    "<meta>"\
-                    "<summary>%s</summary>"\
-                    "</meta>"\
-                    "<link>"\
-                    "<sublink>%s</sublink>"\
-                    "</link>"\
-                    "<thumbnail>%s</thumbnail>"\
-                    "<fanart>%s</fanart>"\
-                    "</item>" % (channel,channel,thumbnail,fanart,summary,link)
+    # App ID, Table ID, Max Results, Sort ID, View Mode, API Key
+    at = Airtable(param_string[0], param_string[1], api_key=param_string[5])
+    if sort.lower() == 'none' and view.lower() == 'none': match = at.get_all(maxRecords=maxRecords)
+    elif sort.lower() == 'none' and view.lower() != 'none': match = at.get_all(maxRecords=maxRecords, view=[view])
+    elif sort.lower() != 'none' and view.lower() == 'none': match = at.get_all(maxRecords=maxRecords, sort=[sort])
+    elif sort.lower() != 'none' and view.lower() != 'none': match = at.get_all(maxRecords=maxRecords, sort=[sort], view=[view])
+
+    for item in match:
+        try:
+            try:
+                if item['fields']['channel']:
+                    item['fields']['title'] = item['fields']['channel']
+            except:
+                pass
+
+            xml_item = validate_at(item['fields'])
+            if 'plugin' in item['fields']['link']:
+                xml +=  "<plugin>"\
+                        "   <title>%s</title>"\
+                        "   <meta>"\
+                        "       <summary>%s</summary>"\
+                        "   </meta>"\
+                        "   <link>" % (xml_item['title'],xml_item['summary'])
+                xml +=  add_sublinks(xml_item)
+                xml +=  "   </link>"\
+                        "   <thumbnail>%s</thumbnail>"\
+                        "   <fanart>%s</fanart>"\
+                        "</plugin>" % (xml_item['thumbnail'],xml_item['fanart'])
+            else:
+                xml +=  "<item>"\
+                        "   <title>%s</title>"\
+                        "   <meta>"\
+                        "       <summary>%s</summary>"\
+                        "   </meta>"\
+                        "   <link>" % (xml_item['title'],xml_item['summary'])
+                xml +=  add_sublinks(xml_item)
+                xml +=  "   </link>"\
+                        "   <thumbnail>%s</thumbnail>"\
+                        "   <fanart>%s</fanart>"\
+                        "</item>" % (xml_item['thumbnail'],xml_item['fanart'])
+        except:
+            # continue here, so we can skip any invalid items
+            continue
+
     jenlist = JenList(xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
- 
+
+
+# Tag,Alternate
+jen_checks = [ ['title','title'],['summary','title'],['link','link'],['thumbnail',addon_icon],['fanart',addon_fanart] ]
+def validate_at(item):
+    for tag in jen_checks:
+        try:
+            data_chk = item[tag[0]]
+        except:
+            if tag[0] == tag[1]:
+                item[0] = ''
+            else:
+                try: item[0] = item[1]
+                except: item[0] = ''
+    return item
+
+
+def add_sublinks(item_xml):
+    xml = ''
+    cnt = 1
+    try:
+        if item_xml['link'] != None and item_xml['link'] != '-':
+            xml += "    <sublink>%s</sublink>" % (item_xml['link'])
+    except:
+        pass
+    build = True
+    while build == True:
+        try:
+            link = 'link'+str(cnt)
+            cnt += 1
+            if item_xml[link] != None and item_xml[link] != '-':
+                xml += "    <sublink>%s</sublink>" % (item_xml[link])
+        except:
+            build = False
+    
+    return xml
+
 
 class Airtable():
 
