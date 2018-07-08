@@ -1,6 +1,14 @@
 <settings>
     <!-- customization settings -->
+
     <category label="Customization">
+        <setting label="30200" type="lsep"/>
+        <setting id="use-account" type="bool" label="30200" default="false" visible="false"/>
+        <setting id="login_url" type="text" label="30204" default="PUT FULL URL USED TO VERIFY LOGIN" visible="false"/>
+        <setting id="login_verified" type="text" label="30205" default="Welcome to" visible="false"/>
+        <setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/>
+        <setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/>
+        <setting id="hide-successful-login-messages" type="bool" label="30203" default="false" enable="!eq(-3,false)"/>
         <setting label="32507" type="lsep"/>
         <setting label="30717" type="bool" id="metadata" default="true"/>
         <setting label="Disable Metadata Dialog" type="bool" id="disable_metadata_dialog" default="false"/>
@@ -16,7 +24,7 @@
         <setting label="Display" type="lsep"/>
         <setting label="Enable Settings Context item" type="bool" id="settings_context" default="true"/>
         <setting label="Enable Trailer Context item" type="bool" id="trailer_context" default="true"/>
-        <setting label="Hide Help Videos" type="bool" id="hide_help" default="false" visible="false"/>
+        <setting label="Hide Help Videos" type="bool" id="hide_help" default="false" visible="true"/>
         <setting label="32505" type="lsep" visible="true"/>
         <setting label="32506" type="select"
                values="system|bg|cs|da|de|el|en|es|fi|fr|he|hr|hu|it|ja|ko|nl|no|pl|pt|ru|sl|sv|tr|zh"

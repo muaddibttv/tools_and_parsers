@@ -880,6 +880,57 @@ TV Episodes
 </div>
 </div>
 
+<div id="outline-container-sec-13" class="outline-2">
+<h2 id="sec-13"><span class="section-number-2">13</span> Making Your Jen Private</h2>
+<div class="outline-text-2" id="text-13">
+<ul class="org-ul">
+<li>This is an overview of making your Jen require a username and password to access the main menu.
+</li>
+<li>Requires Jen Template v1.8 or higher.
+</li>
+</ul>
+</div>
+<div id="outline-container-sec-13-1" class="outline-3">
+<h3 id="sec-13-1"><span class="section-number-3">13.1</span> Settings.XML Entries</h3>
+<div class="outline-text-3" id="text-13-1">
+<ul>
+<pre class="example">
+    &lt;setting id="use-account" type="bool" label="30200" default="false" visible="false"/&gt;
+    &lt;setting id="login_url" type="text" label="30204" default="PUT FULL URL USED TO VERIFY LOGIN" visible="false"/&gt;
+    &lt;setting id="login_verified" type="text" label="30205" default="Welcome to" visible="false"/&gt;
+    &lt;setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/&gt;
+    &lt;setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/&gt;
+    &lt;setting id="hide-successful-login-messages" type="bool" label="30203" default="false" enable="!eq(-3,false)"/&gt;
+</pre>
+<li>id <b>'use-account'</b> : Change "default" to "true" to require a login for your Jen</li>
+<li>id <b>'login_url'</b> : Full url to your login page. Example: "http://www.example.com/login.php"</li>
+<li>id <b>'login_verified'</b> : Set default to text string unique to the page displayed after a successful login. Such as "Howdy, " for Wordpress or if using the supplied login template, "Welcome to"</li>
+<li>id <b>'username'</b> : This is set by the end user for a valid username</li>
+<li>id <b>'password'</b> : This is set by the end user for a valid password</li>
+<li>id <b>'hide-successful-login-messages'</b> : This is set by the end user if they do not wish to see the login successful message</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-13-2" class="outline-3">
+<h3 id="sec-13-2"><span class="section-number-3">13.2</span> Login Form On Website</h3>
+<div class="outline-text-3" id="text-13-2">
+<ul class="org-ul">
+<li>A basic understanding of html, forms, and form values may be needed for customization. If you need help, it is available in the Jen Chat on Telegram.</li>
+<li>You must ensure the weblogin.py is sending the right "username" and "password" variables to your website for login verification.</li>
+<li>The supplied template/example in the login folder with the Jen Template uses "username" and "password", which is what is already in the weblogin.py</li>
+<li>For example, if you are using Wordpress for your website and want to verify the accounts through your website, change this in the weblogin.py to "log" for username, and "pwd" for password</li>
+<li>From the weblogin.py file:</li>
+<pre class="example">
+    """ build the form data necessary for the login """
+    """ One example: If using a Wordpress 4.x site to verify login, change 'username' to 'log' and
+        'password' to 'pwd' """
+    login_data = urllib.urlencode({'username':username, 'password':password})
+</pre>
+</ul>
+</div>
+</div>
+</div>
+
 </div><div class="col-md-3"><nav id="table-of-contents">
 <div id="text-table-of-contents" class="bs-docs-sidebar">
 <ul class="nav">
@@ -935,14 +986,20 @@ TV Episodes
 </ul>
 </li>
 <li><a href="#sec-10">10. Changing List Colours</a></li>
-<li><a href="#sec-11">11. First Time Install And Dependencies</a>
-<li><a href="#sec-12">12. Setting Up Your First Repository</a>
+<li><a href="#sec-11">11. First Time Install And Dependencies</a></li>
+<li><a href="#sec-12">12. Setting Up Your First Repository</a></li>
+<li><a href="#sec-13">13. Making Your Jen Private</a>
+<ul class="nav">
+<li><a href="#sec-13-1">13.1. Settings</a></li>
+<li><a href="#sec-13-2">13.2. Login Form On Website</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </nav>
 </div></div></div>
 <footer id="postamble" class="">
-<div><p class="date">Created: 2018-05-24 Thur 04:04</p>
+<div><p class="date">Created: 2018-07-08 Sun 04:16</p>
 </div>
 </footer>
 </body>

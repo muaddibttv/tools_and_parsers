@@ -13,6 +13,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30200"
+msgid "User Account"
+msgstr ""
+
+msgctxt "#30201"
+msgid "Username"
+msgstr ""
+
+msgctxt "#30202"
+msgid "Password"
+msgstr ""
+
+msgctxt "#30203"
+msgid "Hide Successful Login Messages"
+msgstr ""
+
+msgctxt "#30204"
+msgid "Login URL"
+msgstr ""
+
+msgctxt "#30205"
+msgid "Login Verified Message"
+msgstr ""
+
 msgctxt "#30401"
 msgid "[COLOR teal]Are You Sure?[/COLOR]"
 msgstr ""

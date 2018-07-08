@@ -16,6 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+
+
 import __builtin__
 import xbmcaddon
 
@@ -28,6 +30,8 @@ enable_newswin = ownAddon.getSetting('news_win')
 root_xml_url = ownAddon.getSetting('root_xml')
 if not 'file:' in root_xml_url and not 'http' in root_xml_url:
     root_xml_url = root_xml_url.decode('base64')
+__builtin__.login_url = ownAddon.getSetting('login_url')
+__builtin__.login_verified = ownAddon.getSetting('login_verified')
 __builtin__.tvdb_api_key = ownAddon.getSetting('tvdb_api_key')
 __builtin__.tmdb_api_key = ownAddon.getSetting('tmdb_api_key')
 __builtin__.trakt_client_id = ownAddon.getSetting('trakt_api_client_id')
@@ -39,14 +43,14 @@ import sys
 
 import koding
 import koding.router as router
+import weblogin
 from resources.lib.installa import Dialog_specific
 from resources.lib.news_window import Dialog_Example
 import resources.lib.search
 import resources.lib.sources
 import resources.lib.testings
 import resources.lib.util.info
-import xbmc
-import xbmcplugin
+import xbmc,xbmcgui,xbmcplugin
 from koding import route
 from resources.lib.util.xml import JenList, display_list
 import resources.lib.util.views
@@ -63,36 +67,84 @@ content_type = "files"
 
 @route("main")
 def root():
+    try:
+        """ check if user has enabled user-login setting """
+        use_account = ownAddon.getSetting('use-account')
+        display_menu = False 
+
+        if use_account == 'true':
+            """ get username and password and do login with them """
+            """ also get whether to hide successful login notification """
+            username = ownAddon.getSetting('username')
+            password = ownAddon.getSetting('password')
+            hidesuccess = ownAddon.getSetting('hide-successful-login-messages')
+
+            uc = username[0].upper() + username[1:]
+            lc = username.lower()
+            true_path = koding.Physical_Path(('special://home/addons/%s/' % (addon_id)))
+            logged_in = weblogin.doLogin(true_path,username,password)
+
+            if logged_in == True:
+                if ownAddon.getSetting('hide-successful-login-messages') == 'false':
+                    xbmcgui.Dialog().notification('Welcome', uc+'',xbmcaddon.Addon().getAddonInfo("icon"), 4000)
+                display_menu = True
+            else:
+                if ownAddon.getSetting('hide-successful-login-messages') == 'false':
+                    xbmcgui.Dialog().notification('Login Failure', uc+' could not login',xbmcaddon.Addon().getAddonInfo("icon"), 4000)
+                display_menu = False
+        else:
+            display_menu = True
+    except:
+        failure = traceback.format_exc()
+        xbmcgui.Dialog().textviewer('Login Exception - Report this to the developer',str(failure))
+        pass
+
     """root menu of the addon"""
-    if enable_newswin == 'true':
-        koding.Add_Dir(name='Latest News And Updates', url='{"my_text":"Latest News[CR]!!!","my_desc":""}', mode='dialog_example', folder=False, icon=os.path.join(art_path,'icon.png'), fanart=os.path.join(art_path,'fanart.jpg'))
-    if not get_list(root_xml_url):
-        koding.Add_Dir(
-            name=_("Message"),
-            url=_("Sorry, server is down"),
-            mode="message",
-            folder=True,
-            icon=xbmcaddon.Addon().getAddonInfo("icon"),
-            fanart=xbmcaddon.Addon().getAddonInfo("fanart"),
-            content_type="")
-        koding.Add_Dir(
-            name=_("Search"),
-            url="",
-            mode="Search",
-            folder=True,
-            icon=xbmcaddon.Addon().getAddonInfo("icon"),
-            fanart=xbmcaddon.Addon().getAddonInfo("fanart"),
-            content_type="")
-        koding.Add_Dir(
-            name=_("Testings"),
-            url='{"file_name":"testings.xml"}',
-            mode="Testings",
-            folder=True,
-            icon=xbmcaddon.Addon().getAddonInfo("icon"),
-            fanart=xbmcaddon.Addon().getAddonInfo("fanart"),
-            content_type="")
-    if enable_installa =='true':
-        koding.Add_Dir(name='Download Backgrounds', url='{"my_text":"INSTALLA[CR]!!!","my_desc":""}', mode='dialog_specific', folder=False, icon=os.path.join(art_path,'icon.png'), fanart=os.path.join(art_path,'fanart.jpg'))
+    try:
+        if display_menu == True:
+            if enable_newswin == 'true':
+                koding.Add_Dir(name='Latest News And Updates', url='{"my_text":"Latest News[CR]!!!","my_desc":""}', mode='dialog_example', folder=False, icon=os.path.join(art_path,'icon.png'), fanart=os.path.join(art_path,'fanart.jpg'))
+            if not get_list(root_xml_url):
+                koding.Add_Dir(
+                    name=_("Message"),
+                    url=_("Sorry, server is down"),
+                    mode="message",
+                    folder=True,
+                    icon=xbmcaddon.Addon().getAddonInfo("icon"),
+                    fanart=xbmcaddon.Addon().getAddonInfo("fanart"),
+                    content_type="")
+                koding.Add_Dir(
+                    name=_("Search"),
+                    url="",
+                    mode="Search",
+                    folder=True,
+                    icon=xbmcaddon.Addon().getAddonInfo("icon"),
+                    fanart=xbmcaddon.Addon().getAddonInfo("fanart"),
+                    content_type="")
+                koding.Add_Dir(
+                    name=_("Testings"),
+                    url='{"file_name":"testings.xml"}',
+                    mode="Testings",
+                    folder=True,
+                    icon=xbmcaddon.Addon().getAddonInfo("icon"),
+                    fanart=xbmcaddon.Addon().getAddonInfo("fanart"),
+                    content_type="")
+            if enable_installa =='true':
+                koding.Add_Dir(name='Download Backgrounds', url='{"my_text":"INSTALLA[CR]!!!","my_desc":""}', mode='dialog_specific', folder=False, icon=os.path.join(art_path,'icon.png'), fanart=os.path.join(art_path,'fanart.jpg'))
+        else:
+            koding.Add_Dir(
+                name=_("You must be logged in"),
+                url=_("You are not logged in"),
+                mode="message",
+                folder=False,
+                icon=xbmcaddon.Addon().getAddonInfo("icon"),
+                fanart=xbmcaddon.Addon().getAddonInfo("fanart"),
+                content_type="")
+    except:
+        failure = traceback.format_exc()
+        xbmcgui.Dialog().textviewer('Main Menu Exception - Report this to the developer',str(failure))
+        pass
+
 
 @route(mode='get_list_uncached', args=["url"])
 def get_list_uncached(url):

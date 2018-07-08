@@ -96,6 +96,7 @@ def main():
                 pass
             else:
                 ownAddon.setSetting('root_xml', my_settings['root_xml'])
+            ownAddon.setSetting('message_xml_url', my_settings['message_xml_url'])
             ownAddon.setSetting('tvdb_api_key', my_settings['tvdb_api_key'])
             ownAddon.setSetting('tmdb_api_key', my_settings['tmdb_api_key'])
             ownAddon.setSetting('trakt_api_client_id', my_settings['trakt_api_client_id'])
@@ -127,6 +128,13 @@ def get_my_settings():
             my_settings['root_xml'] = (xml_root if not 'visible' in xml_root else 'file://main.xml')
         else:
             my_settings['root_xml'] = 'file://main.xml'
+
+        message_xml_url = re.search('id="message_xml_url".+?/>', xml_content)
+        if not message_xml_url == None:
+            message_xml_url = re.findall('default="(.+?)"', message_xml_url.group())[0]
+            my_settings['message_xml_url'] = (message_xml_url if not 'visible' in message_xml_url else 'http://www.example.com/news.xml')
+        else:
+            my_settings['message_xml_url'] = 'http://www.example.com/news.xml'
 
         tvdb_api_key = re.search('id="tvdb_api_key".+?/>', xml_content)
         if not tvdb_api_key == None:
