@@ -41,7 +41,7 @@ def check_login(source,username):
 def verify_login(cookiepath, username, password):
     """ check if user has supplied only a folder path, or a full path """
     if not os.path.isfile(cookiepath):
-        #if the user supplied only a folder path, append on to the end of the path a filename.
+        """ if the user supplied only a folder path, append on to the end of the path a filename. """
         cookiepath = os.path.join(cookiepath, 'cookies.lwp')
         
     """ delete any old version of the cookie file """
@@ -74,15 +74,15 @@ def verify_login(cookiepath, username, password):
         source = response.read()
         response.close()
 
-        #check the received html for a string that will tell us if the user is logged in
-        #pass the username, which can be used to do this.
+        """ check the received html for a string that will tell us if the user is logged in """
+        """ pass the username, which can be used to do this. """
         login = check_login(source,username)
 
-        #if login suceeded, save the cookiejar to disk
+        """ if login suceeded, save the cookiejar to disk """
         if login == True:
             cj.save(cookiepath)
 
-        #return whether we are logged in or not
+        """ return whether we are logged in or not """
         return login
     else:
         return False
