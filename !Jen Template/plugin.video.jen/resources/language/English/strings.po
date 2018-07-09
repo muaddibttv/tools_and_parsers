@@ -37,6 +37,14 @@ msgctxt "#30205"
 msgid "Login Verified Message"
 msgstr ""
 
+msgctxt "#30206"
+msgid "Username Form Name"
+msgstr ""
+
+msgctxt "#30207"
+msgid "Password Form Name"
+msgstr ""
+
 msgctxt "#30401"
 msgid "[COLOR teal]Are You Sure?[/COLOR]"
 msgstr ""

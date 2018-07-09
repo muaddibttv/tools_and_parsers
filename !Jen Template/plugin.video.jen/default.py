@@ -30,13 +30,17 @@ enable_newswin = ownAddon.getSetting('news_win')
 root_xml_url = ownAddon.getSetting('root_xml')
 if not 'file:' in root_xml_url and not 'http' in root_xml_url:
     root_xml_url = root_xml_url.decode('base64')
-__builtin__.login_url = ownAddon.getSetting('login_url')
-__builtin__.login_verified = ownAddon.getSetting('login_verified')
 __builtin__.tvdb_api_key = ownAddon.getSetting('tvdb_api_key')
 __builtin__.tmdb_api_key = ownAddon.getSetting('tmdb_api_key')
 __builtin__.trakt_client_id = ownAddon.getSetting('trakt_api_client_id')
 __builtin__.trakt_client_secret = ownAddon.getSetting('trakt_api_client_secret')
 __builtin__.search_db_location = ownAddon.getSetting('search_db_location')
+
+__builtin__.login_url = ownAddon.getSetting('login_url')
+__builtin__.login_verified = ownAddon.getSetting('login_verified')
+__builtin__.user_var = ownAddon.getSetting('user_var')
+__builtin__.pwd_var = ownAddon.getSetting('pwd_var')
+
 
 import os
 import sys
@@ -82,7 +86,7 @@ def root():
             uc = username[0].upper() + username[1:]
             lc = username.lower()
             true_path = koding.Physical_Path(('special://home/addons/%s/' % (addon_id)))
-            logged_in = weblogin.doLogin(true_path,username,password)
+            logged_in = weblogin.verify_login(true_path,username,password)
 
             if logged_in == True:
                 if ownAddon.getSetting('hide-successful-login-messages') == 'false':

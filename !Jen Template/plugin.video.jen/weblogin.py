@@ -55,9 +55,7 @@ def verify_login(cookiepath, username, password):
         user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
         """ build the form data necessary for the login """
-        """ One example: If using a Wordpress 4.x site to verify login, change 'username' to 'log' and
-            'password' to 'pwd' """
-        login_data = urllib.urlencode({'username':username, 'password':password})
+        login_data = urllib.urlencode({user_var:username, pwd_var:password})
 
         """ build the request we will make """
         req = urllib2.Request(login_url, login_data)

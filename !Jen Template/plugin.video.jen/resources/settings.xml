@@ -5,6 +5,8 @@
         <setting label="30200" type="lsep"/>
         <setting id="use-account" type="bool" label="30200" default="false" visible="false"/>
         <setting id="login_url" type="text" label="30204" default="PUT FULL URL USED TO VERIFY LOGIN" visible="false"/>
+        <setting id="user_var" type="text" label="30206" default="username" visible="false"/>
+        <setting id="pwd_var" type="text" label="30207" default="password" visible="false"/>
         <setting id="login_verified" type="text" label="30205" default="Welcome to" visible="false"/>
         <setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/>
         <setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/>

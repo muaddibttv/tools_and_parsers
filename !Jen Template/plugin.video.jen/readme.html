@@ -897,6 +897,8 @@ TV Episodes
 <pre class="example">
     &lt;setting id="use-account" type="bool" label="30200" default="false" visible="false"/&gt;
     &lt;setting id="login_url" type="text" label="30204" default="PUT FULL URL USED TO VERIFY LOGIN" visible="false"/&gt;
+    &lt;setting id="user_var" type="text" label="30206" default="username" visible="false"/&gt;
+    &lt;setting id="pwd_var" type="text" label="30207" default="password" visible="false"/&gt;
     &lt;setting id="login_verified" type="text" label="30205" default="Welcome to" visible="false"/&gt;
     &lt;setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/&gt;
     &lt;setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/&gt;
@@ -904,6 +906,8 @@ TV Episodes
 </pre>
 <li>id <b>'use-account'</b> : Change "default" to "true" to require a login for your Jen</li>
 <li>id <b>'login_url'</b> : Full url to your login page. Example: "http://www.example.com/login.php"</li>
+<li>id <b>'user_var'</b> : Variable name the login form uses for usernames, not visible to the user</li>
+<li>id <b>'pwd_var'</b> : Variable name the login form uses for passwords, not visible to the user</li>
 <li>id <b>'login_verified'</b> : Set default to text string unique to the page displayed after a successful login. Such as "Howdy, " for Wordpress or if using the supplied login template, "Welcome to"</li>
 <li>id <b>'username'</b> : This is set by the end user for a valid username</li>
 <li>id <b>'password'</b> : This is set by the end user for a valid password</li>
@@ -918,14 +922,7 @@ TV Episodes
 <li>A basic understanding of html, forms, and form values may be needed for customization. If you need help, it is available in the Jen Chat on Telegram.</li>
 <li>You must ensure the weblogin.py is sending the right "username" and "password" variables to your website for login verification.</li>
 <li>The supplied template/example in the login folder with the Jen Template uses "username" and "password", which is what is already in the weblogin.py</li>
-<li>For example, if you are using Wordpress for your website and want to verify the accounts through your website, change this in the weblogin.py to "log" for username, and "pwd" for password</li>
-<li>From the weblogin.py file:</li>
-<pre class="example">
-    """ build the form data necessary for the login """
-    """ One example: If using a Wordpress 4.x site to verify login, change 'username' to 'log' and
-        'password' to 'pwd' """
-    login_data = urllib.urlencode({'username':username, 'password':password})
-</pre>
+<li>For example, if you are using Wordpress for your website and want to verify the accounts through your website, change the user_var to "log" for username, and pwd_var to "pwd" for password</li>
 </ul>
 </div>
 </div>
