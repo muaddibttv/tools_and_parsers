@@ -241,39 +241,39 @@ def get_wcstream(url):
     if not xml:
         xml = ""
         try:
-        html = requests.get(url).content
-        ddmcc = dom_parser.parseDOM(html, 'div', attrs={'class':'ddmcc'})[0]
-        # pull root List, as all the minor lists are contained within it
-        lists = dom_parser.parseDOM(ddmcc, 'li')
+            html = requests.get(url).content
+            ddmcc = dom_parser.parseDOM(html, 'div', attrs={'class':'ddmcc'})[0]
+            # pull root List, as all the minor lists are contained within it
+            lists = dom_parser.parseDOM(ddmcc, 'li')
 
-        for entry in lists:
-            try:
-                movie_style = 0
+            for entry in lists:
                 try:
-                    # if this fails, means it is a movie/ova series entry as they use different html for those categories
-                    show_url, title = re.compile('<a href="(.+?)".+?>(.+?)</a>',re.DOTALL).findall(entry)[0]
-                except:
-                    show_url, title = re.compile('<a href="(.+?)">(.+?)</a>',re.DOTALL).findall(entry)[0]
-                    movie_style = 1
-                title = refreshtitle(title)
-                title = remove_non_ascii(title)
+                    movie_style = 0
+                    try:
+                        # if this fails, means it is a movie/ova series entry as they use different html for those categories
+                        show_url, title = re.compile('<a href="(.+?)".+?>(.+?)</a>',re.DOTALL).findall(entry)[0]
+                    except:
+                        show_url, title = re.compile('<a href="(.+?)">(.+?)</a>',re.DOTALL).findall(entry)[0]
+                        movie_style = 1
+                    title = refreshtitle(title)
+                    title = remove_non_ascii(title)
 
-                if movie_style == 1:
-                    xml += "<item>"\
-                           "    <title>%s</title>"\
-                           "    <wctoon>direct/%s</wctoon>"\
-                           "    <thumbnail>%s</thumbnail>"\
-                           "    <summary>%s</summary>"\
-                           "</item>" % (title,show_url,addon_icon,title)
-                else:
-                    xml += "<dir>"\
-                           "    <title>%s</title>"\
-                           "    <wctoon>wcepisode/%s</wctoon>"\
-                           "    <thumbnail>%s</thumbnail>"\
-                           "    <summary>%s</summary>"\
-                           "</dir>" % (title,show_url,addon_icon,title)
-            except:
-                continue
+                    if movie_style == 1:
+                        xml += "<item>"\
+                               "    <title>%s</title>"\
+                               "    <wctoon>direct/%s</wctoon>"\
+                               "    <thumbnail>%s</thumbnail>"\
+                               "    <summary>%s</summary>"\
+                               "</item>" % (title,show_url,addon_icon,title)
+                    else:
+                        xml += "<dir>"\
+                               "    <title>%s</title>"\
+                               "    <wctoon>wcepisode/%s</wctoon>"\
+                               "    <thumbnail>%s</thumbnail>"\
+                               "    <summary>%s</summary>"\
+                               "</dir>" % (title,show_url,addon_icon,title)
+                except:
+                    continue
             save_to_db(xml, url)
         except:
             pass
