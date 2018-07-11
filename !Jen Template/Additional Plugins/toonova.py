@@ -12,6 +12,9 @@
     ----------------------------------------------------------------------------
 
     Changelog:
+        2018.7.11:
+            - Added cache clearing
+
         2018.6.20:
             - Added caching to primary menus (Cache time is 3 hours)
 
@@ -228,6 +231,11 @@ class WatchCartoon(Plugin):
             }
             result_item['fanart_small'] = result_item["fanart"]
             return result_item
+
+    def clear_cache(self):
+        dialog = xbmcgui.Dialog()
+        if dialog.yesno(xbmcaddon.Addon().getAddonInfo('name'), "Clear TooNova Plugin Cache?"):
+            koding.Remove_Table("toonova_com_plugin")
 
 
 @route(mode='WatchCartoon', args=["url"])

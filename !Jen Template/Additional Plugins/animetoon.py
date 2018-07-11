@@ -12,6 +12,10 @@
     ----------------------------------------------------------------------------
 
     Changelog:
+        2018.7.11:
+            - Added cache clearing
+            - Indentation fix (Digital)
+
         2018.6.21:
             - Added caching to primary menus (Cache time is 3 hours)
 
@@ -233,6 +237,11 @@ class WatchCartoon(Plugin):
             }
             result_item['fanart_small'] = result_item["fanart"]
             return result_item
+
+    def clear_cache(self):
+        dialog = xbmcgui.Dialog()
+        if dialog.yesno(xbmcaddon.Addon().getAddonInfo('name'), "Clear AnimeToon Plugin Cache?"):
+            koding.Remove_Table("animetoon_com_plugin")
 
 
 @route(mode='WatchCartoon', args=["url"])
@@ -579,6 +588,7 @@ def save_to_db(item, url):
                             })
     except:
         return False
+
 
 def fetch_from_db(url):
     koding.reset_db()

@@ -12,6 +12,10 @@
     ----------------------------------------------------------------------------
 
     Changelog:
+        2018.7.11:
+            - Added cache clearing
+            - Indentation fix (Digital)
+
         2018.6.20:
             - Added caching to primary menus (Cache time is 3 hours)
 
