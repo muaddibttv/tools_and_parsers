@@ -34,5 +34,5 @@ def Dialog_Example():
     main_text = mytext
     my_buttons = ['Close']
     my_choice = koding.Custom_Dialog(main_content=main_text,pos='center',size='900x600',buttons=my_buttons,transparency=90,highlight_color='yellow',header='Latest News')
-    if my_choice ==0: 
-        root()
+    if my_choice == 0: 
+        return
