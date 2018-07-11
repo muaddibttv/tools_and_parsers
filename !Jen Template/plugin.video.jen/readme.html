@@ -896,22 +896,30 @@ TV Episodes
 <ul>
 <pre class="example">
     &lt;setting id="use-account" type="bool" label="30200" default="false" visible="false"/&gt;
+    &lt;setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/&gt;
+    &lt;setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/&gt;
+    &lt;setting id="login_message_style" type="select" label="30209" values="notification|popup|none" default="notification" visible="true" enable="!eq(-3,false)" /&gt;
     &lt;setting id="login_url" type="text" label="30204" default="PUT FULL URL USED TO VERIFY LOGIN" visible="false"/&gt;
     &lt;setting id="user_var" type="text" label="30206" default="username" visible="false"/&gt;
     &lt;setting id="pwd_var" type="text" label="30207" default="password" visible="false"/&gt;
+    &lt;setting id="session_length" type="text" label="30208" default="24" visible="false"/&gt;
     &lt;setting id="login_verified" type="text" label="30205" default="Welcome to" visible="false"/&gt;
-    &lt;setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/&gt;
-    &lt;setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/&gt;
-    &lt;setting id="hide-successful-login-messages" type="bool" label="30203" default="false" enable="!eq(-3,false)"/&gt;
+    &lt;setting id="login_welcome_msg" type="text" label="30210" default="Welcome to Jen %s" visible="false"/&gt;
+    &lt;setting id="login_failed_msg" type="text" label="30211" default="Username or Password was incorrect %s" visible="false"/&gt;
+    &lt;setting id="login_required_msg" type="text" label="30212" default="Please enter a valid username and password in Settings" visible="false"/&gt;
 </pre>
 <li>id <b>'use-account'</b> : Change "default" to "true" to require a login for your Jen</li>
+<li>id <b>'username'</b> : This is set by the end user for a valid username</li>
+<li>id <b>'password'</b> : This is set by the end user for a valid password</li>
+<li>id <b>'login_message_style'</b> : This is set by the end user, to choose how they wish to see the login success message</li>
 <li>id <b>'login_url'</b> : Full url to your login page. Example: "http://www.example.com/login.php"</li>
 <li>id <b>'user_var'</b> : Variable name the login form uses for usernames, not visible to the user</li>
 <li>id <b>'pwd_var'</b> : Variable name the login form uses for passwords, not visible to the user</li>
+<li>id <b>'session_length'</b> : Set to the length, in hours, you want their session to be in Kodi</li>
 <li>id <b>'login_verified'</b> : Set default to text string unique to the page displayed after a successful login. Such as "Howdy, " for Wordpress or if using the supplied login template, "Welcome to"</li>
-<li>id <b>'username'</b> : This is set by the end user for a valid username</li>
-<li>id <b>'password'</b> : This is set by the end user for a valid password</li>
-<li>id <b>'hide-successful-login-messages'</b> : This is set by the end user if they do not wish to see the login successful message</li>
+<li>id <b>'login_welcome_msg'</b> : Set the message you want to be given on a successful login (can use one %s in string to insert username)</li>
+<li>id <b>'login_failed_msg'</b> : Set the message you want to be given on a failed login (can use one %s in string to insert username)</li>
+<li>id <b>'login_required_msg'</b> : Set the message you want given if username/password is blank</li>
 </ul>
 </div>
 </div>

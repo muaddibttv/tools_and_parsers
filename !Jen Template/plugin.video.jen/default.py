@@ -40,14 +40,14 @@ __builtin__.login_url = ownAddon.getSetting('login_url')
 __builtin__.login_verified = ownAddon.getSetting('login_verified')
 __builtin__.user_var = ownAddon.getSetting('user_var')
 __builtin__.pwd_var = ownAddon.getSetting('pwd_var')
-
+__builtin__.session_length = ownAddon.getSetting('session_length')
 
 import os
 import sys
 
 import koding
 import koding.router as router
-import weblogin
+import weblogin,time,traceback
 from resources.lib.installa import Dialog_specific
 from resources.lib.news_window import Dialog_Example
 import resources.lib.search
@@ -77,25 +77,10 @@ def root():
         display_menu = False 
 
         if use_account == 'true':
-            """ get username and password and do login with them """
-            """ also get whether to hide successful login notification """
-            username = ownAddon.getSetting('username')
-            password = ownAddon.getSetting('password')
-            hidesuccess = ownAddon.getSetting('hide-successful-login-messages')
+            display_menu = handle_login()
 
-            uc = username[0].upper() + username[1:]
-            lc = username.lower()
-            true_path = koding.Physical_Path(('special://home/addons/%s/' % (addon_id)))
-            logged_in = weblogin.verify_login(true_path,username,password)
-
-            if logged_in == True:
-                if ownAddon.getSetting('hide-successful-login-messages') == 'false':
-                    xbmcgui.Dialog().notification('Welcome', uc+'',xbmcaddon.Addon().getAddonInfo("icon"), 4000)
-                display_menu = True
-            else:
-                if ownAddon.getSetting('hide-successful-login-messages') == 'false':
-                    xbmcgui.Dialog().notification('Login Failure', uc+' could not login',xbmcaddon.Addon().getAddonInfo("icon"), 4000)
-                display_menu = False
+            if display_menu == None:
+                return
         else:
             display_menu = True
     except:
@@ -148,6 +133,59 @@ def root():
         failure = traceback.format_exc()
         xbmcgui.Dialog().textviewer('Main Menu Exception - Report this to the developer',str(failure))
         pass
+
+
+def handle_login():
+    try:
+        """ get username and password and do login with them """
+        """ also get whether to hide successful login notification """
+        username = ownAddon.getSetting('username')
+        password = ownAddon.getSetting('password')
+
+        login_message_style = ownAddon.getSetting('login_message_style')
+        login_welcome_msg = ownAddon.getSetting('login_welcome_msg')
+        login_failed_msg = ownAddon.getSetting('login_failed_msg')
+        login_required_msg = ownAddon.getSetting('login_required_msg')
+
+        if username == '' or password == '':
+            koding.Add_Dir(
+                name=_(login_required_msg),
+                url=_(login_required_msg),
+                mode="message",
+                folder=False,
+                icon=xbmcaddon.Addon().getAddonInfo("icon"),
+                fanart=xbmcaddon.Addon().getAddonInfo("fanart"),
+                content_type="") 
+            return None
+
+        true_path = koding.Physical_Path(('special://home/addons/%s/' % (addon_id)))
+        expiration = ownAddon.getSetting('WEBLOGIN_EXPIRES_AT')
+        if time.time() > expiration or expiration == '':
+            logged_in = weblogin.verify_login(true_path,username,password)
+            if logged_in == True:
+                login_message = login_welcome_msg
+                expires_at = time.time() + 60 * 60 * int(session_length)
+                expiration = expires_at
+                ownAddon.setSetting("WEBLOGIN_EXPIRES_AT", str(expires_at))
+                display_menu = True
+            else:
+                login_message = login_failed_msg
+                display_menu = False
+
+            if '%s' in login_message:
+                login_message = login_message % (username)
+
+            if 'notification' in login_message_style:
+                xbmcgui.Dialog().notification('Login Update', login_message,xbmcaddon.Addon().getAddonInfo("icon"), 4000)
+            elif 'popup' in login_message_style:
+                xbmcgui.Dialog().ok('Login Update', login_message)
+        else:
+            display_menu = True
+    except:
+        failure = traceback.format_exc()
+        xbmcgui.Dialog().textviewer('Handle Login Exception - Report this to the developer',str(failure))
+        display_menu = False
+    return display_menu
 
 
 @route(mode='get_list_uncached', args=["url"])

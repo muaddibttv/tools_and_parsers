@@ -45,6 +45,26 @@ msgctxt "#30207"
 msgid "Password Form Name"
 msgstr ""
 
+msgctxt "#30208"
+msgid "Session Length (in hours)"
+msgstr ""
+
+msgctxt "#30209"
+msgid "Login Notification Style"
+msgstr ""
+
+msgctxt "#30210"
+msgid "Text to display on successful login"
+msgstr ""
+
+msgctxt "#30211"
+msgid "Text to display on failed login"
+msgstr ""
+
+msgctxt "#30212"
+msgid "Text to display if no login provided"
+msgstr ""
+
 msgctxt "#30401"
 msgid "[COLOR teal]Are You Sure?[/COLOR]"
 msgstr ""

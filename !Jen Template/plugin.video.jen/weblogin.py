@@ -23,11 +23,12 @@
 """
 
 import __builtin__
+import cookielib
 import os
 import re
+import time
 import urllib,urllib2
-import cookielib
-import koding
+import koding,xbmcaddon
 
 
 def check_login(source,username):
@@ -51,6 +52,12 @@ def verify_login(cookiepath, username, password):
         pass
 
     if username and password:
+        """ first check to see if a current session is active """
+        addon_id = xbmcaddon.Addon().getAddonInfo('id')
+        ownAddon = xbmcaddon.Addon(id=addon_id)
+        expiration = ownAddon.getSetting('WEBLOGIN_EXPIRES_AT')
+        if time.time() < expiration and len(expiration) > 1:
+            return True
         """ the header used to pretend you are a browser """
         user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -76,7 +83,7 @@ def verify_login(cookiepath, username, password):
         """ pass the username, which can be used to do this. """
         login = check_login(source,username)
 
-        """ if login suceeded, save the cookiejar to disk """
+        """ if login suceeded, save the cookiejar """
         if login == True:
             cj.save(cookiepath)
 

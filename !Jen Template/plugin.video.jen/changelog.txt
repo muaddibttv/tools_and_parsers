@@ -1,19 +1,16 @@
 v1.8
+    - Added script.module.dateutil to imports, for exposing date/time tools to plugin developers.
     - Set services.py to handle updating the user's userdata entry for message_xml_url for when the developer sets
         API Version to a higher number (so is updated just like APIs and Root XML is in these cases)
-    - Added new settings for Addon/Web Login to access main menu in settings.xml:
-        - use-account : Default is false, not visible to end user. Set this to true to activate login required
-        - login_url : URL to the webpage used to verify username and password. Not visible to user
-        - login_verified : Part of the text string returned in the html if login was verified/worked. Not visible to user
-        - username : Visible to user, this is set by them for the username they are to use
-        - password : Visible to user, this is set by them for the password they are to use
-        - hide-successful-login-messages : Default is false, this allows user to disable the Login Successufl notification
+    - Added new settings for Addon/Web Login to access main menu in settings.xml. VIEW THE README IF YOU WANT TO USE THIS
     - Added strings to English strings.po for new settings.xml weblogin stuff
     - Added weblogin.py to root folder to handle the login work
         - If your site uses variables in the Post header other than username and password for those details, be sure
             to update the weblogin.py to reflect those. Most will use these variables though
     - Added cookies.lwp to root folder to store cookie data when logging in
-    - Added login checks and code to the default.py to handle login methods
+    - Added user setting for Login notification method : Notification, Popup (OK window), or None
+    - Added session_length for sessions to settings.xml. Entry is a number representing Hours
+    - If username or password is empty, prints directory entry instructing the user to put credentials in settings
     - Added example php scripts to 'login' folder in root of Jen Template
         - These would be set up and configured on a web host that supports php and mysql, used to verify the
             login data the end user provides if you are not using another website to verify logins
