@@ -1,3 +1,44 @@
+#!/usr/bin/python
+# encoding=utf8
+"""
+
+    Copyright (C) 2018 MuadDib
+
+    ----------------------------------------------------------------------------
+    "THE BEER-WARE LICENSE" (Revision 42):
+    @tantrumdev wrote this file.  As long as you retain this notice you
+    can do whatever you want with this stuff. If we meet some day, and you think
+    this stuff is worth it, you can buy him a beer in return. - Muad'Dib
+    ----------------------------------------------------------------------------
+
+    Changelog:
+        2018.7.12:
+            Minor updates, adding documentation for Jen Files Chat
+
+    Update all entries in the script that have # CHANGEME above them.
+
+    Make sure your XML is of proper format (for xml format I mean). Below is an example.
+    I know most Jens do not use the two entry point XML tags, which is why the example is
+        given below. This is needed for the script to be able to process them.
+
+    Youtube URL explaining the use of this script: https://www.youtube.com/watch?v=H8QPo8fdeLs
+
+    <my_addon>
+        <main_menu>
+            <dir>
+                blah blah
+            </dir>
+
+            <item>
+                blah blah
+            </item>
+        </main_menu>
+    </my_addon>
+
+
+
+"""
+
 import xml.etree.ElementTree as ET
 import re,traceback
 

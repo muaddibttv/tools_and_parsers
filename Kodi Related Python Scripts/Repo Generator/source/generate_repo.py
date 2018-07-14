@@ -13,6 +13,11 @@
 
 """ This file is "as is", without any warranty whatsoever. Use as own risk """
 
+"""
+    Youtube Video Series for this script package:
+        Playlist: https://www.youtube.com/playlist?list=PLYkSOUo1Vu4ZN6l6xJ9fzJ-d0Y_-ACo68
+"""
+
 import os
 import hashlib
 import zipfile
