@@ -14,6 +14,10 @@
         Drop this PY in the plugins folder, and use whatever tools below you want.
 
     Version:
+        2018.7.14
+            - Updated password code to cache a session for X amt of time
+            - Adjust the timer via the SESSION_HOURS in settings.xml (or in code)
+
         2018.6.23
             - Updated link for pairing The Video Me
 
@@ -99,7 +103,7 @@
 
 """
 
-import collections,requests,re,os,traceback,webbrowser
+import collections,requests,re,os,time,traceback,webbrowser
 import koding
 import __builtin__
 import xbmc,xbmcaddon,xbmcgui
@@ -273,12 +277,34 @@ def password_handler(url):
     sep_list = url.decode('base64').split('|')
     dec_pass = sep_list[0]
     xml_loc = sep_list[1]
-    input = ''
-    keyboard = xbmc.Keyboard(input, '[COLOR red]Are you worthy?[/COLOR]')
-    keyboard.doModal()
-    if keyboard.isConfirmed():
-        input = keyboard.getText()
-    if input == dec_pass:
+    
+    SESSION_HOURS = this_addon.getSetting('SESSION_HOURS')
+    if SESSION_HOURS == '':
+        SESSION_HOURS = '1'
+    expires_at = this_addon.getSetting('PASS_EXIRES_AT')
+    if time.time() > expires_at or expires_at == '':
+        input = ''
+        keyboard = xbmc.Keyboard(input, '[COLOR red]Are you worthy?[/COLOR]')
+        keyboard.doModal()
+        if keyboard.isConfirmed():
+            input = keyboard.getText()
+        if input == dec_pass:
+            expires_at = time.time() + 60 * 60 * int(SESSION_HOURS)
+            this_addon.setSetting("PASS_EXIRES_AT", str(expires_at))
+            if 'http' in xml_loc:
+                prot_xml = requests.get(xml_loc).content
+            else:
+                import xbmcvfs
+                xml_loc = xml_loc.replace('file://', '')
+                xml_file = xbmcvfs.File(os.path.join(addon_path, "xml", xml_loc))
+                prot_xml = xml_file.read()
+                xml_file.close()
+        else:
+            prot_xml += "<dir>"\
+                    "    <title>[COLOR yellow]Wrong Answer! You are not worthy[/COLOR]</title>"\
+                    "    <thumbnail>https://nsx.np.dl.playstation.net/nsx/material/c/ce432e00ce97a461b9a8c01ce78538f4fa6610fe-1107562.png</thumbnail>"\
+                    "</dir>"
+    else:
         if 'http' in xml_loc:
             prot_xml = requests.get(xml_loc).content
         else:
@@ -287,11 +313,7 @@ def password_handler(url):
             xml_file = xbmcvfs.File(os.path.join(addon_path, "xml", xml_loc))
             prot_xml = xml_file.read()
             xml_file.close()
-    else:
-        prot_xml += "<dir>"\
-                "    <title>[COLOR yellow]Wrong Answer! You are not worthy[/COLOR]</title>"\
-                "    <thumbnail>https://nsx.np.dl.playstation.net/nsx/material/c/ce432e00ce97a461b9a8c01ce78538f4fa6610fe-1107562.png</thumbnail>"\
-                "</dir>"
+
     jenlist = JenList(prot_xml)
     display_list(jenlist.get_list(), jenlist.get_content_type())
 

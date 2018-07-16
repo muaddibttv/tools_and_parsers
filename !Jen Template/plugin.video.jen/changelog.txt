@@ -1,4 +1,6 @@
 v1.8
+    - Updates tools.py plugin - Password sessions now exist, default timer is 1 hour. To change, edit the
+        SESSION_HOURS variable in settings.xml file.
     - Added script.module.dateutil to imports, for exposing date/time tools to plugin developers.
     - Set services.py to handle updating the user's userdata entry for message_xml_url for when the developer sets
         API Version to a higher number (so is updated just like APIs and Root XML is in these cases)
