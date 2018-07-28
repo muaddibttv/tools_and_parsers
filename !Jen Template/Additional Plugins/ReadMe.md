@@ -3,12 +3,17 @@
 These are plugins not bundled with Jen Template from various sources.
 
 - air_table
+    - General air tables for stuff
 - animetoon
     - Pulls from another anime site with some sections having pagination, but not many. Genre not supported but has 3-4 sources per video.
 - arconaitv
     - Used to pull streams from the arconai tv website.
 - arconaitv2
     - Fork of arconaitv plugin, with more options for your xmls. XML Tags are different in this one as well
+- arraki_air
+    - A new type of air table plugin, allowing you to add many tables via xml instead of being hard coded
+- bnwmovies
+    - Plugin to pull old black and white classic movies via an Air Table
 - cobp
     - Used to pull categories, vides, etc. from the collectionofbestporn.com website
 - colorize
@@ -21,6 +26,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Pulls data from the LastFM website (Requires API keys in Jen configuration)
 - m3u
     - Pulls information an streams from m3u links
+- moviefone
+    - Trailers plugin
 - password
     - Allows you to password protect menu items in your Jen (base64 encoded password in xml entries)
 - podbay
@@ -33,6 +40,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Returns New Movie Releases from airtable
 - sports_streams
     - Used to pull game streams from sports-stream.net
+- the_duke
+    - Another air table plugin for pulling movies with John Wayne (The Duke)
 - tools
     - Useful tools for menu items, such as to mark an item non-clickable or open settings to a specific tab and section
 - toonmania
