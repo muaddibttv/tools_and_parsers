@@ -207,6 +207,23 @@ class WatchCartoon(Plugin):
                     'context': get_context_items(item),
                     "summary": item.get("summary", None)
                 }
+            elif "popular/" in item.get("wctoon", ""):
+                result_item = {
+                    'label': item["title"],
+                    'icon': item.get("thumbnail", addon_icon),
+                    'fanart': item.get("fanart", addon_fanart),
+                    'mode': "WCMain",
+                    'url': item.get("wctoon", ""),
+                    'folder': True,
+                    'imdb': "0",
+                    'content': "files",
+                    'season': "0",
+                    'episode': "0",
+                    'info': {},
+                    'year': "0",
+                    'context': get_context_items(item),
+                    "summary": item.get("summary", None)
+                }
             elif "category/" in item.get("wctoon", ""):
                 result_item = {
                     'label': item["title"],

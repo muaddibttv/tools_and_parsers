@@ -1,0 +1,21 @@
+<xml>
+    <search_container>
+        <item>
+            <title>Movies</title>
+            <url>xml/movies.xml</url>
+            <file>movie_search</file>
+        </item>
+
+        <item>
+            <title>TV Shows</title>
+            <url>xml/tvshows.xml</url>
+            <file>tvshow_search</file>
+        </item>
+
+        <item>
+            <title>Anime</title>
+            <url>http://www.example.com/movies.xml</url>
+            <file>anime_search</file>
+        </item>
+    </search_container>
+</xml>

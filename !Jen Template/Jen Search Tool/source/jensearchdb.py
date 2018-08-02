@@ -1,11 +1,16 @@
-import requests
-import re
-import urllib.parse
+import requests,re,traceback
+try:
+    from urllib import quote  # Python 2.X
+except ImportError:
+    from urllib.parse import quote  # Python 3+
 import os
 import json
 from sqlite3 import dbapi2 as database
+from ConfigParser import SafeConfigParser
+import xml.etree.ElementTree as ET
 
 identifiers = set()
+
 
 def jen_get_tag_content(collection, tag, default):
     try:
@@ -29,7 +34,7 @@ def jen_list(content):
 
     items = re.compile(
         '((?:<item>.+?</item>|<dir>.+?</dir>|<plugin>.+?</plugin>|<info>.+?</info>|'
-        '<name>[^<]+</name><link>[^<]+</link><thumbnail>[^<]+</thumbnail><mode>[^<]+</mode>|'
+        '<title>[^<]+</title><link>[^<]+</link><thumbnail>[^<]+</thumbnail><mode>[^<]+</mode>|'
         '<name>[^<]+</name><link>[^<]+</link><thumbnail>[^<]+</thumbnail><date>[^<]+</date>))',
         re.MULTILINE | re.DOTALL).findall(content)
 
@@ -38,7 +43,7 @@ def jen_list(content):
         try:
             regex = re.compile('(<regex>.+?</regex>)', re.MULTILINE | re.DOTALL).findall(item)
             regex = ''.join(regex)
-            regex = urllib.parse.quote_plus(regex)
+            regex = quote(regex)
 
             item = item.replace('\r', '').replace('\n', '').replace('\t', '').replace('&nbsp;', '')
             item = re.sub('<link></link>|<sublink></sublink>', '', item)
@@ -112,14 +117,14 @@ def jen_list(content):
                             'title': title, 'originaltitle': title, 'tvshowtitle': tvshowtitle, 'year': year,
                             'premiered': premiered, 'season': season, 'episode': episode})
         except:
+            failure = traceback.format_exc()
+            print('Exception: \n' + str(failure))
             pass
     return results
 
 
 def recurse_list(url, errors=[]):
     global identifiers
-    if not url.startswith("http:"):
-        return ("", "")
     print("working on: " + url)
     # content = requests.get(url).text
     content = get_xml(url)
@@ -203,7 +208,15 @@ def recurse_list(url, errors=[]):
 def get_xml(url):
     cache_location = os.path.join(".", 'url_cache.db')
     try:
-        request = requests.get(url, timeout=5)
+        if not url.startswith('http'):
+            tool_path = os.getcwd()
+            xml_path = os.path.join(tool_path, url)
+            xml_path = os.path.normpath(xml_path)
+            xml_file = open(xml_path, 'r')
+            request = xml_file.read()
+            xml_file.close()
+        else:
+            request = requests.get(url, timeout=5)
     except:
         request = None
     try:
@@ -241,13 +254,11 @@ def get_xml(url):
         except:
             pass
     if not last_modified:
-        request = requests.get(url)
-        try:
-            last_modified = request.headers['Last-Modified']
-        except:
-            last_modified = 0
-    print("cache miss")
-    xml = request.text
+        last_modified = 0
+    if not url.startswith('http'):
+        xml = request
+    else:
+        xml = request.text
     xml = xml.replace("\n", "").replace("##", "").replace('\t', "")
     try:
         dbcur.execute("DELETE FROM xml WHERE url = '%s'" % (url))
@@ -266,40 +277,53 @@ def get_xml(url):
 
 
 def main():
-    main_url = "http://yoururl/yourmain.xml"  #your main.xml url goes here
-    sections = [
-        {'name': 'jen', # can change jen to whatever you want.  This wil name the output xml jen.xml
-         'url': "http://yoururlforthesectionyouwant.xml", # your section xml goes here
-         'poster': 'Jen'}, # can change Jen to whatever you want. This will be displayed as the poster name on jen.xml and
-                           # also in the actual search in your addon in kodi eg Jen - The Avengers
-    ]
+    config = SafeConfigParser()
+    config.read('config.ini')
+    
+    output_path = config.get('locations', 'output_path')
+    sections_path = config.get('locations', 'section_xml')
 
-    os.remove("./output/search.db")  # add the directory to where this file is stored
-    dbcon = database.connect("./output/search.db") # add the directory to where this file is stored
+    sxml = ET.parse(sections_path)
+    container = sxml.find("search_container")
+    def get_title(elem):
+        txt = re.sub('\[.*?]','',str(elem.findtext("title").lower()))
+        return txt
+    container[:] = sorted(container, key=get_title)
+
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+    else:
+        os.remove('%s/search.db' % (output_path))
+    dbcon = database.connect('%s/search.db' % (output_path))
     dbcur = dbcon.cursor()
-    dbcur.execute(
-        "CREATE TABLE IF NOT EXISTS search (""item TEXT, ""poster TEXT);")
+    dbcur.execute("CREATE TABLE IF NOT EXISTS search (""item TEXT, ""poster TEXT);")
 
-    for section in sections:
+    for section in container:
         global identifiers
         identifiers = set()
-        print("\t\t" + section['poster'])
+
+        title = section.findtext('title')
+        url = section.findtext('url')
+        filename = section.findtext('file')
+
+        print("\t\t" + title)
         print("#####################################")
-        print(section['url'])
-        xml, errors = recurse_list(section['url'])
-        file = open("./output/" + section['name'] + ".xml", "wb")
+        print(url)
+        xml, errors = recurse_list(url)
+        file = open('%s/' % (output_path) + filename + ".xml", "wb")
         xml = "<poster>%s</poster>\n" \
-              "<cache>43200</cache>\n\n" % section['poster'] + xml
+              "<cache>43200</cache>\n\n" % title + xml
         file.write(xml.encode('utf-8'))
         file.close()
         content = str(xml)
         items = re.compile(
             '((?:<item>.+?</item>|<dir>.+?</dir>|<plugin>.+?</plugin>|<info>.+?</info>|'
-            '<name>[^<]+</name><link>[^<]+</link><thumbnail>[^<]+</thumbnail><mode>[^<]+</mode>|'
+            '<title>[^<]+</title><link>[^<]+</link><thumbnail>[^<]+</thumbnail><mode>[^<]+</mode>|'
             '<name>[^<]+</name><link>[^<]+</link><thumbnail>[^<]+</thumbnail><date>[^<]+</date>))', re.MULTILINE | re.DOTALL).findall(content)
         for item in items:
             dbcur.execute("INSERT INTO search Values (?, ?)",
-                          (item, section["poster"]))
+                          (item, title))
+
     dbcon.commit()
         # if errors:
         #    file = open("d:/test/" + section['name'] + "errors.xml", "wb")

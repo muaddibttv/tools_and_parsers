@@ -1,0 +1,19 @@
+<xml>
+    <myaddon>
+        <item>
+            <title>Example</title>
+            <meta>
+                <content>movie</content>
+                <imdb>tt0486051</imdb>
+                <title>Example</title>
+                <year>2007</year>
+            </meta>
+            <link>
+                <sublink>search</sublink>
+                <sublink>searchsd</sublink>
+            </link>
+            <thumbnail>https://image.tmdb.org/t/p/w1280/pEVChTdLzgXO1fBvlSYFsukWlP4.jpg</thumbnail>
+            <fanart>https://image.tmdb.org/t/p/w1280/22GnNdZgrWlsSWobEu9vm2c6Hyl.jpg</fanart>
+        </item>
+    </myaddon>
+</xml>
