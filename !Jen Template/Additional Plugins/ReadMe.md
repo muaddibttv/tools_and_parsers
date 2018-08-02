@@ -26,6 +26,8 @@ These are plugins not bundled with Jen Template from various sources.
     - Pulls data from the LastFM website (Requires API keys in Jen configuration)
 - m3u
     - Pulls information an streams from m3u links
+- mop
+    - Plugin for the Podcast archive at https://massivelyop.com (Massively Over Powered) gaming website
 - moviefone
     - Trailers plugin
 - password
