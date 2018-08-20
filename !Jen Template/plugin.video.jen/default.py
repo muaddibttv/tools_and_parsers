@@ -312,6 +312,7 @@ def clear_cache():
 
     xbmc.log("running hook: clear cache", xbmc.LOGNOTICE)
     run_hook("clear_cache")
+    xbmcgui.Dialog().notification('Clear Cache', 'Cache has been cleared',xbmcaddon.Addon().getAddonInfo("icon"), 4000)
 
 
 def get_addon_url(mode, url=""):
