@@ -286,18 +286,30 @@ def show_message(message):
 @route('clearCache')
 def clear_cache():
     import xbmcgui
+    skip_prompt = xbmcaddon.Addon().getSetting("quiet_cache")
     dialog = xbmcgui.Dialog()
-    if dialog.yesno(addon_name, _("Clear Metadata?")):
+    if skip_prompt == 'false':
+        if dialog.yesno(addon_name, _("Clear Metadata?")):
+            koding.Remove_Table("meta")
+            koding.Remove_Table("episode_meta")
+        if dialog.yesno(addon_name, _("Clear Scraper Cache?")):
+            import universalscrapers
+            universalscrapers.clear_cache()
+        if dialog.yesno(addon_name, _("Clear GIF Cache?")):
+            dest_folder = os.path.join(
+                xbmc.translatePath(xbmcaddon.Addon().getSetting("cache_folder")),
+                "artcache")
+            koding.Delete_Folders(dest_folder)
+    else:
         koding.Remove_Table("meta")
         koding.Remove_Table("episode_meta")
-    if dialog.yesno(addon_name, _("Clear Scraper Cache?")):
         import universalscrapers
         universalscrapers.clear_cache()
-    if dialog.yesno(addon_name, _("Clear GIF Cache?")):
         dest_folder = os.path.join(
             xbmc.translatePath(xbmcaddon.Addon().getSetting("cache_folder")),
             "artcache")
         koding.Delete_Folders(dest_folder)
+
     xbmc.log("running hook: clear cache", xbmc.LOGNOTICE)
     run_hook("clear_cache")
 

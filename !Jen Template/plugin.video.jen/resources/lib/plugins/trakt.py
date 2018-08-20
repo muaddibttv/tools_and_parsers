@@ -16,6 +16,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     Version:
+        2018-08-19
+            - Added next page option for trakt limits urls
+                http://api.trakt.tv/movies/trending?limit=25&page=1
         2018-07-02
             - Updated Clear Cache Hook
         2018-05-14
@@ -252,7 +255,9 @@ def trakt(url):
         response = requests.get(url, headers=headers)
         response_headers = response.headers
         response = response.json()
+
         page = response_headers.get("X-Pagination-Page", "")
+
         if page:
             pages = response_headers.get("X-Pagination-Page-Count")
             response = (response, pages)
@@ -299,18 +304,25 @@ def trakt(url):
                         xml += get_show_xml(item)
                         __builtin__.content_type = "tvshows"
         if pages:
-            splitted = url.split("?")
-            if len(splitted) > 1:
-                args = urlparse.parse_qs(splitted[1])
-                page = int(args.get("page", [1])[0])
-                if not args.get("page", ""):
-                    args["page"] = 2
-                else:
-                    args["page"] = str(page + 1)
-                next_url = "%s?%s" % (splitted[0], urllib.urlencode(args))
+            if 'limit' in url:
+                link, page = url.split('&page=')
+                page = int(page)
+                next_page = page + 1
+                next_url = '%s&page=%s' % (link, next_page)
+
             else:
-                page = 1
-                next_url = urlparse.urljoin(splitted[0], "?page=2")
+                splitted = url.split("?")
+                if len(splitted) > 1:
+                    args = urlparse.parse_qs(splitted[1])
+                    page = int(args.get("page", [1])[0])
+                    if not args.get("page", ""):
+                        args["page"] = 2
+                    else:
+                        args["page"] = str(page + 1)
+                    next_url = "%s?%s" % (splitted[0], urllib.urlencode(args))
+                else:
+                    page = 1
+                    next_url = urlparse.urljoin(splitted[0], "?page=2")
 
             xml += "<dir>\n"\
                    "\t<title>Next Page >></title>\n"\

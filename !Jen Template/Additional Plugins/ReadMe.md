@@ -32,6 +32,10 @@ These are plugins not bundled with Jen Template from various sources.
     - Trailers plugin
 - movietorture
     - Plugin that scrapes a specific site for movies to torture your soul
+- newson
+    - Provides live casts and news clips from various local channels in the United States - Pulled from NewsON
+- otb_trekkie
+    - Airtable for the Star Trek fans
 - password
     - Allows you to password protect menu items in your Jen (base64 encoded password in xml entries)
 - podbay

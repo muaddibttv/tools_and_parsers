@@ -264,8 +264,12 @@ class TMDB(Plugin):
             return result_item
 
     def clear_cache(self):
+        skip_prompt = xbmcaddon.Addon().getSetting("quiet_cache")
         dialog = xbmcgui.Dialog()
-        if dialog.yesno(xbmcaddon.Addon().getAddonInfo('name'), "Clear TMDB Plugin Cache?"):
+        if skip_prompt == 'false':
+            if dialog.yesno(xbmcaddon.Addon().getAddonInfo('name'), "Clear TMDB Plugin Cache?"):
+                koding.Remove_Table("tmdb_plugin")
+        else:
             koding.Remove_Table("tmdb_plugin")
 
 

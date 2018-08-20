@@ -19,6 +19,9 @@ v1.8
         - These are NOT needed for login setups, if you are using an existing website with user accounts to verify
             login credentials. Just make sure the login_verified in settings.xml includes text unique to the login
             successful page that user's would get if they log in succesfully to your website
+    - Updated imdb.py plugin for Upcoming Releases. Refer to the header of that file for usage
+    - Added new setting in Cache menu to allow users to disable the Yes/No prompt when clearing cache
+        - Plugins that use cache will need to be updated for this as well.
 
 v1.7
     - root_xml_url in settings.xml now supports file://, http://, and base64 encoded strings
@@ -28,7 +31,7 @@ v1.7
             and uncomment the line for urlresolver
         - This only impacts Direct Links, as dependencies used may still use only resolveurl
     - Fixed missing Exception raised in tvdb api base. (Bugatsinho)
-    - Updated addon.xml for Kodi 18 support - Backwards compatible with 17 (Bugatsinho)
+    - Updated addon.xml for Kodi 18 support - Backwards compatible with 17 (Bugatsinho
         Add this to the metadata section: <reuselanguageinvoker>false</reuselanguageinvoker>
     - Update to hook running msg for when initiating Clear Cache in debug log.
     - Update to clear cache in Trakt, TMDB plugins

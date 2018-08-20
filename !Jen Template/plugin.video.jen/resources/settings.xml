@@ -43,6 +43,7 @@
         <setting label="30718" type="lsep"/>
         <setting label="30719" type="action" option="close"
                action="RunPlugin(plugin://plugin.video.jen/?mode=clearCache)"/>
+        <setting label="Clear Cache Without Prompts" type="bool" id="quiet_cache" default="true" visible="true"/>
     </category>
 
     <!-- scraper settings -->
