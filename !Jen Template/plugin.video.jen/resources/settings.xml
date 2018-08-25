@@ -2,19 +2,6 @@
     <!-- customization settings -->
 
     <category label="Customization">
-        <setting label="30200" type="lsep"/>
-        <setting id="use-account" type="bool" label="30200" default="false" visible="false"/>
-        <setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/>
-        <setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/>
-        <setting id="login_message_style" type="select" label="30209" values="notification|popup|none" default="notification" visible="true" enable="!eq(-3,false)" />
-        <setting id="login_url" type="text" label="30204" default="PUT FULL URL USED TO VERIFY LOGIN" visible="false"/>
-        <setting id="user_var" type="text" label="30206" default="username" visible="false"/>
-        <setting id="pwd_var" type="text" label="30207" default="password" visible="false"/>
-        <setting id="session_length" type="text" label="30208" default="24" visible="false"/>
-        <setting id="login_verified" type="text" label="30205" default="Welcome to" visible="false"/>
-        <setting id="login_welcome_msg" type="text" label="30210" default="Welcome to Jen %s" visible="false"/>
-        <setting id="login_failed_msg" type="text" label="30211" default="Username or Password was incorrect %s" visible="false"/>
-        <setting id="login_required_msg" type="text" label="30212" default="Please enter a valid username and password in Settings" visible="false"/>
         <setting label="32507" type="lsep"/>
         <setting label="30717" type="bool" id="metadata" default="true"/>
         <setting label="Disable Metadata Dialog" type="bool" id="disable_metadata_dialog" default="false"/>
@@ -46,6 +33,23 @@
         <setting label="Clear Cache Without Prompts" type="bool" id="quiet_cache" default="true" visible="true"/>
     </category>
 
+    <!-- custom login settings -->
+    <!--    <category label="Account">
+        <setting label="30200" type="lsep"/>
+        <setting id="use-account" type="bool" label="30200" default="false" visible="false"/>
+        <setting id="username" type="text" label="30201" default="" enable="!eq(-1,false)"/>
+        <setting id="password" type="text" label="30202" default="" option="hidden" enable="!eq(-2,false)"/>
+        <setting id="login_message_style" type="select" label="30209" values="notification|popup|none" default="notification" visible="true" enable="!eq(-3,false)" />
+        <setting id="login_url" type="text" label="30204" default="PUT FULL URL USED TO VERIFY LOGIN" visible="false"/>
+        <setting id="user_var" type="text" label="30206" default="username" visible="false"/>
+        <setting id="pwd_var" type="text" label="30207" default="password" visible="false"/>
+        <setting id="session_length" type="text" label="30208" default="24" visible="false"/>
+        <setting id="login_verified" type="text" label="30205" default="Welcome to" visible="false"/>
+        <setting id="login_welcome_msg" type="text" label="30210" default="Welcome to Jen %s" visible="false"/>
+        <setting id="login_failed_msg" type="text" label="30211" default="Username or Password was incorrect %s" visible="false"/>
+        <setting id="login_required_msg" type="text" label="30212" default="Please enter a valid username and password in Settings" visible="false"/>
+    </category>-->
+
     <!-- scraper settings -->
     <category label="Scrapers">
         <setting label="30733" type="lsep"/>
@@ -54,6 +58,8 @@
         <setting id="use_link_dialog" label="30744" type="bool" default="true" />
         <setting id="link_fallthrough" label="30745" type="bool"	default="true" visible="eq(-1,true)"/>
     </category>
+
+    <!-- resolveurl settings -->
     <category label="Resolvers">
         <setting label="30741" type="lsep"/>
         <setting label="30742" type="action" option="close"
