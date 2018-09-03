@@ -95,23 +95,85 @@ def main():
             if debug:
                 pass
             else:
-                ownAddon.setSetting('root_xml', my_settings['root_xml'])
-            ownAddon.setSetting('message_xml_url', my_settings['message_xml_url'])
-            ownAddon.setSetting('tvdb_api_key', my_settings['tvdb_api_key'])
-            ownAddon.setSetting('tmdb_api_key', my_settings['tmdb_api_key'])
-            ownAddon.setSetting('trakt_api_client_id', my_settings['trakt_api_client_id'])
-            ownAddon.setSetting('trakt_api_client_secret', my_settings['trakt_api_client_secret'])
-            ownAddon.setSetting('TRAKT_ACCESS_TOKEN', my_settings['TRAKT_ACCESS_TOKEN'])
-            ownAddon.setSetting('TRAKT_EXPIRES_AT', my_settings['TRAKT_EXPIRES_AT'])
-            ownAddon.setSetting('TRAKT_REFRESH_TOKEN', my_settings['TRAKT_REFRESH_TOKEN'])
-            ownAddon.setSetting('lastfm_api_key', my_settings['lastfm_api_key'])
-            ownAddon.setSetting('lastfm_secret', my_settings['lastfm_secret'])
-            ownAddon.setSetting('search_db_location', my_settings['search_db_location'])
+                try:
+                    ownAddon.setSetting('root_xml', my_settings['root_xml'])
+                except:
+                    failure = traceback.format_exc()
+                    print('Service Setting Exception - Root XML \n %s' % (str(failure)))
+                    pass
+            try:
+                ownAddon.setSetting('message_xml_url', my_settings['message_xml_url'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - Message XML \n %s' % (str(failure)))
+                pass
+            try:
+                ownAddon.setSetting('tvdb_api_key', my_settings['tvdb_api_key'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - TVDB API \n %s' % (str(failure)))
+                pass
+            try:
+                ownAddon.setSetting('tmdb_api_key', my_settings['tmdb_api_key'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - TMDB API \n %s' % (str(failure)))
+                pass
+            try:
+                ownAddon.setSetting('trakt_api_client_id', my_settings['trakt_api_client_id'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - Trakt API \n %s' % (str(failure)))
+                pass
+            try:
+                ownAddon.setSetting('trakt_api_client_secret', my_settings['trakt_api_client_secret'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - Trakt API Secret \n %s' % (str(failure)))
+                pass
+            try:
+                ownAddon.setSetting('TRAKT_ACCESS_TOKEN', my_settings['TRAKT_ACCESS_TOKEN'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - Trakt API Token \n %s' % (str(failure)))
+                pass
+            try:
+                ownAddon.setSetting('TRAKT_EXPIRES_AT', my_settings['TRAKT_EXPIRES_AT'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - Trakt API Expires \n %s' % (str(failure)))
+                pass
+            try:
+                ownAddon.setSetting('TRAKT_REFRESH_TOKEN', my_settings['TRAKT_REFRESH_TOKEN'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - Trakt API Refresh \n %s' % (str(failure)))
+                pass
+            try:
+                ownAddon.setSetting('lastfm_api_key', my_settings['lastfm_api_key'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - Last.fm API \n %s' % (str(failure)))
+                pass
+            try:
+                ownAddon.setSetting('lastfm_secret', my_settings['lastfm_secret'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - Last.fm Secret \n %s' % (str(failure)))
+                pass
+            try:
+                ownAddon.setSetting('search_db_location', my_settings['search_db_location'])
+            except:
+                failure = traceback.format_exc()
+                print('Service Setting Exception - Search DB \n %s' % (str(failure)))
+                pass
  
             ownAddon.setSetting('update_ver', current_version)
             if enable_notification:
                 xbmcgui.Dialog().notification(addon_name, 'Updated API keys', addon_icon)
     except:
+        failure = traceback.format_exc()
+        print('Service Main Exception: \n %s' % (str(failure)))
         pass
     if disable_after_update:
         disable_this()
@@ -122,90 +184,152 @@ def get_my_settings():
         settings_xml_path = os.path.join(addon_path, 'resources/settings.xml')
         xml_content = openfile(settings_xml_path)
 
-        xml_root = re.search('id="root_xml".+?/>', xml_content)
-        if not xml_root == None:
-            xml_root = re.findall('default="(.+?)"', xml_root.group())[0]
-            my_settings['root_xml'] = (xml_root if not 'visible' in xml_root else 'file://main.xml')
-        else:
-            my_settings['root_xml'] = 'file://main.xml'
+        try:
+            xml_root = re.search('id="root_xml".+?/>', xml_content)
+            if not xml_root == None:
+                xml_root = re.findall('default="(.+?)"', xml_root.group())[0]
+                my_settings['root_xml'] = (xml_root if not 'visible' in xml_root else 'file://main.xml')
+            else:
+                my_settings['root_xml'] = 'file://main.xml'
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - Root XML \n %s' % (str(failure)))
+            pass
 
-        message_xml_url = re.search('id="message_xml_url".+?/>', xml_content)
-        if not message_xml_url == None:
-            message_xml_url = re.findall('default="(.+?)"', message_xml_url.group())[0]
-            my_settings['message_xml_url'] = (message_xml_url if not 'visible' in message_xml_url else 'http://www.example.com/news.xml')
-        else:
-            my_settings['message_xml_url'] = 'http://www.example.com/news.xml'
+        try:
+            message_xml_url = re.search('id="message_xml_url".+?/>', xml_content)
+            if not message_xml_url == None:
+                message_xml_url = re.findall('default="(.+?)"', message_xml_url.group())[0]
+                my_settings['message_xml_url'] = (message_xml_url if not 'visible' in message_xml_url else 'http://www.example.com/news.xml')
+            else:
+                my_settings['message_xml_url'] = 'http://www.example.com/news.xml'
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - Message XML \n %s' % (str(failure)))
+            pass
 
-        tvdb_api_key = re.search('id="tvdb_api_key".+?/>', xml_content)
-        if not tvdb_api_key == None:
-            tvdb_api_key = re.findall('default="(.+?)"', tvdb_api_key.group())[0]
-            my_settings['tvdb_api_key'] = (tvdb_api_key if not 'visible' in tvdb_api_key else '')
-        else:
-            my_settings['tvdb_api_key'] = ''
+        try:
+            tvdb_api_key = re.search('id="tvdb_api_key".+?/>', xml_content)
+            if not tvdb_api_key == None:
+                tvdb_api_key = re.findall('default="(.+?)"', tvdb_api_key.group())[0]
+                my_settings['tvdb_api_key'] = (tvdb_api_key if not 'visible' in tvdb_api_key else '')
+            else:
+                my_settings['tvdb_api_key'] = ''
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - TVDB API \n %s' % (str(failure)))
+            pass
 
-        tmdb_api_key = re.search('id="tmdb_api_key".+?/>', xml_content)
-        if not tmdb_api_key == None:
-            tmdb_api_key = re.findall('default="(.+?)"', tmdb_api_key.group())[0]
-            my_settings['tmdb_api_key'] = (tmdb_api_key if not 'visible' in tmdb_api_key else '')
-        else:
-            my_settings['tmdb_api_key'] = ''
+        try:
+            tmdb_api_key = re.search('id="tmdb_api_key".+?/>', xml_content)
+            if not tmdb_api_key == None:
+                tmdb_api_key = re.findall('default="(.+?)"', tmdb_api_key.group())[0]
+                my_settings['tmdb_api_key'] = (tmdb_api_key if not 'visible' in tmdb_api_key else '')
+            else:
+                my_settings['tmdb_api_key'] = ''
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - TMDB API \n %s' % (str(failure)))
+            pass
 
-        trakt_api_client_id = re.search('id="trakt_api_client_id".+?/>', xml_content)
-        if not trakt_api_client_id == None:
-            trakt_api_client_id = re.findall('default="(.+?)"', trakt_api_client_id.group())[0]
-            my_settings['trakt_api_client_id'] = (trakt_api_client_id if not 'visible' in trakt_api_client_id else '')
-        else:
-            my_settings['trakt_api_client_id'] = ''
+        try:
+            trakt_api_client_id = re.search('id="trakt_api_client_id".+?/>', xml_content)
+            if not trakt_api_client_id == None:
+                trakt_api_client_id = re.findall('default="(.+?)"', trakt_api_client_id.group())[0]
+                my_settings['trakt_api_client_id'] = (trakt_api_client_id if not 'visible' in trakt_api_client_id else '')
+            else:
+                my_settings['trakt_api_client_id'] = ''
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - Trakt API \n %s' % (str(failure)))
+            pass
 
-        trakt_api_client_secret = re.search('id="trakt_api_client_secret".+?/>', xml_content)
-        if not trakt_api_client_secret == None:
-            trakt_api_client_secret = re.findall('default="(.+?)"', trakt_api_client_secret.group())[0]
-            my_settings['trakt_api_client_secret'] = (trakt_api_client_secret if not 'visible' in trakt_api_client_secret else '')
-        else:
-            my_settings['trakt_api_client_secret'] = ''
+        try:
+            trakt_api_client_secret = re.search('id="trakt_api_client_secret".+?/>', xml_content)
+            if not trakt_api_client_secret == None:
+                trakt_api_client_secret = re.findall('default="(.+?)"', trakt_api_client_secret.group())[0]
+                my_settings['trakt_api_client_secret'] = (trakt_api_client_secret if not 'visible' in trakt_api_client_secret else '')
+            else:
+                my_settings['trakt_api_client_secret'] = ''
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - Trakt API Client \n %s' % (str(failure)))
+            pass
 
-        lastfm_api_key = re.search('id="lastfm_api_key".+?/>', xml_content)
-        if not lastfm_api_key == None:
-            lastfm_api_key = re.findall('default="(.+?)"', lastfm_api_key.group())[0]
-            my_settings['lastfm_api_key'] = (lastfm_api_key if not 'visible' in lastfm_api_key else '')
-        else:
-            my_settings['lastfm_api_key'] = ''
+        try:
+            lastfm_api_key = re.search('id="lastfm_api_key".+?/>', xml_content)
+            if not lastfm_api_key == None:
+                lastfm_api_key = re.findall('default="(.+?)"', lastfm_api_key.group())[0]
+                my_settings['lastfm_api_key'] = (lastfm_api_key if not 'visible' in lastfm_api_key else '')
+            else:
+                my_settings['lastfm_api_key'] = ''
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - Last.fm API \n %s' % (str(failure)))
+            pass
 
-        lastfm_secret = re.search('id="lastfm_secret".+?/>', xml_content)
-        if not lastfm_secret == None:
-            lastfm_secret = re.findall('default="(.+?)"', lastfm_secret.group())[0]
-            my_settings['lastfm_secret'] = (lastfm_secret if not 'visible' in lastfm_secret else '')
-        else:
-            my_settings['lastfm_secret'] = ''
+        try:
+            lastfm_secret = re.search('id="lastfm_secret".+?/>', xml_content)
+            if not lastfm_secret == None:
+                lastfm_secret = re.findall('default="(.+?)"', lastfm_secret.group())[0]
+                my_settings['lastfm_secret'] = (lastfm_secret if not 'visible' in lastfm_secret else '')
+            else:
+                my_settings['lastfm_secret'] = ''
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - Last.fm API Secret \n %s' % (str(failure)))
+            pass
 
-        search_db_location = re.search('id="search_db_location".+?/>', xml_content)
-        if not search_db_location == None:
-            search_db_location = re.findall('default="(.+?)"', search_db_location.group())[0]
-            my_settings['search_db_location'] = (search_db_location if not 'visible' in search_db_location else '')
-        else:
-            my_settings['search_db_location'] = ''
+        try:
+            search_db_location = re.search('id="search_db_location".+?/>', xml_content)
+            if not search_db_location == None:
+                search_db_location = re.findall('default="(.+?)"', search_db_location.group())[0]
+                my_settings['search_db_location'] = (search_db_location if not 'visible' in search_db_location else '')
+            else:
+                my_settings['search_db_location'] = ''
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - Search DB \n %s' % (str(failure)))
+            pass
 
-        TRAKT_ACCESS_TOKEN = re.search('id="TRAKT_ACCESS_TOKEN".+?/>', xml_content)
-        if not TRAKT_ACCESS_TOKEN == None:
-            TRAKT_ACCESS_TOKEN = re.findall('default="(.+?)"', TRAKT_ACCESS_TOKEN.group())[0]
-            my_settings['TRAKT_ACCESS_TOKEN'] = (TRAKT_ACCESS_TOKEN if not 'visible' in TRAKT_ACCESS_TOKEN else '')
-        else:
-            my_settings['TRAKT_ACCESS_TOKEN'] = ''
+        try:
+            TRAKT_ACCESS_TOKEN = re.search('id="TRAKT_ACCESS_TOKEN".+?/>', xml_content)
+            if not TRAKT_ACCESS_TOKEN == None:
+                TRAKT_ACCESS_TOKEN = re.findall('default="(.+?)"', TRAKT_ACCESS_TOKEN.group())[0]
+                my_settings['TRAKT_ACCESS_TOKEN'] = (TRAKT_ACCESS_TOKEN if not 'visible' in TRAKT_ACCESS_TOKEN else '')
+            else:
+                my_settings['TRAKT_ACCESS_TOKEN'] = ''
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - Trakt API Token \n %s' % (str(failure)))
+            pass
 
-        TRAKT_EXPIRES_AT = re.search('id="TRAKT_EXPIRES_AT".+?/>', xml_content)
-        if not TRAKT_EXPIRES_AT == None:
-            TRAKT_EXPIRES_AT = re.findall('default="(.+?)"', TRAKT_EXPIRES_AT.group())[0]
-            my_settings['TRAKT_EXPIRES_AT'] = (TRAKT_EXPIRES_AT if not 'visible' in TRAKT_EXPIRES_AT else '')
-        else:
-            my_settings['TRAKT_EXPIRES_AT'] = ''
+        try:
+            TRAKT_EXPIRES_AT = re.search('id="TRAKT_EXPIRES_AT".+?/>', xml_content)
+            if not TRAKT_EXPIRES_AT == None:
+                TRAKT_EXPIRES_AT = re.findall('default="(.+?)"', TRAKT_EXPIRES_AT.group())[0]
+                my_settings['TRAKT_EXPIRES_AT'] = (TRAKT_EXPIRES_AT if not 'visible' in TRAKT_EXPIRES_AT else '')
+            else:
+                my_settings['TRAKT_EXPIRES_AT'] = ''
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - Trakt API Expires \n %s' % (str(failure)))
+            pass
 
-        TRAKT_REFRESH_TOKEN = re.search('id="TRAKT_REFRESH_TOKEN".+?/>', xml_content)
-        if not TRAKT_REFRESH_TOKEN == None:
-            TRAKT_REFRESH_TOKEN = re.findall('default="(.+?)"', TRAKT_REFRESH_TOKEN.group())[0]
-            my_settings['TRAKT_REFRESH_TOKEN'] = (TRAKT_REFRESH_TOKEN if not 'visible' in TRAKT_REFRESH_TOKEN else '')
-        else:
-            my_settings['TRAKT_REFRESH_TOKEN'] = ''
+        try:
+            TRAKT_REFRESH_TOKEN = re.search('id="TRAKT_REFRESH_TOKEN".+?/>', xml_content)
+            if not TRAKT_REFRESH_TOKEN == None:
+                TRAKT_REFRESH_TOKEN = re.findall('default="(.+?)"', TRAKT_REFRESH_TOKEN.group())[0]
+                my_settings['TRAKT_REFRESH_TOKEN'] = (TRAKT_REFRESH_TOKEN if not 'visible' in TRAKT_REFRESH_TOKEN else '')
+            else:
+                my_settings['TRAKT_REFRESH_TOKEN'] = ''
+        except:
+            failure = traceback.format_exc()
+            print('Service XML Parse Exception - Trakt API Refresh \n %s' % (str(failure)))
+            pass
     except:
+        failure = traceback.format_exc()
+        print('Service Get My Settings Exception \n %s' % (str(failure)))
         pass
 
 
@@ -227,7 +351,8 @@ def openfile(path_to_the_file):
         fh.close()
         return contents
     except:
-        print('Wont open: %s' % (path_to_the_file))
+        failure = traceback.format_exc()
+        print('Service Open File Exception - %s \n %s' % (path_to_the_file, str(failure)))
         return None
 
 
@@ -237,7 +362,8 @@ def savefile(path_to_the_file, content):
         fh.write(content)
         fh.close()
     except:
-        print('Wont save: %s' % (path_to_the_file))
+        failure = traceback.format_exc()
+        print('Service Save File Exception - %s \n %s' % (path_to_the_file, str(failure)))
 
 
 if __name__ == '__main__':

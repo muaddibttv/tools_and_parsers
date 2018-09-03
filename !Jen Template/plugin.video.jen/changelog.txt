@@ -1,3 +1,6 @@
+v1.8a
+    - Fixed a bug in service script. Threw in retarded amount of try/except catches cuz Muad sucks
+
 v1.8
     - Added settings_menu.xml to the example xml files included with the template
     - Updates tools.py plugin - Password sessions now exist, default timer is 1 hour. To change, edit the
