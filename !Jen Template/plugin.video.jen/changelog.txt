@@ -1,5 +1,5 @@
-v1.8a
-    - Fixed a bug in service script. Threw in retarded amount of try/except catches cuz Muad sucks
+v1.9
+    - Added airtable wrapper to the Jen template. No user action is required.
 
 v1.8
     - Added settings_menu.xml to the example xml files included with the template
