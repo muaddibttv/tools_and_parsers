@@ -12,14 +12,26 @@ These are plugins not bundled with Jen Template from various sources.
     - Fork of arconaitv plugin, with more options for your xmls. XML Tags are different in this one as well
 - arraki_air
     - A new type of air table plugin, allowing you to add many tables via xml instead of being hard coded
+- b98
+    - Plugin to scrape a specific website for kids cartoons
 - bnwmovies
     - Plugin to pull old black and white classic movies via an Air Table
+- cnw
+    - Adult content, nude celebs
 - cobp
     - Used to pull categories, vides, etc. from the collectionofbestporn.com website
 - colorize
     - Plugin for letting users select from a list of colors. Can be used to colorize menu titles the way you want
 - docheaven
     - Pulls free documentaries from a specific site by category
+- docustream
+    - Documentary scraper
+- ep
+    - Adult content, eporner
+- fmtv
+    - NBA, NFL, NHL, MLB, and WWE Scraper for replays
+- fxxx
+    - Full length xxx films
 - hesgoal
     - Returns Sports Games from hesgoal
 - lastfm
@@ -48,8 +60,12 @@ These are plugins not bundled with Jen Template from various sources.
     - Returns New Movie Releases from airtable
 - sports_streams
     - Used to pull game streams from sports-stream.net
+- swift
+    - scraper for live tv
 - the_duke
     - Another air table plugin for pulling movies with John Wayne (The Duke)
+- thearchives
+    - Massive plugin for pulling live music, audiobooks, and films that are all free domain
 - tools
     - Useful tools for menu items, such as to mark an item non-clickable or open settings to a specific tab and section
 - toonmania

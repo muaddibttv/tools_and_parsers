@@ -23,11 +23,34 @@
     Usage Examples:
 
     <dir>
-        <title>Display Category content</title>
-        <cobp>category/squirting</cobp>
+        <title>HD Videos</title>
+        <cobp>tag/hd-porn/newest</cobp>
     </dir>
 
+    <dir>
+        <title>Most Popular</title>
+        <cobp>most-viewed</cobp>
+    </dir>
 
+    <dir>
+        <title>Most Recent</title>
+        <cobp>most-recent</cobp>
+    </dir>
+
+    <dir>
+        <title>Amateur</title>
+        <cobp>category/amateur</cobp>
+    </dir>
+
+    <dir>
+        <title>Anal</title>
+        <cobp>category/anal</cobp>
+    </dir>
+
+    <dir>
+        <title>Asian</title>
+        <cobp>category/asian</cobp>
+    </dir>
 
 """
 
