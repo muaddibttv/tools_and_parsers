@@ -42,8 +42,6 @@ These are plugins not bundled with Jen Template from various sources.
     - Plugin for the Podcast archive at https://massivelyop.com (Massively Over Powered) gaming website
 - moviefone
     - Trailers plugin
-- movietorture
-    - Plugin that scrapes a specific site for movies to torture your soul
 - newson
     - Provides live casts and news clips from various local channels in the United States - Pulled from NewsON
 - otb_trekkie
