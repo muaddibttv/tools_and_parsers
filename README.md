@@ -1,2 +1,2 @@
 # tools_and_parsers
-[![Beerpay](https://beerpay.io/muaddibttv/tantrumrepo/badge.svg)](https://beerpay.io/muaddibttv/tantrumrepo)
+[![Beerpay](https://beerpay.io/muaddibttv/tantrumrepo/badge.svg)](https://www.paypal.me/SRoyalty)
